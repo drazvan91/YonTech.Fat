@@ -19,13 +19,15 @@ namespace Yontech.Fat.Waiters
                 Wait(50);
             }
 
+            
+            
             // todo: specific exception please
             throw new Exception("Timeout");
         }
 
         public static void Wait(int timeToWait)
         {
-            Thread.CurrentThread.Join(timeToWait);
+            //Thread.CurrentThread.Join(timeToWait);
         }
     }
 }

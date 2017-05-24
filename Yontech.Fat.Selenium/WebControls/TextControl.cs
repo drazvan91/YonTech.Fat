@@ -26,19 +26,19 @@ namespace Yontech.Fat.Selenium.WebControls
         public void ShouldContainText(string text  )
         {
             EnsureElementExists();
-            if (this.Text.IndexOf(text,StringComparison.InvariantCultureIgnoreCase) < 0)
+            /*if (this.Text.IndexOf(text,StringComparison.InvariantCultureIgnoreCase) < 0)
             {
                 throw new Exception($"Element does not contain this text: {text}");
-            }
+            }*/
         }
 
         public void ShouldNotContainText(string text)
         {
             EnsureElementExists();
-            if (this.Text.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > 0)
+           /* if (this.Text.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > 0)
             {
                 throw new Exception($"Element contains this text: {text} and it shoudn't");
-            }
+            }*/
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Yontech.Fat.Logging
     {
         public static void Write(string messageFormat, params string[] args)
         {
-            Trace.WriteLine(string.Format(messageFormat, args));
+            //Trace.WriteLine(string.Format(messageFormat, args));
         }
 
         void ILogger.Write(string message, params string[] args)

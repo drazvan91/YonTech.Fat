@@ -20,7 +20,7 @@ namespace Yontech.Fat.Selenium
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = new ChromeDriver("D:\\computrition\\seleniumdrivers");
+                    webDriver = new ChromeDriver(@"C:\techboard\YonTech.Fat\seleniumdrivers");
                     
                     break;
                 default:
