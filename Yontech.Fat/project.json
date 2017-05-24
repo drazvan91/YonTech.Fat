@@ -1,0 +1,25 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+  },
+
+  "frameworks": {
+    /*"netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Threading.Thread": "4.3.0",
+        "System.Diagnostics.TraceSource": "4.3.0"
+        
+      },
+      "imports": "dnxcore50"
+    },
+    "net462": {},*/
+    "net461": {}/*,
+    "net46": {},
+    "net452": {},
+    "net451": {},
+    "net45": {},
+    "net4": {}*/
+  }
+}

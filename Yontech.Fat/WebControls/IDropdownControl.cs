@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Yontech.Fat.WebControls
+{
+    public interface IDropdownControl:IWebControl
+    {
+        bool IsOpen { get; }
+        string SelectedItem { get; }
+        IEnumerable<string> GetItems();
+        void Open();
+        void Close();
+        void SelectItem(string itemText);
+        void SelectItem(int index);
+    }
+}

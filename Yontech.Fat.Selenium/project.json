@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Selenium.WebDriver": "3.0.1",
+    "Yontech.Fat": "1.0.0-*"
+  },
+
+  "frameworks": {
+   // "net462": {},
+    "net461": {},
+    /*"net46": {},
+    "net452": {},
+    "net451": {},
+    "net45": {},
+    "net4": {}*/
+  }
+}
