@@ -45,7 +45,7 @@ namespace TestGoogleApp
         public AccountTestContext()
         {
             var browserFactory = new SeleniumWebBrowserFactory();
-            base.Browser = browserFactory.Create(BrowserType.Chrome);
+            base.Browser = browserFactory.Create(BrowserType.Chrome, @"F:\computrition\CI.Connect\YonTech.Fat\seleniumdrivers");
         }
     }
 
