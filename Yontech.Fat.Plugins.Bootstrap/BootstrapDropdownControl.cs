@@ -32,6 +32,23 @@ namespace Yontech.Fat.Plugins.Bootstrap
             }
         }
 
+        public string ToggleText
+        {
+            get
+            {
+                var toggle = _container.Find(".dropdown-toggle").First();
+                return toggle.Text;
+            }
+        }
+
+        public void ToggleTextShouldBe(string text)
+        {
+            if (this.ToggleText != text)
+            {
+                throw new Exception($"Toggle text contains '{this.ToggleText}' instead of '{text}'");
+            }
+        }
+
         public void Close()
         {
             if (IsOpen)

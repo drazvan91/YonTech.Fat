@@ -27,7 +27,7 @@ namespace Yontech.Fat.Waiters
 
         public static void Wait(int timeToWait)
         {
-            //Thread.CurrentThread.Join(timeToWait);
+            Thread.CurrentThread.Join(timeToWait);
         }
     }
 }

@@ -13,14 +13,14 @@ namespace Yontech.Fat.Selenium
         {
         }
 
-        public IWebBrowser Create(BrowserType browserType)
+        public IWebBrowser Create(BrowserType browserType, string driversFolder)
         {
             IWebDriver webDriver = null;
 
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = new ChromeDriver(@"C:\techboard\YonTech.Fat\seleniumdrivers");
+                    webDriver = new ChromeDriver(driversFolder);
                     
                     break;
                 default:

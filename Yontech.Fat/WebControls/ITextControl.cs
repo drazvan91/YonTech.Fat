@@ -9,6 +9,7 @@ namespace Yontech.Fat.WebControls
     {
         string Text { get; }
 
+        void InnerTextShouldBe(string text);
         void ShouldContainText(string text);
         void ShouldNotContainText(string text);
     }

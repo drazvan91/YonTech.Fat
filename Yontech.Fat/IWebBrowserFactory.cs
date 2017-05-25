@@ -7,6 +7,6 @@ namespace Yontech.Fat
 {
     public interface IWebBrowserFactory
     {
-        IWebBrowser Create(BrowserType browserType);
+        IWebBrowser Create(BrowserType browserType, string driversFolder);
     }
 }

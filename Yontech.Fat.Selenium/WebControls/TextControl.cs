@@ -23,22 +23,32 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
+        public void InnerTextShouldBe(string text)
+        {
+            EnsureElementExists();
+
+            if (this.Text != text)
+            {
+                throw new Exception($"Control contains '{this.Text}' instead of '{text}'");
+            }
+        }
+
         public void ShouldContainText(string text  )
         {
             EnsureElementExists();
-            /*if (this.Text.IndexOf(text,StringComparison.InvariantCultureIgnoreCase) < 0)
+            if (this.Text.IndexOf(text,StringComparison.CurrentCultureIgnoreCase) < 0)
             {
                 throw new Exception($"Element does not contain this text: {text}");
-            }*/
+            }
         }
 
         public void ShouldNotContainText(string text)
         {
             EnsureElementExists();
-           /* if (this.Text.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > 0)
+            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) > 0)
             {
                 throw new Exception($"Element contains this text: {text} and it shoudn't");
-            }*/
+            }
         }
     }
 }
