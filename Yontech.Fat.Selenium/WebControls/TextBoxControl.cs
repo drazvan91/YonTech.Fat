@@ -1,5 +1,6 @@
 ﻿using Yontech.Fat.WebControls;
 using OpenQA.Selenium;
+using System;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
@@ -25,10 +26,15 @@ namespace Yontech.Fat.Selenium.WebControls
             WebElement.Clear();
         }
 
+        public void Click()
+        {
+            WebElement.Click();
+        }
+
         public void SendKeys(string keys)
         {
             EnsureElementExists();
-            WebElement.SendKeys(keys);
+            WebElement.SendKeys(keys);            
         }
     }
 }

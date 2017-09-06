@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace Yontech.Fat.WebControls
 {
-    public interface ITextBoxControl:IWebControl
+    public interface ITextBoxControl : IWebControl
     {
         string Text { get; }
         void SendKeys(string keys);
         void ClearText();
+        void Click();
     }
 }
