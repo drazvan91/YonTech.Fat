@@ -12,6 +12,5 @@ namespace Yontech.Fat.WebControls
         void InnerTextShouldBe(string text);
         void ShouldContainText(string text);
         void ShouldNotContainText(string text);
-        void SendKeys(string keys);
     }
 }

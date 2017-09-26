@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Yontech.Fat.WebControls
 {
-    public interface IButtonControl : IWebControl
+    public interface IButtonControl:IWebControl
     {
         string Text { get; }
         void Click();
-        
     }
 }

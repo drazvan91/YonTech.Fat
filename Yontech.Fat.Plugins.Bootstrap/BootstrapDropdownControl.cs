@@ -9,7 +9,6 @@ namespace Yontech.Fat.Plugins.Bootstrap
     public class BootstrapDropdownControl :  IDropdownControl
     {
         private readonly IGenericControl _container;
-       
 
         public BootstrapDropdownControl(IGenericControl containerControl)
         {
@@ -41,8 +40,6 @@ namespace Yontech.Fat.Plugins.Bootstrap
                 return toggle.Text;
             }
         }
-
-       
 
         public void ToggleTextShouldBe(string text)
         {
@@ -131,12 +128,5 @@ namespace Yontech.Fat.Plugins.Bootstrap
         {
             _container.ShouldNotBeVisible();
         }
-
-        private void EnsureElementExists()
-        {
-            throw new NotImplementedException();
-        }
-
-        
     }
 }
