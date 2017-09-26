@@ -1,6 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using System.Reflection;
+using System;
+using Yontech.Fat.WebControls;
+using Yontech.Fat.Selenium.WebControls;
 
 namespace Yontech.Fat.Selenium
 {
@@ -30,6 +33,14 @@ namespace Yontech.Fat.Selenium
             }
         }
 
+        public override IIFrameControl IFrameControl
+        {
+            get
+            {
+                return new IFrameControl(this);
+            }
+        }
+
         public override void Close()
         {
             WebDriver.Close();
@@ -41,6 +52,7 @@ namespace Yontech.Fat.Selenium
             WebDriver.Navigate();
             this.WaitForIdle();
         }
+
 
 
         public override ISnapshot TakeSnapshot()
@@ -89,6 +101,11 @@ namespace Yontech.Fat.Selenium
         public override void Dispose()
         {
             Dispose(true);
+        }
+
+        public override void SwitchToIframe(string iframeId)
+        {
+            WebDriver.SwitchTo().Frame(iframeId);
         }
     }
 }

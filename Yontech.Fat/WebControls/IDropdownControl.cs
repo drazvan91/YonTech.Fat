@@ -16,5 +16,6 @@ namespace Yontech.Fat.WebControls
         void Close();
         void SelectItem(string itemText);
         void SelectItem(int index);
+        
     }
 }
