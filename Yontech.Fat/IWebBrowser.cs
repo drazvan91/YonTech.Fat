@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
@@ -11,6 +12,7 @@ namespace Yontech.Fat
 
         IControlFinder ControlFinder { get; }
         IJsExecutor JavaScriptExecutor { get; }
+        IIFrameControl IFrameControl { get; }
 
         WebBrowserConfiguration Configuration { get; }
 

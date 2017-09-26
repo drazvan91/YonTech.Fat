@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
@@ -16,10 +17,12 @@ namespace Yontech.Fat
 
         public abstract IControlFinder ControlFinder { get; }
         public abstract IJsExecutor JavaScriptExecutor { get; }
+        public abstract IIFrameControl IFrameControl { get; }
         public abstract void Close();
         public abstract void Dispose();
         public abstract void Navigate(string url);
         public abstract ISnapshot TakeSnapshot();
+        public abstract void SwitchToIframe(string iframeId);
 
         public BaseWebBrowser(BrowserType type)
         {
