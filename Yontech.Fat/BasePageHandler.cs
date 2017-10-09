@@ -10,7 +10,7 @@ namespace Yontech.Fat
     {
         protected readonly IWebBrowser WebBrowser;
         protected readonly IControlFinder ControlFinder;
-        protected readonly IIFrameControl IFrame;
+        protected readonly IIFrameControl IFrame;        
 
         public BasePageHandler(IWebBrowser webBrowser)
         {

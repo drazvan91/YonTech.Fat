@@ -21,7 +21,7 @@ namespace Yontech.Fat.Selenium
         private IWebElement FindElement(By selector)
         {
             var elements = webBrowser.WebDriver.FindElements(selector);
-            if(elements.Count > 1)
+            if (elements.Count > 1)
             {
                 throw new MultipleWebControlsFoundException();
             }
@@ -45,6 +45,12 @@ namespace Yontech.Fat.Selenium
         {
             var element = FindElement(By.CssSelector(cssSelector));
             return new TextControl(element, webBrowser);
+        }
+
+        public IClassicDropdownControl ClasicDropdown(string cssSelector)
+        {
+            var element = FindElement(By.CssSelector(cssSelector));
+            return new ClassicDropDownControl(element, webBrowser);
         }
 
         public IGenericControl Generic(string cssSelector)

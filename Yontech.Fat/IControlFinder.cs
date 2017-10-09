@@ -11,6 +11,7 @@ namespace Yontech.Fat
         ITextBoxControl TextBox(string cssSelector);
         IButtonControl Button(string cssSelector);
         ITextControl Text(string cssSelector);
+        IClassicDropdownControl ClasicDropdown(string cssSelector);
         IGenericControl Generic(string cssSelector);
     }
 }

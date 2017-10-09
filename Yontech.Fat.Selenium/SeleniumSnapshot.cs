@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using System.Drawing.Imaging;
-
+//using System.Drawing.Imaging;
+//todo: Import ImageFormat 
 namespace Yontech.Fat.Selenium
 {
     internal class SeleniumSnapshot : ISnapshot
@@ -18,7 +18,7 @@ namespace Yontech.Fat.Selenium
 
         public void SaveAsFile(string path)
         {
-            shot.SaveAsFile(path, ImageFormat.Png);
+            //shot.SaveAsFile(path, ImageFormat.Png);
         }
     }
 }

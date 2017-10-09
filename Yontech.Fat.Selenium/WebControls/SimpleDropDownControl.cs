@@ -1,57 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
-    internal class SimpleDropDownControl : BaseSeleniumControl, IDropdownControl
+    internal class ClassicDropDownControl : BaseSeleniumControl, IClassicDropdownControl
     {
-        IWebElement Select;
+        private readonly SelectElement _dropdown;
 
-
-        public SimpleDropDownControl(IWebElement webElement, SeleniumWebBrowser webBrowser) : base(webElement, webBrowser)
+        #region Constructor
+        public ClassicDropDownControl(IWebElement webElement, SeleniumWebBrowser webBrowser) : base(webElement, webBrowser)
         {
-            Select = webElement;
+            _dropdown = new SelectElement(webElement);
         }
+        #endregion
 
-        public bool IsOpen => throw new NotImplementedException();
-
-        public string ToggleText => throw new NotImplementedException();
-
-        public string SelectedItem => throw new NotImplementedException();
-
-        public void Close()
+        #region Methods
+        public void SelectItemByText(string text)
         {
-            throw new NotImplementedException();
+            _dropdown.SelectByText(text);
         }
-
-        public IEnumerable<string> GetItems()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Open()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SelectItem(string itemText)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SelectItem(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ToggleTextShouldBe(string text)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }
 
