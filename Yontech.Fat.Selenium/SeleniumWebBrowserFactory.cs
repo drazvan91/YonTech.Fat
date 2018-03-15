@@ -1,9 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Yontech.Fat.Selenium
 {
@@ -13,14 +11,14 @@ namespace Yontech.Fat.Selenium
         {
         }
 
-        public IWebBrowser Create(BrowserType browserType, string driversFolder)
+        public IWebBrowser Create(BrowserType browserType)
         {
             IWebDriver webDriver = null;
 
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = new ChromeDriver(driversFolder);
+                    webDriver = new ChromeDriver(Path.Combine(Environment.CurrentDirectory, "Drivers"));
                     
                     break;
                 default:
