@@ -41,7 +41,7 @@ namespace Yontech.Fat.Selenium
             }
         }
 
-        public override string Url
+        public override string CurrentUrl
         {
             get
             {
@@ -53,6 +53,7 @@ namespace Yontech.Fat.Selenium
         {
             WebDriver.Close();
         }
+
 
         public override void Navigate(string url)
         {

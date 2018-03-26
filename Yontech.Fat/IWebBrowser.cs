@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
@@ -13,13 +10,11 @@ namespace Yontech.Fat
         IControlFinder ControlFinder { get; }
         IJsExecutor JavaScriptExecutor { get; }
         IIFrameControl IFrameControl { get; }
-
+        string CurrentUrl { get; }
         WebBrowserConfiguration Configuration { get; }
 
         void Navigate(string url);
-        string Url { get; }
         void Close();
-
         void WaitForIdle();
         void WaitForIdle(int timout);
 
