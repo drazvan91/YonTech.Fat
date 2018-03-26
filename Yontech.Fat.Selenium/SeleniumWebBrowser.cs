@@ -41,10 +41,19 @@ namespace Yontech.Fat.Selenium
             }
         }
 
+        public override string CurrentUrl
+        {
+            get
+            {
+                return WebDriver.Url;
+            }
+        }
+
         public override void Close()
         {
             WebDriver.Close();
         }
+
 
         public override void Navigate(string url)
         {
