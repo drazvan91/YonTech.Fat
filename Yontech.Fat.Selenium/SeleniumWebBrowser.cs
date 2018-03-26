@@ -41,6 +41,14 @@ namespace Yontech.Fat.Selenium
             }
         }
 
+        public override string Url
+        {
+            get
+            {
+                return WebDriver.Url;
+            }
+        }
+
         public override void Close()
         {
             WebDriver.Close();

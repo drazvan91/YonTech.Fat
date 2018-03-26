@@ -35,6 +35,12 @@ namespace Yontech.Fat.Selenium
             return new ButtonControl(element, webBrowser);
         }
 
+        public IRadioButtonControl RadioButton(string cssSelector)
+        {
+            var element = FindElement(By.CssSelector(cssSelector));
+            return new RadioButtonControl(element, webBrowser);
+        }
+
         public ITextBoxControl TextBox(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));

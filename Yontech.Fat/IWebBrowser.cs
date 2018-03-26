@@ -17,6 +17,7 @@ namespace Yontech.Fat
         WebBrowserConfiguration Configuration { get; }
 
         void Navigate(string url);
+        string Url { get; }
         void Close();
 
         void WaitForIdle();
