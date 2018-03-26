@@ -18,11 +18,13 @@ namespace Yontech.Fat
         public abstract IControlFinder ControlFinder { get; }
         public abstract IJsExecutor JavaScriptExecutor { get; }
         public abstract IIFrameControl IFrameControl { get; }
-        public abstract string CurrentUrl { get; }
+        
         public abstract void Close();
 
         public abstract void Dispose();
         public abstract void Navigate(string url);
+        public abstract string CurrentUrl { get; }
+
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
 

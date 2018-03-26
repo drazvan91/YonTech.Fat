@@ -1,8 +1,4 @@
 ﻿using Yontech.Fat.WebControls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Yontech.Fat
 {
@@ -11,6 +7,7 @@ namespace Yontech.Fat
         ITextBoxControl TextBox(string cssSelector);
         IButtonControl Button(string cssSelector);
         ITextControl Text(string cssSelector);
+        IRadioButtonControl RadioButton(string cssSelector);
         IClassicDropdownControl ClasicDropdown(string cssSelector);
         IGenericControl Generic(string cssSelector);
     }
