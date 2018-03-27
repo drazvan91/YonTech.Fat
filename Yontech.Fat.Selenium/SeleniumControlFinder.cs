@@ -53,10 +53,10 @@ namespace Yontech.Fat.Selenium
             return new TextControl(element, webBrowser);
         }
 
-        public IClassicDropdownControl ClasicDropdown(string cssSelector)
+        public IDropdownControl Dropdown(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new ClassicDropDownControl(element, webBrowser);
+            return new DropdownControl(element, webBrowser);
         }
 
         public IGenericControl Generic(string cssSelector)
