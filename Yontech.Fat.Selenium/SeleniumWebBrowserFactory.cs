@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.IO;
+using OpenQA.Selenium.IE;
 
 namespace Yontech.Fat.Selenium
 {
@@ -14,12 +15,15 @@ namespace Yontech.Fat.Selenium
         public IWebBrowser Create(BrowserType browserType)
         {
             IWebDriver webDriver = null;
+            string driversPath = Path.Combine(Environment.CurrentDirectory, "Drivers");
 
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = new ChromeDriver(Path.Combine(Environment.CurrentDirectory, "Drivers"));
-                    
+                    webDriver = new ChromeDriver(driversPath);
+                    break;
+                case BrowserType.InternetExplorer:
+                    webDriver = new InternetExplorerDriver(driversPath);
                     break;
                 default:
                     throw new NotSupportedException();
