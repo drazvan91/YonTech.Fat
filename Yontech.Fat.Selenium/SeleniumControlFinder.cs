@@ -11,16 +11,20 @@ namespace Yontech.Fat.Selenium
 {
     internal class SeleniumControlFinder : IControlFinder
     {
-        private readonly SeleniumWebBrowser webBrowser;
+        private readonly ISearchContext _elementScope;
+        private readonly SeleniumWebBrowser _webBrowser;
 
-        public SeleniumControlFinder(SeleniumWebBrowser webBrowser)
+        public SeleniumControlFinder(SeleniumWebBrowser webBrowser) : this(webBrowser.WebDriver, webBrowser) { }
+
+        public SeleniumControlFinder(ISearchContext elementScope, SeleniumWebBrowser webBrowser)
         {
-            this.webBrowser = webBrowser;
+            this._elementScope = elementScope;
+            this._webBrowser = webBrowser;
         }
 
         private IWebElement FindElement(By selector)
         {
-            var elements = webBrowser.WebDriver.FindElements(selector);
+            var elements = this._elementScope.FindElements(selector);
             if (elements.Count > 1)
             {
                 throw new MultipleWebControlsFoundException();
@@ -32,37 +36,37 @@ namespace Yontech.Fat.Selenium
         public IButtonControl Button(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new ButtonControl(element, webBrowser);
+            return new ButtonControl(element, _webBrowser);
         }
 
         public IRadioButtonControl RadioButton(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new RadioButtonControl(element, webBrowser);
+            return new RadioButtonControl(element, _webBrowser);
         }
 
         public ITextBoxControl TextBox(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new TextBoxControl(element, webBrowser);
+            return new TextBoxControl(element, _webBrowser);
         }
 
         public ITextControl Text(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new TextControl(element, webBrowser);
+            return new TextControl(element, _webBrowser);
         }
 
         public IDropdownControl Dropdown(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new DropdownControl(element, webBrowser);
+            return new DropdownControl(element, _webBrowser);
         }
 
         public IGenericControl Generic(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new GenericControl(element, webBrowser);
+            return new GenericControl(element, _webBrowser);
         }
     }
 }
