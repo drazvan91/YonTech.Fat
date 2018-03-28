@@ -23,6 +23,8 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
+        public IControlFinder ControlFinder => new SeleniumControlFinder(WebElement, WebBrowser);
+
         public void Click()
         {
             EnsureElementExists();
