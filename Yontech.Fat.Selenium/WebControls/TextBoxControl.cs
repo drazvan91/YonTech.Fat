@@ -34,6 +34,7 @@ namespace Yontech.Fat.Selenium.WebControls
         public void SendKeys(string keys)
         {
             EnsureElementExists();
+            WebElement.Clear();
             WebElement.SendKeys(keys);            
         }
     }
