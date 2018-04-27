@@ -8,6 +8,7 @@ namespace Yontech.Fat.WebControls
     public interface ITextBoxControl : IWebControl
     {
         string Text { get; }
+        bool IsDisplayed { get; }
         void SendKeys(string keys);
         void ClearText();
         void Click();

@@ -11,6 +11,18 @@ namespace Yontech.Fat.Selenium.WebControls
         {
         }
 
+        public bool IsDisplayed
+        {
+            get
+            {
+                if (WebElement == null)
+                {
+                    return false;
+                }
+                return WebElement.Displayed;
+            }
+        }
+
         public string Text
         {
             get
