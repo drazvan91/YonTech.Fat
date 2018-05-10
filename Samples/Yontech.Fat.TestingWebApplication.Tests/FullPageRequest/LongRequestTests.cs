@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using Yontech.Fat.TestingWebApplication.Tests.Config;
 using Yontech.Fat.TestingWebApplication.Tests.FullPageRequest.Pages;
 using Yontech.Fat.TestingWebApplication.Tests.Runtime;
 
@@ -13,7 +14,7 @@ namespace Yontech.Fat.TestingWebApplication.Tests.FullPageRequest
 
         public LongRequestTests(BaseTestContext context):base(context)
         {
-            base.Browser.Navigate("http://localhost:3045/fullPageRequestDemo/");
+            base.Browser.Navigate(PageUrls.FullPageRequestPage);
 
             this.fullPageRequestDemoPage = new FullPageRequestDemoPage(base.Browser);
         }
