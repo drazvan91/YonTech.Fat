@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Yontech.Fat.WebControls
 {
-    public interface ICheckBoxControl : IWebControl
+    public interface ICheckboxControl : IWebControl
     {
         bool IsChecked { get; }
         void Toggle();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Plugins.Bootstrap
@@ -42,7 +41,13 @@ namespace Yontech.Fat.Plugins.Bootstrap
             }
         }
 
-       
+        public bool IsVisible
+        {
+            get
+            {
+                return _container.IsVisible;
+            }
+        }
 
         public void ToggleTextShouldBe(string text)
         {

@@ -21,13 +21,17 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
-        public void Click()
+        public void RageClick(int numberOfClicks)
         {
             EnsureElementExists();
             this.ScrollTo();
-            base.WebElement.Click();
+
+            for (int i = 0; i < numberOfClicks; i++)
+            {
+                base.WebElement.Click();
+            }
+
             base.WebBrowser.WaitForIdle();
         }
-
     }
 }

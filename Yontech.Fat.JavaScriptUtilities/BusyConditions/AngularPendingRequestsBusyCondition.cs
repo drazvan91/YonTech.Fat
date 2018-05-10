@@ -20,15 +20,28 @@ namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
         {
             var selector = _ngAppCssSelector.Replace("'", "\"");
 
-            var script = $"return window.angular != undefined && (angular.element('{selector}').injector().get('$http').pendingRequests.length > 0)";
+            var checkAngularExistsScript = $"return window.angular != undefined && angular.element('{selector}').injector() != undefined";
             try
             {
-                var busy = (bool)this._javascriptExecutor.ExecuteScript(script);
-                return busy;
-            }catch(Exception ex)
-            {
+                var angularExists = (bool)this._javascriptExecutor.ExecuteScript(checkAngularExistsScript);
+                if (!angularExists)
+                    return false;
+                var pendingRequestsScript = $"return angular.element('{selector}').injector().get('$http').pendingRequests.length > 0";
+                try
+                {
+                    var executeResult = this._javascriptExecutor.ExecuteScript(pendingRequestsScript);
 
-                return true;
+                    bool busy = (bool)executeResult;
+                    return busy;
+                }
+                catch (Exception ex)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
     }

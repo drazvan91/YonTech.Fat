@@ -9,6 +9,6 @@ namespace Yontech.Fat.WebControls
     {
         string Text { get; }
         void Click();
-        
+        void RageClick(int numberOfClicks);
     }
 }

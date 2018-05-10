@@ -39,11 +39,6 @@ namespace Yontech.Fat.Selenium.WebControls
             WebElement.SendKeys(keys);
         }
 
-        public void SendKeys()
-        {
-            throw new NotImplementedException();
-        }
-
         public void ShouldContainText(string text  )
         {
             EnsureElementExists();

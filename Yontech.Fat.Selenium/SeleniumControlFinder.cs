@@ -45,6 +45,12 @@ namespace Yontech.Fat.Selenium
             return new RadioButtonControl(element, _webBrowser);
         }
 
+        public ICheckboxControl Checkbox(string cssSelector)
+        {
+            var element = FindElement(By.CssSelector(cssSelector));
+            return new CheckboxControl(element, _webBrowser);
+        }
+
         public ITextBoxControl TextBox(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
@@ -68,5 +74,7 @@ namespace Yontech.Fat.Selenium
             var element = FindElement(By.CssSelector(cssSelector));
             return new GenericControl(element, _webBrowser);
         }
+
+        
     }
 }

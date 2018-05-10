@@ -10,5 +10,6 @@ namespace Yontech.Fat
         void ScrollTo();
         void ShouldBeVisible();
         void ShouldNotBeVisible();
+        bool IsVisible { get; }
     }
 }
