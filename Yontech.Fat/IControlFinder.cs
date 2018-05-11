@@ -8,6 +8,7 @@ namespace Yontech.Fat
         IButtonControl Button(string cssSelector);
         ITextControl Text(string cssSelector);
         IRadioButtonControl RadioButton(string cssSelector);
+        ICheckboxControl Checkbox(string cssSelector);
         IGenericControl Generic(string cssSelector);
         IDropdownControl Dropdown(string cssSelector);
     }

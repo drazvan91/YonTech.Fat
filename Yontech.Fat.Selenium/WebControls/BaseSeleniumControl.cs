@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Yontech.Fat.Exceptions;
 
 namespace Yontech.Fat.Selenium.WebControls
@@ -13,10 +10,25 @@ namespace Yontech.Fat.Selenium.WebControls
         protected readonly internal IWebElement WebElement;
         protected readonly internal SeleniumWebBrowser WebBrowser;
 
+
         public BaseSeleniumControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
         {
             this.WebElement = webElement;
             this.WebBrowser = webBrowser;
+        }
+        public bool IsVisible {
+            get
+            {
+                return this.WebElement != null && this.WebElement.Displayed;
+            }
+        }
+
+        public void Click()
+        {
+            EnsureElementExists();
+            this.ScrollTo();
+            this.WebElement.Click();
+            this.WebBrowser.WaitForIdle();
         }
 
         public virtual void ScrollTo()

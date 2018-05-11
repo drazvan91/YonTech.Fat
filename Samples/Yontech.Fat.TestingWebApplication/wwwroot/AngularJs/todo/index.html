@@ -1,0 +1,34 @@
+﻿<!doctype html>
+<html ng-app="todoApp">
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="todo.js"></script>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+    <h2 id="pageTitle">Todo</h2>
+    <div id="todoAngularApp" ng-controller="TodoListController as todoList">
+        <span id="remainingDescription">{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
+        [ <a href="" id="archiveButton" ng-click="todoList.archive()">archive</a> ]
+        <ul class="unstyled">
+            <li ng-repeat="todo in todoList.todos">
+                <label class="checkbox">
+                    <input type="checkbox" ng-model="todo.done">
+                    <span class="done-{{todo.done}}">{{todo.text}}</span>
+                </label>
+            </li>
+        </ul>
+        <form ng-submit="todoList.addTodo()">
+            <input id="newTodoInput" type="text" ng-model="todoList.todoText" size="30"
+                   placeholder="add new todo here">
+            <input id="newTodoButton" class="btn-primary" type="submit" value="add">
+            <a href="" id="addFromBackend" class="btn btn-primary" ng-click="todoList.addFromBackend()">Add from backend</a>
+            <a href="" id="addDelayed" class="btn btn-primary" ng-click="todoList.addDelayed()">Add delayed</a>
+        </form>
+        <div class="panel-warning" ng-if="todoList.isLoading()">
+            Please wait
+        </div>
+    </div>
+</body>
+</html>

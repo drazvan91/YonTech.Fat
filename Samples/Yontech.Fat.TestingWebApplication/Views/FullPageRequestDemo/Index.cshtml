@@ -1,0 +1,41 @@
+﻿@model Yontech.Fat.TestingWebApplication.Models.FullPageRequestViewModel
+@{
+    ViewData["Title"] = "About";
+
+}
+<h2>Full page request demo</h2>
+<h4>
+    Concatenate name:
+</h4>
+<form action="/fullPageRequestDemo/concatenateName" method="post">
+    <div>
+        First name: <input type="text" name="firstName" value="@Model.FirstName"/>
+    </div>
+    <div>
+        Last name: <input type="text" name="lastName" value="@Model.LastName" />
+    </div>
+
+    <div id="concatenationResult">@Model.ConcatenatedNameResult</div>
+
+    <div>
+        <input type="submit" value="Concatenate names" id="concatenateButton" />
+    </div>
+</form>
+<hr />
+<h4>
+    Long time request
+</h4>
+<div>
+    <a class="btn" id="oneSecondButton" href="/fullPageRequestDemo/longRequest?timeToSleep=1000">1 second request</a>
+    <a class="btn" id="fiveSecondsButton" href="/fullPageRequestDemo/longRequest?timeToSleep=5000">5 seconds request</a>
+    <a class="btn" id="tenSecondsButton" href="/fullPageRequestDemo/longRequest?timeToSleep=10000">10 second request</a>
+</div>
+
+<hr />
+
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <div class="panel-info" id="outputMessage">
+        @Model.Message
+    </div>
+}

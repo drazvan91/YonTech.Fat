@@ -7,6 +7,7 @@ namespace Yontech.Fat.WebControls
 {
     public interface ITextControl:IWebControl
     {
+        void Click();
         string Text { get; }
         void InnerTextShouldBe(string text);
         void ShouldContainText(string text);
