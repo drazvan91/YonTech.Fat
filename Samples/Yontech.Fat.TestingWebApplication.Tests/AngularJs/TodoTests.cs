@@ -17,8 +17,8 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs
         public TodoTests(BaseTestContext context):base(context)
         {
             base.Browser.Configuration.BusyConditions.Clear();
-            base.Browser.Configuration.BusyConditions.Add(new AngularPendingRequestsBusyCondition(base.Browser, "#todoAngularApp"));
-            base.Browser.Configuration.BusyConditions.Add(new ElementIsVisibileBusyCondition(base.Browser, ".panel-warning"));
+            base.Browser.Configuration.BusyConditions.Add(new AngularPendingRequestsBusyCondition("#todoAngularApp"));
+            base.Browser.Configuration.BusyConditions.Add(new ElementIsVisibileBusyCondition(".panel-warning"));
 
             base.Browser.Navigate(PageUrls.ToDoPage);
 

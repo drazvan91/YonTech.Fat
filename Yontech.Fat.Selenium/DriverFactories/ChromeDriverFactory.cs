@@ -8,6 +8,12 @@ namespace Yontech.Fat.Selenium.DriverFactories
 {
     public static class ChromeDriverFactory
     {
+        /// <summary>
+        /// Creates a web driver.
+        /// </summary>
+        /// <param name="driverPath">Path to the folder containg the web driver.</param>
+        /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
+        /// <returns>An instance of Chrome Driver.</returns>
         public static IWebDriver Create(string driverPath, BrowserStartOptions startOptions)
         {
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
@@ -22,18 +28,17 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
         private static ChromeOptions CreateOptions(BrowserStartOptions startOptions)
         {
+            // Initialize default.
+            startOptions = startOptions ?? new BrowserStartOptions();
+
             var chromeOptions = new ChromeOptions();
-            if (startOptions == null)
-            {
-                return chromeOptions;
-            }
 
             if (startOptions.RunHeadless)
             {
                 chromeOptions.AddArguments("--headless");
             }
 
-            if(startOptions.StartMaximized)
+            if (startOptions.StartMaximized)
             {
                 chromeOptions.AddArgument("--start-maximized");
             }
