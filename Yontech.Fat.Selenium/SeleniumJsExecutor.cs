@@ -1,21 +1,16 @@
 ﻿using Yontech.Fat.Selenium.WebControls;
 using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Yontech.Fat.Selenium
 {
     internal class SeleniumJsExecutor : IJsExecutor
     {
         private readonly IJavaScriptExecutor _javascriptExecutor;
-        private readonly SeleniumWebBrowser _webBrowser;
 
         public SeleniumJsExecutor(SeleniumWebBrowser webBrowser)
         {
-            this._webBrowser = webBrowser;
             this._javascriptExecutor = (IJavaScriptExecutor)webBrowser.WebDriver;
         }
 

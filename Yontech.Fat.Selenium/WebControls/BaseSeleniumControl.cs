@@ -27,6 +27,7 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             EnsureElementExists();
             this.ScrollTo();
+            this.WebBrowser.WaitForIdle();
             this.WebElement.Click();
             this.WebBrowser.WaitForIdle();
         }

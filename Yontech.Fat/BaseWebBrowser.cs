@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
 using Yontech.Fat.WebControls;
@@ -28,7 +24,7 @@ namespace Yontech.Fat
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
 
-        public BaseWebBrowser(BrowserType type)
+        protected BaseWebBrowser(BrowserType type)
         {
             this.Type = type;
             this.Configuration = new WebBrowserConfiguration();
@@ -45,7 +41,7 @@ namespace Yontech.Fat
             {
                 foreach (var condition in Configuration.BusyConditions)
                 {
-                    if (condition.IsBusy())
+                    if (condition.IsBusy(this))
                     {
                         TraceLogger.Write("Browser is busy: {0}", condition.GetType().ToString());
                         return false;

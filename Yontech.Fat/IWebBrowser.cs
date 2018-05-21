@@ -1,4 +1,5 @@
 ﻿using System;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat

@@ -1,7 +1,8 @@
-﻿using OpenQA.Selenium;
+﻿using System;
+using System.Collections.Generic;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using System.Reflection;
-using System;
 using Yontech.Fat.WebControls;
 using Yontech.Fat.Selenium.WebControls;
 
@@ -10,44 +11,31 @@ namespace Yontech.Fat.Selenium
     internal class SeleniumWebBrowser : BaseWebBrowser, IWebBrowser
     {
         public readonly IWebDriver WebDriver;
-        private bool disposedValue;
+        private bool _disposedValue;
+        private readonly Lazy<SeleniumJsExecutor> _jsExecutorLazy;
+        private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
+        private readonly Lazy<IFrameControl> _frameControlLazy;
 
-        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType): base(browserType)
+        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType, IEnumerable<IBusyCondition> busyConditions) : base(browserType)
         {
             this.WebDriver = webDriver;
-        }
+            this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
+            this._seleniumControlFinderLazy = new Lazy<SeleniumControlFinder>(() => new SeleniumControlFinder(this));
+            this._frameControlLazy = new Lazy<IFrameControl>(() => new IFrameControl(this));
 
-        public override IControlFinder ControlFinder
-        {
-            get
+            if (busyConditions != null)
             {
-                return new SeleniumControlFinder(this);
+                this.Configuration.BusyConditions.AddRange(busyConditions);
             }
         }
 
-        public override IJsExecutor JavaScriptExecutor
-        {
-            get
-            {
-                return new SeleniumJsExecutor(this);
-            }
-        }
+        public override IControlFinder ControlFinder => this._seleniumControlFinderLazy.Value;
 
-        public override IIFrameControl IFrameControl
-        {
-            get
-            {
-                return new IFrameControl(this);
-            }
-        }
+        public override IJsExecutor JavaScriptExecutor => this._jsExecutorLazy.Value;
 
-        public override string CurrentUrl
-        {
-            get
-            {
-                return WebDriver.Url;
-            }
-        }
+        public override IIFrameControl IFrameControl => this._frameControlLazy.Value;
+
+        public override string CurrentUrl => WebDriver.Url;
 
         public override void Close()
         {
@@ -61,8 +49,6 @@ namespace Yontech.Fat.Selenium
             WebDriver.Navigate();
             this.WaitForIdle();
         }
-
-
 
         public override ISnapshot TakeSnapshot()
         {
@@ -95,14 +81,14 @@ namespace Yontech.Fat.Selenium
 
         protected void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     WebDriver.Dispose();
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

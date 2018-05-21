@@ -1,19 +1,25 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Remote;
+using Yontech.Fat.Configuration;
+using Yontech.Fat.Selenium.DriverFactories;
 
 namespace Yontech.Fat.Selenium
 {
     public class SeleniumWebBrowserFactory : IWebBrowserFactory
     {
-        public SeleniumWebBrowserFactory()
+        public IWebBrowser Create(BrowserType browserType)
         {
+            return this.Create(browserType, null, null);
         }
 
-        public IWebBrowser Create(BrowserType browserType)
+        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions)
+        {
+            return this.Create(browserType, startOptions, null);
+        }
+
+        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<IBusyCondition> busyConditions)
         {
             IWebDriver webDriver = null;
             string driversPath = Path.Combine(Environment.CurrentDirectory, "Drivers");
@@ -21,30 +27,21 @@ namespace Yontech.Fat.Selenium
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = CreateChromeWebDriver(driversPath);
+                    webDriver = ChromeDriverFactory.Create(driversPath, startOptions);
                     break;
                 case BrowserType.InternetExplorer:
-                    webDriver = new InternetExplorerDriver(driversPath);
+                    webDriver = InternetExplorerDriverFactory.Create(driversPath, startOptions);
                     break;
                 default:
                     throw new NotSupportedException();
             }
 
-            SeleniumWebBrowser browser = new SeleniumWebBrowser(webDriver, browserType);
+            SeleniumWebBrowser browser = new SeleniumWebBrowser(
+                webDriver: webDriver, 
+                browserType: browserType,
+                busyConditions: busyConditions ?? new List<IBusyCondition>());
+
             return browser;
-        }
-
-        private IWebDriver CreateChromeWebDriver(string driversPath)
-        {
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService(driversPath);
-            service.Port = 5555; // Some port value.
-            service.Start();
-
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--start-maximized");
-
-            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
-            return webDriver;
         }
     }
 }

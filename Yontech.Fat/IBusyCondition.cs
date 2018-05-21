@@ -2,6 +2,6 @@
 {
     public interface IBusyCondition
     {
-        bool IsBusy();
+        bool IsBusy(IWebBrowser webBrowser);
     }
 }
