@@ -49,6 +49,7 @@ namespace Yontech.Fat.Selenium.WebControls
         public void ToggleTextShouldBe(string text)
         {
             EnsureElementExists();
+            this.WebBrowser.WaitForIdle();
             var selectedOptionText = _dropdown.SelectedOption.Text;
 
             if (!selectedOptionText.Equals(text))
