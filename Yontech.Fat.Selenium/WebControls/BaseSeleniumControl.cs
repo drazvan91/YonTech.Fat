@@ -16,7 +16,8 @@ namespace Yontech.Fat.Selenium.WebControls
             this.WebElement = webElement;
             this.WebBrowser = webBrowser;
         }
-        public bool IsVisible {
+        public bool IsVisible
+        {
             get
             {
                 return this.WebElement != null && this.WebElement.Displayed;
@@ -26,9 +27,19 @@ namespace Yontech.Fat.Selenium.WebControls
         public void Click()
         {
             EnsureElementExists();
+
             this.ScrollTo();
             this.WebBrowser.WaitForIdle();
-            this.WebElement.Click();
+            try
+            {
+                this.WebElement.Click();
+            }
+            catch (InvalidOperationException ex)
+            {
+                string outerHtml = this.WebElement.GetAttribute("outerHTML");
+                throw new InvalidOperationException($"Target element: {outerHtml}", ex);
+            }
+
             this.WebBrowser.WaitForIdle();
         }
 
@@ -40,7 +51,7 @@ namespace Yontech.Fat.Selenium.WebControls
 
         protected void EnsureElementExists()
         {
-            if(WebElement == null)
+            if (WebElement == null)
             {
                 throw new WebControlNotFoundException("Element not found");
             }
@@ -51,7 +62,7 @@ namespace Yontech.Fat.Selenium.WebControls
             EnsureElementExists();
 
             var remoteWebElem = WebElement as RemoteWebElement;
-            if(remoteWebElem == null || !remoteWebElem.Displayed)
+            if (remoteWebElem == null || !remoteWebElem.Displayed)
             {
                 // todo
                 throw new WebControlNotFoundException("Element not visible");
@@ -63,7 +74,7 @@ namespace Yontech.Fat.Selenium.WebControls
             var remoteWebElem = WebElement as RemoteWebElement;
             if (remoteWebElem != null && remoteWebElem.Displayed)
             {
-                throw new Exception("Element is visible and it shouldn't");  
+                throw new Exception("Element is visible and it shouldn't");
             }
         }
     }
