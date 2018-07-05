@@ -2,8 +2,7 @@
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Support.UI;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
@@ -25,10 +24,24 @@ namespace Yontech.Fat.Selenium.WebControls
 
         public IControlFinder ControlFinder => new SeleniumControlFinder(WebElement, WebBrowser);
 
-        public void Click()
+        public bool WaitForClickable()
         {
-            EnsureElementExists();
-            WebElement.Click();
+            return WaitForClickable(Constants.CLICK_WAITING_TIMEOUT);
+        }
+
+        public bool WaitForClickable(TimeSpan timeout)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(WebBrowser.WebDriver, timeout);
+                wait.Until(ExpectedConditions.ElementToBeClickable(this.WebElement));
+
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
         public IEnumerable<IGenericControl> Find(string cssSelector)
