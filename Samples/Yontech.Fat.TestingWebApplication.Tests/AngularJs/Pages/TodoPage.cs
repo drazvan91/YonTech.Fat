@@ -45,11 +45,19 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs.Pages
             }
         }
 
-        public IButtonControl AddFromBackendButton
+        public IButtonControl AddFromBackendButtonUsingHttp
         {
             get
             {
-                return ControlFinder.Button("#addFromBackend");
+                return ControlFinder.Button("#addFromBackendUsingHttp");
+            }
+        }
+
+        public IButtonControl AddFromBackendButtonUsingFetch
+        {
+            get
+            {
+                return ControlFinder.Button("#addFromBackendUsingFetch");
             }
         }
 
@@ -74,6 +82,14 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs.Pages
             get
             {
                 return ControlFinder.ToDoList("ul");
+            }
+        }
+
+        public ITextControl ClickArea
+        {
+            get
+            {
+                return ControlFinder.Text(".click-area");
             }
         }
     }

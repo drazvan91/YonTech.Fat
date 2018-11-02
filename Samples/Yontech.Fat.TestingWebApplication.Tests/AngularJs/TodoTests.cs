@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 using Yontech.Fat.BusyConditions;
@@ -14,11 +15,12 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs
     {
         private readonly TodoPage todoPage;
 
-        public TodoTests(BaseTestContext context):base(context)
+        public TodoTests(BaseTestContext context) : base(context)
         {
             base.Browser.Configuration.BusyConditions.Clear();
             base.Browser.Configuration.BusyConditions.Add(new AngularPendingRequestsBusyCondition("#todoAngularApp"));
             base.Browser.Configuration.BusyConditions.Add(new ElementIsVisibileBusyCondition(".panel-warning"));
+            base.Browser.Configuration.BusyConditions.Add(new FetchPendingRequestsBusyCondition());
 
             base.Browser.Navigate(PageUrls.ToDoPage);
 
@@ -61,7 +63,8 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs
             todoPage.RemainingDescriptionText.ShouldContainText("1 of 2 remaining");
 
             for (int i = 1; i <= 30; i++)
-            {;
+            {
+                ;
                 var itemName = $"buy tomatos {i}";
                 todoPage.NewTodoTextBox.SendKeys(itemName);
                 todoPage.AddTodoButton.Click();
@@ -71,21 +74,33 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs
         }
 
         [Fact]
-        public void Todo_AddFromBackend()
+        public void Todo_AddFromBackendUsingHttp()
         {
             todoPage.RemainingDescriptionText.ShouldContainText("1 of 2 remaining");
 
-            todoPage.AddFromBackendButton.Click();
+            todoPage.AddFromBackendButtonUsingHttp.Click();
 
             todoPage.RemainingDescriptionText.ShouldContainText("2 of 3 remaining");
         }
 
         [Fact]
-        public void Todo_AddFiveFromBackend()
+        public void Todo_AddFiveFromBackendUsingHttp()
         {
             todoPage.RemainingDescriptionText.ShouldContainText("1 of 2 remaining");
 
-            todoPage.AddFromBackendButton.RageClick(5);
+            todoPage.AddFromBackendButtonUsingHttp.RageClick(5);
+
+            todoPage.RemainingDescriptionText.ShouldContainText("6 of 7 remaining");
+        }
+
+        [Fact]
+        public void Todo_AddFiveFromBackendUsingFetch()
+        {
+            var elementVisibleCondition = this.Browser.Configuration.BusyConditions.FirstOrDefault(cond => cond is ElementIsVisibileBusyCondition);
+            this.Browser.Configuration.BusyConditions.Remove(elementVisibleCondition);
+            todoPage.RemainingDescriptionText.ShouldContainText("1 of 2 remaining");
+
+            todoPage.AddFromBackendButtonUsingFetch.RageClick(5);
 
             todoPage.RemainingDescriptionText.ShouldContainText("6 of 7 remaining");
         }
@@ -117,8 +132,19 @@ namespace Yontech.Fat.TestingWebApplication.Tests.AngularJs
 
             todoPage.ToDoList.ItemAtPosition(1).ShouldBeDone();
             todoPage.ToDoList.ItemAtPosition(1).NameShouldContain("learn AngularJS");
-
             todoPage.ToDoList.ItemAtPosition(2).ShouldNotBeDone();
+        }
+
+        [Fact]
+        public void Todo_CheckClickOnCoordinates()
+        {
+            todoPage.ClickArea.Click(10, 20);
+            todoPage.ClickArea.ShouldContainText("x=10");
+            todoPage.ClickArea.ShouldContainText("y=19");
+
+            todoPage.ClickArea.Click(34, 78);
+            todoPage.ClickArea.ShouldContainText("x=34");
+            todoPage.ClickArea.ShouldContainText("y=77");
         }
     }
 }

@@ -1,4 +1,9 @@
 ﻿.done-true {
-    text-decoration: line-through;
-    color: grey;
+  text-decoration: line-through;
+  color: grey;
+}
+
+.click-area {
+  height: 100px;
+  border: 1px solid black;
 }
