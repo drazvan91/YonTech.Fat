@@ -54,7 +54,7 @@ namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
                 var busy = (bool)executor.ExecuteScript(script);
                 return busy;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return true;
             }

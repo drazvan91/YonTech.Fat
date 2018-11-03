@@ -50,6 +50,46 @@ namespace Yontech.Fat.Selenium
             this.WaitForIdle();
         }
 
+
+        public override bool AcceptAlert()
+        {
+            try
+            {
+                WebDriver.SwitchTo().Alert().Accept();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                this.WaitForIdle();
+
+            }
+        }
+        public override bool DismissAlert()
+        {
+            try
+            {
+                WebDriver.SwitchTo().Alert().Dismiss();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                this.WaitForIdle();
+            }
+        }
+
+        public override void Refresh()
+        {
+            WebDriver.Navigate().Refresh();
+        }
+
         public override ISnapshot TakeSnapshot()
         {
             ITakesScreenshot takesScreenshot = WebDriver as ITakesScreenshot;

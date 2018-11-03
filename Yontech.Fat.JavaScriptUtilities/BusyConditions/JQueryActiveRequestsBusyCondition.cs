@@ -13,7 +13,7 @@ namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
                 var result = webBrowser.JavaScriptExecutor.ExecuteScript("return $.active > 0");
                 return (bool)result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return true;
             }
