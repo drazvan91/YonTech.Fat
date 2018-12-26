@@ -22,6 +22,9 @@ namespace Yontech.Fat
         void WaitForIdle();
         void WaitForIdle(int timout);
         void WaitForCondition(IBusyCondition condition);
+        void WaitForElementToAppear(string cssSelector);
+        void WaitForElementToAppear(string cssSelector, int timeout);
+
 
         ISnapshot TakeSnapshot();
     }

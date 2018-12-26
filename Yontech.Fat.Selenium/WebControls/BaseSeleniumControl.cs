@@ -25,6 +25,14 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
+        public bool Exists
+        {
+            get
+            {
+                return this.WebElement != null;
+            }
+        }
+
         public void Click()
         {
             EnsureElementExists();

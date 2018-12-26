@@ -1,4 +1,5 @@
-﻿using Yontech.Fat.Configuration;
+﻿using System;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
 using Yontech.Fat.WebControls;
@@ -70,5 +71,18 @@ namespace Yontech.Fat
             }, this.Configuration.DefaultTimeout);
         }
 
+        public void WaitForElementToAppear(string cssSelector, int timeout)
+        {
+            Waiter.WaitForConditionToBeTrue(() =>
+            {
+                var element = this.ControlFinder.Generic(cssSelector);
+                return element.IsVisible;
+            }, timeout);
+        }
+
+        public void WaitForElementToAppear(string cssSelector)
+        {
+            this.WaitForElementToAppear(cssSelector, this.Configuration.DefaultTimeout);
+        }
     }
 }
