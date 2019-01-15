@@ -50,7 +50,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
             if (startOptions.ModifyScreenResolution != null)
             {
-              chromeOptions.AddArgument($"--window - size = {startOptions.ModifyScreenResolution.Height}, {startOptions.ModifyScreenResolution.Width}");
+              chromeOptions.AddArgument($"--window-size={startOptions.ModifyScreenResolution.Height},{startOptions.ModifyScreenResolution.Width}");
             }
 
             return chromeOptions;
