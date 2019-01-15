@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
@@ -46,6 +46,11 @@ namespace Yontech.Fat.Selenium.DriverFactories
             if (startOptions.DisablePopupBlocking)
             {
                 chromeOptions.AddArgument("--disable-popup-blocking");
+            }
+
+            if (startOptions.ModifyScreenResolution != null)
+            {
+              chromeOptions.AddArgument($"--window - size = {startOptions.ModifyScreenResolution.Height}, {startOptions.ModifyScreenResolution.Width}");
             }
 
             return chromeOptions;
