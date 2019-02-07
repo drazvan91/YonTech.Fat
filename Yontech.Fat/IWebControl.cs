@@ -11,5 +11,6 @@ namespace Yontech.Fat
         void ShouldBeVisible();
         void ShouldNotBeVisible();
         bool IsVisible { get; }
+        bool Exists { get; }
     }
 }

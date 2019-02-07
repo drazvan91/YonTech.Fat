@@ -5,10 +5,10 @@ using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Plugins.Bootstrap
 {
-    public class BootstrapDropdownControl :  IDropdownControl
+    public class BootstrapDropdownControl : IDropdownControl
     {
         private readonly IGenericControl _container;
-       
+
 
         public BootstrapDropdownControl(IGenericControl containerControl)
         {
@@ -49,6 +49,14 @@ namespace Yontech.Fat.Plugins.Bootstrap
             }
         }
 
+        public bool Exists
+        {
+            get
+            {
+                return _container != null;
+            }
+        }
+
         public void ToggleTextShouldBe(string text)
         {
             if (this.ToggleText != text)
@@ -72,7 +80,7 @@ namespace Yontech.Fat.Plugins.Bootstrap
 
         public IEnumerable<string> GetItems()
         {
-            foreach(var element in GetItemGenericControls())
+            foreach (var element in GetItemGenericControls())
             {
                 yield return element.Text;
             }
@@ -90,9 +98,9 @@ namespace Yontech.Fat.Plugins.Bootstrap
                 Open();
             }
 
-            foreach(var element in GetItemGenericControls())
+            foreach (var element in GetItemGenericControls())
             {
-                if(element.Text == itemText)
+                if (element.Text == itemText)
                 {
                     element.ScrollTo();
                     element.Click();
@@ -142,6 +150,6 @@ namespace Yontech.Fat.Plugins.Bootstrap
             throw new NotImplementedException();
         }
 
-        
+
     }
 }

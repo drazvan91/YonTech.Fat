@@ -4,7 +4,7 @@ using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
-    public interface IWebBrowser:IDisposable
+    public interface IWebBrowser : IDisposable
     {
         BrowserType Type { get; }
 
@@ -15,9 +15,16 @@ namespace Yontech.Fat
         WebBrowserConfiguration Configuration { get; }
 
         void Navigate(string url);
+        void Refresh();
+        bool AcceptAlert();
+        bool DismissAlert();
         void Close();
         void WaitForIdle();
         void WaitForIdle(int timout);
+        void WaitForCondition(IBusyCondition condition);
+        void WaitForElementToAppear(string cssSelector);
+        void WaitForElementToAppear(string cssSelector, int timeout);
+
 
         ISnapshot TakeSnapshot();
     }

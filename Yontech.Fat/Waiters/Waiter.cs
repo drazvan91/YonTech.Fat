@@ -19,8 +19,6 @@ namespace Yontech.Fat.Waiters
                 Wait(50);
             }
 
-            
-            
             // todo: specific exception please
             throw new Exception("Timeout");
         }

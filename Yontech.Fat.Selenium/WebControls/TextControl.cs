@@ -39,12 +39,12 @@ namespace Yontech.Fat.Selenium.WebControls
             WebElement.SendKeys(keys);
         }
 
-        public void ShouldContainText(string text  )
+        public void ShouldContainText(string text)
         {
             EnsureElementExists();
-            if (this.Text.IndexOf(text,StringComparison.CurrentCultureIgnoreCase) < 0)
+            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) < 0)
             {
-                throw new Exception($"Element does not contain this text: {text}");
+                throw new Exception($"Element does not contain this text: {text}. It is equal to: {this.Text}");
             }
         }
 

@@ -4,7 +4,7 @@ using System;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
-    internal class TextBoxControl:BaseSeleniumControl, ITextBoxControl
+    internal class TextBoxControl : BaseSeleniumControl, ITextBoxControl
     {
         public TextBoxControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
             : base(webElement, webBrowser)
@@ -26,7 +26,7 @@ namespace Yontech.Fat.Selenium.WebControls
             WebElement.Clear();
         }
 
-        public void Click()
+        public new void Click()
         {
             WebElement.Click();
         }
@@ -35,7 +35,7 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             EnsureElementExists();
             WebElement.Clear();
-            WebElement.SendKeys(keys);            
+            WebElement.SendKeys(keys);
         }
     }
 }

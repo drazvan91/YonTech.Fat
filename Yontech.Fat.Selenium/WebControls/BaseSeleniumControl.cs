@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using System;
 using Yontech.Fat.Exceptions;
@@ -24,6 +25,14 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
+        public bool Exists
+        {
+            get
+            {
+                return this.WebElement != null;
+            }
+        }
+
         public void Click()
         {
             EnsureElementExists();
@@ -33,6 +42,32 @@ namespace Yontech.Fat.Selenium.WebControls
             try
             {
                 this.WebElement.Click();
+            }
+            catch (InvalidOperationException ex)
+            {
+                string outerHtml = this.WebElement.GetAttribute("outerHTML");
+                throw new InvalidOperationException($"Target element: {outerHtml}", ex);
+            }
+
+            this.WebBrowser.WaitForIdle();
+        }
+
+        public void Click(int relativeX, int relativeY)
+        {
+            EnsureElementExists();
+
+            this.ScrollTo();
+            this.WebBrowser.WaitForIdle();
+            try
+            {
+                Actions builder = new Actions(this.WebBrowser.WebDriver);
+                builder
+                    .MoveToElement(this.WebElement, relativeX, relativeY)
+                    .Click()
+                    .Build()
+                    .Perform();
+
+                // this.WebElement.Click();
             }
             catch (InvalidOperationException ex)
             {

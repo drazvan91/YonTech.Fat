@@ -43,6 +43,11 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 chromeOptions.AddArgument("--start-maximized");
             }
 
+            if (startOptions.DisablePopupBlocking)
+            {
+                chromeOptions.AddArgument("--disable-popup-blocking");
+            }
+
             return chromeOptions;
         }
     }

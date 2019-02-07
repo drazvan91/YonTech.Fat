@@ -20,7 +20,7 @@ namespace Yontech.Fat.BusyConditions
                 var element = webBrowser.ControlFinder.Generic(this._elementCssSelector);
                 return element.IsVisible;
             }
-            catch(Exception ex) // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
+            catch (Exception) // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
             {
                 return true;
             }

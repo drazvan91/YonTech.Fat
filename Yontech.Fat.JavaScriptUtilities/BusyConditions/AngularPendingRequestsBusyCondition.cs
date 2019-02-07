@@ -28,12 +28,12 @@ namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
                     bool busy = (bool)executeResult;
                     return busy;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
