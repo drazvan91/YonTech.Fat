@@ -24,6 +24,16 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             EnsureElementExists();
             WebElement.Clear();
+
+            // this is a hack for some cases where the element has autocomplete
+            // todo: fix this for Material UI Text Fields
+            int tries = 0;
+            while (tries < 100)
+            {
+                WebElement.SendKeys(Keys.Backspace);
+                WebElement.SendKeys(Keys.Delete);
+                tries++;
+            }
         }
 
         public new void Click()
