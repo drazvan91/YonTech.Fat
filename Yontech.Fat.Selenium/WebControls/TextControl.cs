@@ -1,4 +1,4 @@
-﻿using Yontech.Fat.WebControls;
+using Yontech.Fat.WebControls;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -7,54 +7,60 @@ using System.Threading.Tasks;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
-    internal class TextControl : BaseSeleniumControl, ITextControl
+  internal class TextControl : BaseSeleniumControl, ITextControl
+  {
+
+    public TextControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
+        : base(webElement, webBrowser)
     {
-
-        public TextControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-            : base(webElement, webBrowser)
-        {
-        }
-        public string Text
-        {
-            get
-            {
-                EnsureElementExists();
-                return WebElement.Text;
-            }
-        }
-
-        public void InnerTextShouldBe(string text)
-        {
-            EnsureElementExists();
-
-            if (this.Text != text)
-            {
-                throw new Exception($"Control contains '{this.Text}' instead of '{text}'");
-            }
-        }
-
-        public void SendKeys(string keys)
-        {
-            EnsureElementExists();
-            WebElement.SendKeys(keys);
-        }
-
-        public void ShouldContainText(string text)
-        {
-            EnsureElementExists();
-            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) < 0)
-            {
-                throw new Exception($"Element does not contain this text: {text}. It is equal to: {this.Text}");
-            }
-        }
-
-        public void ShouldNotContainText(string text)
-        {
-            EnsureElementExists();
-            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) > 0)
-            {
-                throw new Exception($"Element contains this text: {text} and it shoudn't");
-            }
-        }
     }
+    public string Text
+    {
+      get
+      {
+        EnsureElementExists();
+        return WebElement.Text;
+      }
+    }
+
+    public void ClearText()
+    {
+      EnsureElementExists();
+      WebElement.Clear();
+    }
+
+    public void InnerTextShouldBe(string text)
+    {
+      EnsureElementExists();
+
+      if (this.Text != text)
+      {
+        throw new Exception($"Control contains '{this.Text}' instead of '{text}'");
+      }
+    }
+
+    public void SendKeys(string keys)
+    {
+      EnsureElementExists();
+      WebElement.SendKeys(keys);
+    }
+
+    public void ShouldContainText(string text)
+    {
+      EnsureElementExists();
+      if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) < 0)
+      {
+        throw new Exception($"Element does not contain this text: {text}. It is equal to: {this.Text}");
+      }
+    }
+
+    public void ShouldNotContainText(string text)
+    {
+      EnsureElementExists();
+      if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) > 0)
+      {
+        throw new Exception($"Element contains this text: {text} and it shoudn't");
+      }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Yontech.Fat.Configuration
 {
@@ -9,7 +9,7 @@ namespace Yontech.Fat.Configuration
 
         public WebBrowserConfiguration()
         {
-            DefaultTimeout = 20000;
+            DefaultTimeout = 500000;
             BusyConditions = new List<IBusyCondition>();
         }
     }
