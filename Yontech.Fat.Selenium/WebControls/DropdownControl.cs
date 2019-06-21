@@ -33,7 +33,7 @@ namespace Yontech.Fat.Selenium.WebControls
 
         public void Open()
         {
-            throw new System.NotImplementedException();
+            base.Click();
         }
 
         public void SelectItem(string itemText)
