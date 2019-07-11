@@ -23,17 +23,8 @@ namespace Yontech.Fat.Selenium.WebControls
         public void ClearText()
         {
             EnsureElementExists();
-            WebElement.Clear();
-
-            // this is a hack for some cases where the element has autocomplete
-            // todo: fix this for Material UI Text Fields
-            int tries = 0;
-            while (tries < 100)
-            {
-                WebElement.SendKeys(Keys.Backspace);
-                WebElement.SendKeys(Keys.Delete);
-                tries++;
-            }
+            WebElement.SendKeys(Keys.Control + "a");
+            WebElement.SendKeys(Keys.Backspace);
         }
 
         public new void Click()
@@ -44,7 +35,8 @@ namespace Yontech.Fat.Selenium.WebControls
         public void SendKeys(string keys)
         {
             EnsureElementExists();
-            WebElement.Clear();
+            WebElement.SendKeys(Keys.Control + "a");
+            WebElement.SendKeys(Keys.Backspace);
             WebElement.SendKeys(keys);
         }
     }
