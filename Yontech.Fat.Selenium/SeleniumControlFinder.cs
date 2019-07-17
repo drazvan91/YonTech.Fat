@@ -75,6 +75,27 @@ namespace Yontech.Fat.Selenium
             return new GenericControl(element, _webBrowser);
         }
 
-        
+        public IEnumerable<ITextControl> TextList(string cssSelector)
+        {
+            var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+            var textControlElements = new List<ITextControl>();
+            foreach (var el in elements)
+            {
+                textControlElements.Add(new TextControl(el, _webBrowser));
+            }
+            return textControlElements;
+        }
+
+        public IEnumerable<ITextBoxControl> TextBoxList(string cssSelector)
+        {
+            var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+            var textBoxControlElements = new List<ITextBoxControl>();
+            foreach (var el in elements)
+            {
+                textBoxControlElements.Add(new TextBoxControl(el, _webBrowser));
+            }
+
+            return textBoxControlElements;
+        }
     }
 }

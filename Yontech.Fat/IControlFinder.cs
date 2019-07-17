@@ -1,4 +1,5 @@
-﻿using Yontech.Fat.WebControls;
+﻿using System.Collections.Generic;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
@@ -11,5 +12,7 @@ namespace Yontech.Fat
         ICheckboxControl Checkbox(string cssSelector);
         IGenericControl Generic(string cssSelector);
         IDropdownControl Dropdown(string cssSelector);
+        IEnumerable<ITextControl> TextList(string cssSelector);
+        IEnumerable<ITextBoxControl> TextBoxList(string cssSelector);
     }
 }
