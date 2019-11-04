@@ -112,5 +112,14 @@ namespace Yontech.Fat.Selenium.WebControls
                 throw new Exception("Element is visible and it shouldn't");
             }
         }
+
+        public bool IsDisabled
+        {
+            get
+            {
+                this.ShouldBeVisible();
+                return !WebElement.Enabled;
+            }
+        }
     }
 }
