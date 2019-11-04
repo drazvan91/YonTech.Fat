@@ -12,7 +12,8 @@ namespace Yontech.Fat
         ICheckboxControl Checkbox(string cssSelector);
         IGenericControl Generic(string cssSelector);
         IDropdownControl Dropdown(string cssSelector);
-        IEnumerable<ITextControl> TextList(string cssSelector);
-        IEnumerable<ITextBoxControl> TextBoxList(string cssSelector);
+        IList<ITextControl> TextList(string cssSelector);
+        IList<ITextBoxControl> TextBoxList(string cssSelector);
+        IList<IButtonControl> ButtonList(string cssSelector);
     }
 }

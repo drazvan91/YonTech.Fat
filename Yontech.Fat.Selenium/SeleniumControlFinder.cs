@@ -75,7 +75,7 @@ namespace Yontech.Fat.Selenium
             return new GenericControl(element, _webBrowser);
         }
 
-        public IEnumerable<ITextControl> TextList(string cssSelector)
+        public IList<ITextControl> TextList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
             var textControlElements = new List<ITextControl>();
@@ -86,7 +86,7 @@ namespace Yontech.Fat.Selenium
             return textControlElements;
         }
 
-        public IEnumerable<ITextBoxControl> TextBoxList(string cssSelector)
+        public IList<ITextBoxControl> TextBoxList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
             var textBoxControlElements = new List<ITextBoxControl>();
@@ -96,6 +96,18 @@ namespace Yontech.Fat.Selenium
             }
 
             return textBoxControlElements;
+        }
+
+        public IList<IButtonControl> ButtonList(string cssSelector)
+        {
+            var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+            var buttonControlElements = new List<IButtonControl>();
+            foreach (var el in elements)
+            {
+                buttonControlElements.Add(new ButtonControl(el, _webBrowser));
+            }
+
+            return buttonControlElements;
         }
     }
 }
