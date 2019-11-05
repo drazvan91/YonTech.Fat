@@ -20,6 +20,15 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
+        public string Value
+        {
+            get
+            {
+                EnsureElementExists();
+                return WebElement.GetAttribute("value");
+            }
+        }
+
         public void ClearText()
         {
             EnsureElementExists();
