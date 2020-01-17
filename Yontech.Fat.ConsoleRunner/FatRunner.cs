@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Yontech.Fat.BusyConditions;
 
 namespace Yontech.Fat.ConsoleRunner
 {
 
-  public enum BrowserType
-  {
-    Chrome,
-    IE11
-  }
   public class FatRunOptions
   {
     public List<Assembly> Assemblies { get; set; }
     public BrowserType Browser { get; set; }
     public bool ScreenShotOnFailure { get; set; }
     public string ReportFileLocation { get; set; }
+    public int WaitAfterEachTestCase { get; set; }
   }
 
   public class FatRunner
@@ -31,28 +29,41 @@ namespace Yontech.Fat.ConsoleRunner
 
       var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
       this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome);
+      this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
 
-      foreach (var assembly in options.Assemblies)
+      try
       {
-        var results = this.ExecuteAssembly(assembly);
-        Console.WriteLine("Execution summary:");
-        foreach (var result in results)
+        foreach (var assembly in options.Assemblies)
         {
-          if (result.Success)
+          var results = this.ExecuteAssembly(options, assembly);
+          Console.WriteLine("Execution summary:");
+          foreach (var result in results)
           {
-            Console.WriteLine("Success in {1}ms: {0}", result.ShortName, result.TimeEllapsed, result.Success);
-          }
-          else
-          {
-            Console.WriteLine("ERROR in {1}ms: {0}", result.ShortName, result.TimeEllapsed, result.Success);
+            if (result.Success)
+            {
+              Console.WriteLine("Success in {1}ms: {0}", result.ShortName, result.TimeEllapsed, result.Success);
+            }
+            else
+            {
+              Console.WriteLine("ERROR in {1}ms: {0}", result.ShortName, result.TimeEllapsed, result.Success);
+            }
           }
         }
       }
-
-      this._webBrowser.Close();
+      catch (Exception ex)
+      {
+        Console.WriteLine("ERRRORRRRRRR");
+        Console.WriteLine(ex.InnerException.StackTrace);
+      }
+      finally
+      {
+        System.Console.WriteLine("cevaass");
+        this._webBrowser.Close();
+        this._webBrowser = null;
+      }
     }
 
-    private IEnumerable<TestCaseRunSummary> ExecuteAssembly(Assembly assembly)
+    private IEnumerable<TestCaseRunSummary> ExecuteAssembly(FatRunOptions options, Assembly assembly)
     {
       var serviceCollection = new ServiceCollection();
 
@@ -69,19 +80,24 @@ namespace Yontech.Fat.ConsoleRunner
       {
         serviceCollection.AddSingleton(fat);
       }
+      var fatPageSections = _discoverer.GetFatPageSections(assembly);
+      foreach (var fat in fatPageSections)
+      {
+        serviceCollection.AddSingleton(fat);
+      }
 
       var serviceProvider = serviceCollection.BuildServiceProvider();
 
       var results = new List<TestCaseRunSummary>();
       foreach (var type in types)
       {
-        results.AddRange(this.ExecuteTestClass(type, serviceProvider));
+        results.AddRange(this.ExecuteTestClass(options, type, serviceProvider));
       }
 
       return results;
     }
 
-    private IEnumerable<TestCaseRunSummary> ExecuteTestClass(FatTestClass testClass, ServiceProvider serviceProvider)
+    private IEnumerable<TestCaseRunSummary> ExecuteTestClass(FatRunOptions options, FatTestClass testClass, ServiceProvider serviceProvider)
     {
       var testClassInstance = GetPropertyInjectedService(testClass.Class, serviceProvider) as FatTest;
       testClassInstance.Browser = this._webBrowser;
@@ -89,7 +105,7 @@ namespace Yontech.Fat.ConsoleRunner
       foreach (var testCase in testClass.TestCases)
       {
         yield return ExecuteTestCase(testClassInstance, testClass, testCase, serviceProvider);
-
+        Thread.Sleep(options.WaitAfterEachTestCase);
       }
     }
 
@@ -125,7 +141,7 @@ namespace Yontech.Fat.ConsoleRunner
       var properties = fatPageType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
       var fatPageProperties = properties.Where(prop =>
       {
-        return prop.PropertyType.IsSubclassOf(typeof(FatPage));
+        return prop.PropertyType.IsSubclassOf(typeof(FatPage)) || prop.PropertyType.IsSubclassOf(typeof(FatPageSection));
       });
 
       foreach (var prop in fatPageProperties)
@@ -148,6 +164,18 @@ namespace Yontech.Fat.ConsoleRunner
       }
 
       injectionContext.Remove(fatPageType.FullName);
+
+      var sectionPage = fatPageInstance as FatPageSection;
+      if (sectionPage != null)
+      {
+        sectionPage.ControlFinder = _webBrowser.ControlFinder;
+      }
+
+      var page = fatPageInstance as FatPage;
+      if (page != null)
+      {
+        page.ControlFinder = _webBrowser.ControlFinder;
+      }
 
       return fatPageInstance;
     }

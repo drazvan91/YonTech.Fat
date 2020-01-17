@@ -26,7 +26,6 @@ namespace Yontech.Fat.ConsoleRunner
       var allTestClasses = allTypes.Where(type =>
       {
         return type.IsSubclassOf(typeof(FatTest));
-        // return true;
       });
 
       foreach (var type in allTestClasses)
@@ -52,6 +51,16 @@ namespace Yontech.Fat.ConsoleRunner
       var fatPages = allTypes.Where(type =>
       {
         return type.IsSubclassOf(typeof(FatPage));
+      });
+      return fatPages;
+    }
+
+    public IEnumerable<Type> GetFatPageSections(Assembly assembly)
+    {
+      var allTypes = assembly.GetTypes();
+      var fatPages = allTypes.Where(type =>
+      {
+        return type.IsSubclassOf(typeof(FatPageSection));
       });
       return fatPages;
     }

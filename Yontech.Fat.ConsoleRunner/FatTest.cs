@@ -10,8 +10,8 @@ namespace Yontech.Fat.ConsoleRunner
 
   public class FatTest
   {
-    public FatContext Context { get; internal set; }
-    public IWebBrowser Browser { get; internal set; }
+    internal protected FatContext Context { get; internal set; }
+    internal protected IWebBrowser Browser { get; internal set; }
 
     protected void Log(string message)
     {
