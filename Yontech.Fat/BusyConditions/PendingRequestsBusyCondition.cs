@@ -39,13 +39,11 @@ namespace Yontech.Fat.BusyConditions
       try
       {
         var pendingRequests = (Int64)webBrowser.JavaScriptExecutor.ExecuteScript(this.script);
-        Console.WriteLine("is busy:" + pendingRequests);
         return pendingRequests > 0;
       }
       catch (Exception ex)
       {
         Console.WriteLine(ex.Message);
-
         return false;
       }
     }

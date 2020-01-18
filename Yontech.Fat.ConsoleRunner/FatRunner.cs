@@ -29,6 +29,7 @@ namespace Yontech.Fat.ConsoleRunner
 
       var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
       this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome);
+      this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
       this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
 
       try
@@ -53,7 +54,7 @@ namespace Yontech.Fat.ConsoleRunner
       catch (Exception ex)
       {
         Console.WriteLine("ERRRORRRRRRR");
-        Console.WriteLine(ex.InnerException.StackTrace);
+        Console.WriteLine((ex.InnerException ?? ex).StackTrace);
       }
       finally
       {
@@ -76,14 +77,19 @@ namespace Yontech.Fat.ConsoleRunner
       }
 
       var fatPages = _discoverer.GetFatPages(assembly);
-      foreach (var fat in fatPages)
+      foreach (var page in fatPages)
       {
-        serviceCollection.AddSingleton(fat);
+        serviceCollection.AddSingleton(page);
       }
       var fatPageSections = _discoverer.GetFatPageSections(assembly);
-      foreach (var fat in fatPageSections)
+      foreach (var pageSections in fatPageSections)
       {
-        serviceCollection.AddSingleton(fat);
+        serviceCollection.AddSingleton(pageSections);
+      }
+      var fatFlows = _discoverer.GetFatFlows(assembly);
+      foreach (var flow in fatFlows)
+      {
+        serviceCollection.AddSingleton(flow);
       }
 
       var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -141,7 +147,7 @@ namespace Yontech.Fat.ConsoleRunner
       var properties = fatPageType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
       var fatPageProperties = properties.Where(prop =>
       {
-        return prop.PropertyType.IsSubclassOf(typeof(FatPage)) || prop.PropertyType.IsSubclassOf(typeof(FatPageSection));
+        return prop.PropertyType.IsSubclassOf(typeof(FatPage)) || prop.PropertyType.IsSubclassOf(typeof(FatPageSection)) || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
       });
 
       foreach (var prop in fatPageProperties)

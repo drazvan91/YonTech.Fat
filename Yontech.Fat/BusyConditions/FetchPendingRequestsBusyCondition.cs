@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
+namespace Yontech.Fat.BusyConditions
 {
-    public class FetchPendingRequestsBusyCondition : IBusyCondition
+  // todo: integrate this to pending requests busy condition
+  public class FetchPendingRequestsBusyCondition : IBusyCondition
+  {
+    private string CreateScript()
     {
-        private string CreateScript()
-        {
-            return @"
+      return @"
                 (function(w) {
                     var fat = w.fatFramework = w.fatFramework || {};
                     fat.busyConditions = fatFramework.busyConditions || {};
@@ -43,21 +41,21 @@ namespace Yontech.Fat.JavaScriptUtilities.BusyConditions
                 
                 return window.fatFramework.busyConditions.fetchPendingRequests.isBusy()
             ";
-        }
-
-        public bool IsBusy(IWebBrowser webBrowser)
-        {
-            var script = this.CreateScript();
-            try
-            {
-                var executor = webBrowser.JavaScriptExecutor;
-                var busy = (bool)executor.ExecuteScript(script);
-                return busy;
-            }
-            catch (Exception)
-            {
-                return true;
-            }
-        }
     }
+
+    public bool IsBusy(IWebBrowser webBrowser)
+    {
+      var script = this.CreateScript();
+      try
+      {
+        var executor = webBrowser.JavaScriptExecutor;
+        var busy = (bool)executor.ExecuteScript(script);
+        return busy;
+      }
+      catch (Exception)
+      {
+        return true;
+      }
+    }
+  }
 }

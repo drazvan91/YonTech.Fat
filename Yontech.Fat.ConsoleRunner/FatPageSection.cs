@@ -1,7 +1,7 @@
 
 namespace Yontech.Fat.ConsoleRunner
 {
-  public class FatPageSection
+  public abstract class FatPageSection
   {
     internal protected IControlFinder ControlFinder { get; internal set; }
   }

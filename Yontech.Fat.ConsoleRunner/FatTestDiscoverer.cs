@@ -65,6 +65,16 @@ namespace Yontech.Fat.ConsoleRunner
       return fatPages;
     }
 
+    public IEnumerable<Type> GetFatFlows(Assembly assembly)
+    {
+      var allTypes = assembly.GetTypes();
+      var fatPages = allTypes.Where(type =>
+      {
+        return type.IsSubclassOf(typeof(FatFlow));
+      });
+      return fatPages;
+    }
+
     public IEnumerable<FatTestCase> GetTestCasesForClass(Type testClass)
     {
       var allMethods = testClass.GetMethods();
