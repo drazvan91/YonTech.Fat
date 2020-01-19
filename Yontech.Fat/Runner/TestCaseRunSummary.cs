@@ -1,6 +1,6 @@
 using System;
 
-namespace Yontech.Fat.ConsoleRunner
+namespace Yontech.Fat.Runner
 {
   public class TestCaseRunSummary
   {

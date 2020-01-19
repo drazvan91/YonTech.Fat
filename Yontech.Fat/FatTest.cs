@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Yontech.Fat.ConsoleRunner
+namespace Yontech.Fat
 {
   public class FatContext
   {
@@ -11,7 +11,7 @@ namespace Yontech.Fat.ConsoleRunner
   public class FatTest
   {
     internal protected FatContext Context { get; internal set; }
-    internal protected IWebBrowser Browser { get; internal set; }
+    internal protected IWebBrowser WebBrowser { get; internal set; }
 
     public virtual void BeforeEachTestCase() { }
     public virtual void BeforeAllTestCases() { }

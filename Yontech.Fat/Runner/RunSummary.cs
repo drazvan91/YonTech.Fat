@@ -1,4 +1,4 @@
-namespace Yontech.Fat.ConsoleRunner
+namespace Yontech.Fat.Runner
 {
   public class RunSummary
   {

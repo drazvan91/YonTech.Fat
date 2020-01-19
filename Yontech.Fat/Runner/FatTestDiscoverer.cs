@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Yontech.Fat.ConsoleRunner
+namespace Yontech.Fat.Runner
 {
-  public class FatTestCase
+  public class DiscoveredTestCase
   {
     public Type Class { get; set; }
     public MethodInfo Method { get; set; }
@@ -14,7 +14,7 @@ namespace Yontech.Fat.ConsoleRunner
   public class FatTestClass
   {
     public Type Class { get; set; }
-    public List<FatTestCase> TestCases { get; set; }
+    public List<DiscoveredTestCase> TestCases { get; set; }
   }
 
   public class FatTestDiscoverer
@@ -67,14 +67,14 @@ namespace Yontech.Fat.ConsoleRunner
       return fatPages;
     }
 
-    public IEnumerable<FatTestCase> GetTestCasesForClass(Type testClass)
+    public IEnumerable<DiscoveredTestCase> GetTestCasesForClass(Type testClass)
     {
       var allMethods = testClass.GetMethods();
       var testCases = allMethods.Where(method => method.Name.StartsWith("Test"));
 
       foreach (var method in testCases)
       {
-        yield return new FatTestCase()
+        yield return new DiscoveredTestCase()
         {
           Class = testClass,
           Method = method

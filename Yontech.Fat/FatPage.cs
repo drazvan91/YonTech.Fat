@@ -1,5 +1,5 @@
 
-namespace Yontech.Fat.ConsoleRunner
+namespace Yontech.Fat
 {
   public abstract class FatPage
   {
