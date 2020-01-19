@@ -81,7 +81,7 @@ namespace Yontech.Fat.Selenium
       return new GenericControl(element, _webBrowser);
     }
 
-    public IList<ITextControl> TextList(string cssSelector)
+    public IEnumerable<ITextControl> TextList(string cssSelector)
     {
       var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
       var textControlElements = new List<ITextControl>();
@@ -92,7 +92,7 @@ namespace Yontech.Fat.Selenium
       return textControlElements;
     }
 
-    public IList<ITextBoxControl> TextBoxList(string cssSelector)
+    public IEnumerable<ITextBoxControl> TextBoxList(string cssSelector)
     {
       var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
       var textBoxControlElements = new List<ITextBoxControl>();
@@ -104,7 +104,7 @@ namespace Yontech.Fat.Selenium
       return textBoxControlElements;
     }
 
-    public IList<IButtonControl> ButtonList(string cssSelector)
+    public IEnumerable<IButtonControl> ButtonList(string cssSelector)
     {
       var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
       var buttonControlElements = new List<IButtonControl>();
@@ -114,6 +114,37 @@ namespace Yontech.Fat.Selenium
       }
 
       return buttonControlElements;
+    }
+
+    public IEnumerable<ILinkControl> LinkList(string cssSelector)
+    {
+      var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+      foreach (var el in elements)
+      {
+        yield return new LinkControl(el, _webBrowser);
+      }
+    }
+
+    public TComponent Custom<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new()
+    {
+      var element = FindElement(By.CssSelector(cssSelector));
+
+      var custom = new TComponent();
+      custom.WebBrowser = this._webBrowser;
+      custom.Container = new GenericControl(element, this._webBrowser);
+      return custom;
+    }
+
+    public IEnumerable<TComponent> CustomList<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new()
+    {
+      var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+      foreach (var element in elements)
+      {
+        var custom = new TComponent();
+        custom.WebBrowser = this._webBrowser;
+        custom.Container = new GenericControl(element, this._webBrowser);
+        yield return custom;
+      }
     }
   }
 }

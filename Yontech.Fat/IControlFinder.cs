@@ -12,9 +12,16 @@ namespace Yontech.Fat
     IRadioButtonControl RadioButton(string cssSelector);
     ICheckboxControl Checkbox(string cssSelector);
     IGenericControl Generic(string cssSelector);
+    TComponent Custom<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new();
     IDropdownControl Dropdown(string cssSelector);
-    IList<ITextControl> TextList(string cssSelector);
-    IList<ITextBoxControl> TextBoxList(string cssSelector);
-    IList<IButtonControl> ButtonList(string cssSelector);
+
+    IEnumerable<ITextControl> TextList(string cssSelector);
+    IEnumerable<ITextBoxControl> TextBoxList(string cssSelector);
+    IEnumerable<IButtonControl> ButtonList(string cssSelector);
+    IEnumerable<ILinkControl> LinkList(string cssSelector);
+    IEnumerable<TComponent> CustomList<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new();
   }
+
 }
+
+

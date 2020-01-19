@@ -123,6 +123,7 @@ namespace Yontech.Fat.ConsoleRunner
         testClass.BeforeMethod.Invoke(testClassInstance, new object[0]);
       }
 
+      _webBrowser.WaitForIdle();
       testCase.Method.Invoke(testClassInstance, new object[0]);
 
       watch.Stop();
@@ -180,7 +181,7 @@ namespace Yontech.Fat.ConsoleRunner
       var page = fatPageInstance as FatPage;
       if (page != null)
       {
-        page.ControlFinder = _webBrowser.ControlFinder;
+        page._ = _webBrowser.ControlFinder;
       }
 
       return fatPageInstance;

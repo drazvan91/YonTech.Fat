@@ -39,6 +39,7 @@ namespace Yontech.Fat.BusyConditions
       try
       {
         var pendingRequests = (Int64)webBrowser.JavaScriptExecutor.ExecuteScript(this.script);
+        // Console.WriteLine("Pending: " + pendingRequests);
         return pendingRequests > 0;
       }
       catch (Exception ex)
