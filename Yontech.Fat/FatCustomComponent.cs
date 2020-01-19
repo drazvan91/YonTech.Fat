@@ -7,9 +7,9 @@ namespace Yontech.Fat
 {
   public abstract class FatCustomComponent
   {
-    internal protected IWebBrowser WebBrowser { get; internal set; }
     internal IWebElement _webElement { get; set; }
+    internal protected IWebBrowser WebBrowser { get; internal set; }
     internal protected IGenericControl Container { get; internal set; }
-    protected internal IControlFinder _ => Container.ControlFinder;
+    internal protected IControlFinder _ => Container.ControlFinder;
   }
 }

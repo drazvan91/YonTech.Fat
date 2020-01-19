@@ -3,14 +3,8 @@ using System.Threading;
 
 namespace Yontech.Fat
 {
-  public class FatContext
-  {
-    public BrowserType BrowserType { get; set; }
-  }
-
   public class FatTest
   {
-    internal protected FatContext Context { get; internal set; }
     internal protected IWebBrowser WebBrowser { get; internal set; }
 
     public virtual void BeforeEachTestCase() { }

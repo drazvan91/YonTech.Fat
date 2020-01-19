@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Selenium.DriverFactories;
 

@@ -97,14 +97,14 @@ namespace Yontech.Fat.Runner
       if (sectionPage != null)
       {
         var browser = _serviceProvider.GetService<IWebBrowser>();
-        sectionPage._ = browser.ControlFinder;
+        sectionPage.WebBrowser = browser;
       }
 
       var page = instance as FatPage;
       if (page != null)
       {
         var browser = _serviceProvider.GetService<IWebBrowser>();
-        page._ = browser.ControlFinder;
+        page.WebBrowser = browser;
       }
 
       return instance;
