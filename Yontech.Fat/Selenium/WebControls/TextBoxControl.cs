@@ -49,6 +49,7 @@ namespace Yontech.Fat.Selenium.WebControls
     {
       EnsureElementExists();
       WebElement.SendKeys(keys);
+      base.WebBrowser.WaitForIdle();
     }
 
     public void TypeKeysSlowly(string keys, int delayBetweenKeys = 300)
@@ -59,6 +60,7 @@ namespace Yontech.Fat.Selenium.WebControls
         WebElement.SendKeys(key.ToString());
         Thread.Sleep(delayBetweenKeys);
       }
+      base.WebBrowser.WaitForIdle();
     }
   }
 }

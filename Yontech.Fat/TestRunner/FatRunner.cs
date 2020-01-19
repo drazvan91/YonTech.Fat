@@ -17,6 +17,7 @@ namespace Yontech.Fat.ConsoleRunner
     public bool ScreenShotOnFailure { get; set; }
     public string ReportFileLocation { get; set; }
     public int WaitAfterEachTestCase { get; set; }
+    public int DelayBetweenInstructions { get; set; }
   }
 
   public class FatRunner
@@ -31,6 +32,7 @@ namespace Yontech.Fat.ConsoleRunner
       this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome);
       this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
       this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
+      this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenInstructions));
 
       try
       {
@@ -58,7 +60,6 @@ namespace Yontech.Fat.ConsoleRunner
       }
       finally
       {
-        System.Console.WriteLine("cevaass");
         this._webBrowser.Close();
         this._webBrowser = null;
       }
@@ -108,25 +109,32 @@ namespace Yontech.Fat.ConsoleRunner
       var testClassInstance = GetPropertyInjectedService(testClass.Class, serviceProvider) as FatTest;
       testClassInstance.Browser = this._webBrowser;
 
+      testClassInstance.BeforeAllTestCases();
+
       foreach (var testCase in testClass.TestCases)
       {
         yield return ExecuteTestCase(testClassInstance, testClass, testCase, serviceProvider);
         Thread.Sleep(options.WaitAfterEachTestCase);
       }
+
+      testClassInstance.AfterAllTestCases();
     }
 
-    private TestCaseRunSummary ExecuteTestCase(object testClassInstance, FatTestClass testClass, FatTestCase testCase, ServiceProvider serviceProvider)
+    private TestCaseRunSummary ExecuteTestCase(FatTest testClassInstance, FatTestClass testClass, FatTestCase testCase, ServiceProvider serviceProvider)
     {
       var watch = Stopwatch.StartNew();
-      if (testClass.BeforeMethod != null)
-      {
-        testClass.BeforeMethod.Invoke(testClassInstance, new object[0]);
-      }
 
+      testClassInstance.BeforeEachTestCase();
       _webBrowser.WaitForIdle();
+
       testCase.Method.Invoke(testClassInstance, new object[0]);
+      _webBrowser.WaitForIdle();
+
+      testClassInstance.AfterEachTestCase();
+      _webBrowser.WaitForIdle();
 
       watch.Stop();
+
       return new TestCaseRunSummary()
       {
         ShortName = testCase.Method.Name,

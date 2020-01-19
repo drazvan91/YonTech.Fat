@@ -17,7 +17,7 @@ namespace Yontech.Fat.BusyConditions
             console.log('pending requests: '+window.fatData.pendingRequests);
           },
           requestFinished: () => {
-            window.fatData.pendingRequests = window.fatData.pendingRequests-1; 
+            window.fatData.pendingRequests = Math.max(window.fatData.pendingRequests-1, 0); 
             console.log('pending requests: '+window.fatData.pendingRequests);
           }
         };

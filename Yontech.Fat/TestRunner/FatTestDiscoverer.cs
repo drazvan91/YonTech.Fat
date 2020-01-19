@@ -15,7 +15,6 @@ namespace Yontech.Fat.ConsoleRunner
   {
     public Type Class { get; set; }
     public List<FatTestCase> TestCases { get; set; }
-    public MethodInfo BeforeMethod { get; set; }
   }
 
   public class FatTestDiscoverer
@@ -34,15 +33,8 @@ namespace Yontech.Fat.ConsoleRunner
         {
           Class = type,
           TestCases = GetTestCasesForClass(type).ToList(),
-          BeforeMethod = GetBeforeMethod(type)
         };
       }
-    }
-
-    private MethodInfo GetBeforeMethod(Type type)
-    {
-      var allMethods = type.GetMethods();
-      return allMethods.FirstOrDefault(method => method.Name == "BeforeEachTest");
     }
 
     public IEnumerable<Type> GetFatPages(Assembly assembly)
