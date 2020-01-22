@@ -12,7 +12,8 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
         public void Report(List<TestCollectionRunResult> collections)
         {
-            Console.WriteLine("Execution summary:");
+            Console.Clear();
+            Console.WriteLine("Execution results:");
             foreach (var collection in collections)
             {
 
@@ -20,7 +21,8 @@ namespace Yontech.Fat.Runner.ConsoleRunner
                 {
                     Console.WriteLine();
 
-                    Console.WriteLine("### {0}", testClass.Name);
+                    PrintPurple("### {0}", testClass.Name);
+                    Console.WriteLine();
 
                     foreach (var testCase in testClass.TestCases)
                     {
@@ -68,7 +70,7 @@ namespace Yontech.Fat.Runner.ConsoleRunner
             var executedTestCases = allTestCases.Where(c => c.IsSkipped() == false).ToList();
             var failedTestCasses = executedTestCases.Where(c => c.HasErrors()).ToList();
 
-            PrintNormal("Test Cases  :     ");
+            PrintNormal("Test Cases:       ");
             PrintGreen(" {0} passed", executedTestCases.Count - failedTestCasses.Count);
             PrintNormal(",");
             PrintRed(" {0} failed", failedTestCasses.Count);
@@ -95,7 +97,15 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
             PrintNormal("  {0}  ", testCase.ShortName);
             PrintGray("in {0}ms", testCase.Duration);
+
             Console.WriteLine();
+
+            if (testCase.HasErrors())
+            {
+                PrintNormal(testCase.ErrorMessage);
+                Console.WriteLine();
+                testCase.PrintException();
+            }
         }
 
         private void PrintNormal(string format, params object[] args)
@@ -108,6 +118,13 @@ namespace Yontech.Fat.Runner.ConsoleRunner
         private void PrintGray(string format, params object[] args)
         {
             Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(format, args);
+            Console.ResetColor();
+        }
+
+        private void PrintPurple(string format, params object[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
             Console.Write(format, args);
             Console.ResetColor();
         }

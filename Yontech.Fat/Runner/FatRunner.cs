@@ -90,8 +90,11 @@ namespace Yontech.Fat.Runner
                 }
                 catch (Exception ex)
                 {
+
+                    var exception = ex.InnerException;
                     testCase.Result = TestCaseRunResult.ResultType.Error;
-                    testCase.ErrorMessage = ex.Message;
+                    testCase.ErrorMessage = ex.InnerException.Message;
+                    testCase.Exception = exception;
                 }
             }
 
