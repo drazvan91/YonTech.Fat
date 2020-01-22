@@ -102,8 +102,10 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
             if (testCase.HasErrors())
             {
+                PrintRed(" > ");
                 PrintNormal(testCase.ErrorMessage);
                 Console.WriteLine();
+                PrintRed(" > ");
                 testCase.PrintException();
             }
         }
