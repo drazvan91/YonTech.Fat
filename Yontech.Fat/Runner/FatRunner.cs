@@ -84,16 +84,14 @@ namespace Yontech.Fat.Runner
             {
                 try
                 {
-
                     ExecuteTestCase(fatTest, testCase, iocService);
                     Thread.Sleep(options.WaitAfterEachTestCase);
                 }
                 catch (Exception ex)
                 {
-
-                    var exception = ex.InnerException;
+                    var exception = ex.InnerException ?? ex;
                     testCase.Result = TestCaseRunResult.ResultType.Error;
-                    testCase.ErrorMessage = ex.InnerException.Message;
+                    testCase.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
                     testCase.Exception = exception;
                 }
             }
@@ -104,6 +102,8 @@ namespace Yontech.Fat.Runner
         private void ExecuteTestCase(FatTest testClassInstance, TestCaseRunResult testCase, IocService iocService)
         {
             var watch = Stopwatch.StartNew();
+
+            _webBrowser.SimulateFastConnection();
 
             testClassInstance.BeforeEachTestCase();
             _webBrowser.WaitForIdle();

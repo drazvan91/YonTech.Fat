@@ -16,13 +16,18 @@ namespace Yontech.Fat.Selenium.DriverFactories
         /// <returns>An instance of Chrome Driver.</returns>
         public static IWebDriver Create(string driverPath, BrowserStartOptions startOptions)
         {
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
-            service.Port = 5555; // Some port value.
-            service.Start();
-
             var chromeOptions = CreateOptions(startOptions);
 
-            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
+            // In the past there was one issue with dotnetcore 1.0 on windows which created 
+            // performance issues. We need to investigate, if it still happens then 
+            // we should use the RemoteWebDriver instead (code below)
+            // if not then we should remove this comment and code below
+            // ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
+            // service.Port = 5555; // Some port value.
+            // service.Start();
+            //IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
+
+            ChromeDriver webDriver = new ChromeDriver(driverPath, chromeOptions);
             return webDriver;
         }
 

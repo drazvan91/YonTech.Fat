@@ -20,7 +20,7 @@ namespace Yontech.Fat.Waiters
             }
 
             // todo: specific exception please
-            throw new Exception("Timeout");
+            throw new Exception("Operation did timeout. One or more busy conditions indicate that Browser is still busy.");
         }
 
         public static void Wait(int timeToWait)
