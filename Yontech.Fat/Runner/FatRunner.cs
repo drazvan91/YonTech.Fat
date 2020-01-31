@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.BusyConditions;
+using Yontech.Fat.DataSources;
 using Yontech.Fat.Runner.ConsoleRunner;
 using Yontech.Fat.Runner.Results;
 
@@ -95,20 +96,43 @@ namespace Yontech.Fat.Runner
         private void ExecuteTestCase(FatTest testClassInstance, TestCaseRunResult testCase, IocService iocService)
         {
 
+            if (testCase.Method.GetParameters().Length == 0)
+            {
+                this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, iocService, new object[0]);
+            }
+            else
+            {
+                System.Attribute[] attrs = System.Attribute.GetCustomAttributes(testCase.Method);
+
+                foreach (System.Attribute attr in attrs.OfType<TestCaseDataSource>())
+                {
+                    var dataSource = (TestCaseDataSource)attr;
+                    var executionArguments = dataSource.GetExecutionArguments();
+
+                    foreach (var arguments in executionArguments)
+                    {
+                        this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, iocService, arguments);
+
+                    }
+                }
+            }
+
+            testCase.Result = TestCaseRunResult.ResultType.Success;
+        }
+
+        private void ExecuteTestCaseWithDataSourceArguments(FatTest testClassInstance, TestCaseRunResult testCase, IocService iocService, object[] executionArguments)
+        {
             _webBrowser.SimulateFastConnection();
 
             testClassInstance.BeforeEachTestCase();
             _webBrowser.WaitForIdle();
 
-            testCase.Method.Invoke(testClassInstance, new object[0]);
+            testCase.Method.Invoke(testClassInstance, executionArguments);
             _webBrowser.WaitForIdle();
 
             testClassInstance.AfterEachTestCase();
             _webBrowser.WaitForIdle();
-
-            testCase.Result = TestCaseRunResult.ResultType.Success;
         }
-
 
     }
 }

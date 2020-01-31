@@ -12,7 +12,7 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
         public void Report(List<TestCollectionRunResult> collections)
         {
-            Console.Clear();
+            // Console.Clear();
             Console.WriteLine("Execution results:");
             foreach (var collection in collections)
             {
