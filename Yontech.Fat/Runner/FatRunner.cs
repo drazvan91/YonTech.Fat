@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.BusyConditions;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.DataSources;
 using Yontech.Fat.Runner.ConsoleRunner;
 using Yontech.Fat.Runner.Results;
@@ -20,9 +21,13 @@ namespace Yontech.Fat.Runner
 
         public void Run(FatRunOptions options)
         {
+            var browserStartOptions = new BrowserStartOptions()
+            {
+                RunHeadless = options.RunHeadless
+            };
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
-            this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome);
+            this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome, browserStartOptions);
             this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
             this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
             this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenInstructions));
@@ -95,8 +100,8 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestCase(FatTest testClassInstance, TestCaseRunResult testCase, IocService iocService)
         {
-
-            if (testCase.Method.GetParameters().Length == 0)
+            var methodParameters = testCase.Method.GetParameters();
+            if (methodParameters.Length == 0)
             {
                 this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, iocService, new object[0]);
             }
@@ -107,7 +112,7 @@ namespace Yontech.Fat.Runner
                 foreach (System.Attribute attr in attrs.OfType<TestCaseDataSource>())
                 {
                     var dataSource = (TestCaseDataSource)attr;
-                    var executionArguments = dataSource.GetExecutionArguments();
+                    var executionArguments = dataSource.GetExecutionArguments(methodParameters);
 
                     foreach (var arguments in executionArguments)
                     {

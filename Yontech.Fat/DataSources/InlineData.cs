@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Yontech.Fat.DataSources
 {
@@ -12,7 +13,7 @@ namespace Yontech.Fat.DataSources
             _data = arguments;
         }
 
-        public override IEnumerable<object[]> GetExecutionArguments()
+        public override IEnumerable<object[]> GetExecutionArguments(ParameterInfo[] parameters)
         {
             yield return _data;
         }
