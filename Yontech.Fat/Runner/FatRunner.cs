@@ -53,8 +53,6 @@ namespace Yontech.Fat.Runner
             }
         }
 
-
-
         private void ExecuteTestCollection(TestCollectionRunResult collection, FatRunOptions options, IocService iocService)
         {
             foreach (var testClass in collection.TestClasses)
@@ -62,17 +60,6 @@ namespace Yontech.Fat.Runner
                 ExecuteTestClass(testClass, options, iocService);
             }
         }
-
-        // private IEnumerable<TestCaseRunSummary> ExecuteAssembly(FatRunOptions options, Assembly assembly, IocService iocService)
-        // {
-        //   var results = new List<TestCaseRunSummary>();
-        //   foreach (var type in types)
-        //   {
-        //     results.AddRange(this.ExecuteTestClass(options, type, serviceProvider));
-        //   }
-
-        //   return results;
-        // }
 
         private void ExecuteTestClass(TestClassRunResult testClass, FatRunOptions options, IocService iocService)
         {
@@ -82,6 +69,7 @@ namespace Yontech.Fat.Runner
 
             foreach (var testCase in testClass.TestCases)
             {
+                var watch = Stopwatch.StartNew();
                 try
                 {
                     ExecuteTestCase(fatTest, testCase, iocService);
@@ -94,6 +82,11 @@ namespace Yontech.Fat.Runner
                     testCase.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
                     testCase.Exception = exception;
                 }
+                finally
+                {
+                    watch.Stop();
+                    testCase.Duration = watch.ElapsedMilliseconds;
+                }
             }
 
             fatTest.AfterAllTestCases();
@@ -101,7 +94,6 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestCase(FatTest testClassInstance, TestCaseRunResult testCase, IocService iocService)
         {
-            var watch = Stopwatch.StartNew();
 
             _webBrowser.SimulateFastConnection();
 
@@ -114,9 +106,6 @@ namespace Yontech.Fat.Runner
             testClassInstance.AfterEachTestCase();
             _webBrowser.WaitForIdle();
 
-            watch.Stop();
-
-            testCase.Duration = watch.ElapsedMilliseconds;
             testCase.Result = TestCaseRunResult.ResultType.Success;
         }
 

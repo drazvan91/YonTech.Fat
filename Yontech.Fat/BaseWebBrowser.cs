@@ -72,6 +72,15 @@ namespace Yontech.Fat
             }, this.Configuration.DefaultTimeout);
         }
 
+        public void WaitForConditionToBeTrue(Func<bool> condition)
+        {
+            Waiter.WaitForConditionToBeTrue(() =>
+                        {
+                            return condition();
+                        }, this.Configuration.DefaultTimeout);
+        }
+
+
         public void WaitForElementToAppear(string cssSelector, int timeout)
         {
             Waiter.WaitForConditionToBeTrue(() =>

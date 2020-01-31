@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -36,15 +37,15 @@ namespace Yontech.Fat.Runner.Results
         public void PrintException()
         {
             var st = new StackTrace(this.Exception, true);
-            var fatTestFrame = this.GetFatTestFrame(st);
-            if (fatTestFrame != null)
+            var fatTestFrames = this.GetFatTestFrames(st);
+            foreach (var frame in fatTestFrames)
             {
-                var fileDetails = $"{fatTestFrame.GetFileName()}:line {fatTestFrame.GetFileLineNumber()}";
+                var fileDetails = $"{frame.GetFileName()}:line {frame.GetFileLineNumber()}";
                 Console.WriteLine(fileDetails);
             }
         }
 
-        private StackFrame GetFatTestFrame(StackTrace st)
+        private IEnumerable<StackFrame> GetFatTestFrames(StackTrace st)
         {
             for (int i = 0; i < st.FrameCount; i++)
             {
@@ -52,14 +53,17 @@ namespace Yontech.Fat.Runner.Results
                 if (frame.HasMethod())
                 {
                     var method = frame.GetMethod();
+                    if (method.ReflectedType.IsSubclassOf(typeof(FatFlow)))
+                    {
+                        yield return frame;
+                    }
+
                     if (method.ReflectedType.IsSubclassOf(typeof(FatTest)))
                     {
-                        return frame;
+                        yield return frame;
                     }
                 }
             }
-
-            return null;
         }
     }
 }
