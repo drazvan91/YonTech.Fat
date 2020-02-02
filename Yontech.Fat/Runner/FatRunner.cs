@@ -23,14 +23,14 @@ namespace Yontech.Fat.Runner
         {
             var browserStartOptions = new BrowserStartOptions()
             {
-                RunHeadless = options.RunHeadless
+                RunHeadless = options.RunInBackground
             };
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
             this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome, browserStartOptions);
             this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
             this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
-            this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenInstructions));
+            this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenSteps));
 
 
             var iocService = new IocService(options.Assemblies, this._webBrowser);
@@ -79,7 +79,7 @@ namespace Yontech.Fat.Runner
                 try
                 {
                     ExecuteTestCase(fatTest, testCase, iocService);
-                    Thread.Sleep(options.WaitAfterEachTestCase);
+                    Thread.Sleep(options.DelayBetweenTestCases);
                 }
                 catch (Exception ex)
                 {
