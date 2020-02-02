@@ -1,0 +1,73 @@
+---
+name: API
+route: /api
+---
+
+# API
+
+## Browser 
+
+### Navigation and current state
+```typescript
+BrowserType Type { get; }
+string CurrentUrl { get; }
+void Navigate(string url);
+void Refresh();
+void Close();
+```
+
+### Waiting for events
+```typescript
+void WaitForIdle();
+void WaitForIdle(int timout);
+void WaitForCondition(IBusyCondition condition);
+void WaitForConditionToBeTrue(Func<bool> condition);
+void WaitForElementToAppear(string cssSelector);
+void WaitForElementToAppear(string cssSelector, int timeout);
+```
+### Simulate different conditions
+```typescript
+void SimulateOfflineConnection();
+void SimulateSlowConnection(int latency = 1000);
+void SimulateFastConnection();
+```
+
+### Handling alert/confirmation popups
+```typescript
+bool AcceptAlert();
+bool DismissAlert();
+```
+
+### Advanced api
+```typescript
+IControlFinder ControlFinder { get; }
+IJsExecutor JavaScriptExecutor { get; }
+IIFrameControl IFrameControl { get; }
+WebBrowserConfiguration Configuration { get; }
+```
+
+### Not supported yet but it will be something like this
+```typescript
+ISnapshot TakeSnapshot(); 
+```
+
+## ControlFinder
+```typescript
+public interface IControlFinder
+{
+    ITextControl Text(string cssSelector);
+    ITextBoxControl TextBox(string cssSelector);
+    IButtonControl Button(string cssSelector);
+    ILinkControl Link(string cssSelector);
+    IRadioButtonControl RadioButton(string cssSelector);
+    ICheckboxControl Checkbox(string cssSelector);
+    IDropdownControl Dropdown(string cssSelector);
+    TComponent Custom<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new();
+
+    IEnumerable<ITextControl> TextList(string cssSelector);
+    IEnumerable<ITextBoxControl> TextBoxList(string cssSelector);
+    IEnumerable<IButtonControl> ButtonList(string cssSelector);
+    IEnumerable<ILinkControl> LinkList(string cssSelector);
+    IEnumerable<TComponent> CustomList<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new();
+}
+```
