@@ -1,0 +1,53 @@
+---
+name: Getting Started
+route: /getting-started
+
+---
+
+## Prepare Development Environment
+
+Install latest version of dotnetcore SDK from official website https://dotnet.microsoft.com/download. 
+After installation you should be able to execute this command:
+
+<code>
+    dotnet --version 
+</code>
+
+Install FatFramework command line to quickly get started:
+
+<code>
+  dotnet new -i Yontech.Fat.Templates 
+</code>
+
+> If you previously installed **dotnet** or **Yontech.Fat.Templates** we recommend to make sure that latest versions are installed
+
+## Create a New Project
+
+Start by running in terminal:
+
+<code>
+  dotnet new create-fat-project-with-samples -n YourProjectName
+</code>
+
+or, if you don't need code samples, run this:
+
+<code>
+  dotnet new create-fat-project -n YourProjectName
+</code>
+
+> We recommend using the first command when you are new to FatFramework and you want to learn and follow FatFramework projects structure and guidelines.
+
+## Run testing
+
+To execute test cases run this in terminal:
+
+<code>
+    dotnet run 
+</code>
+
+> In case that running it throws "permission to execute denied" you should redownload drivers or give permissions to execute to all files inside "drivers" folder.
+
+
+
+
+

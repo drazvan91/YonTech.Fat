@@ -1,0 +1,175 @@
+---
+name: Concepts
+route: /concepts
+---
+
+# Concepts
+
+## FatTest
+
+```typescript
+using Yontech.Fat;
+
+public class HomePageTests : FatTest
+{
+    HomePage homePage { get; set; }
+
+    public override void BeforeEachTestCase()
+    {
+        WebBrowser.Navigate("https://example.com/home");
+    }
+
+    public void Test_should_have_welcome_message()
+    {
+        homePage.WelcomeMessage.ShouldContainText("Welcome");
+    }
+
+    public void Test_header_should_contain_login_button()
+    {
+        // ... 
+    }
+}
+```
+
+To write test cases you should:
+- Create a class which inherits from `FatTest`
+- Create public methods which start with `Test` keyword. Each one of this methods will be considered a test case
+- Override lifecycle events to execute actions before or after each test case
+  - `BeforeEachTestCase`
+  - `BeforeAllTestCases`
+  - `AfterEachTestCase`
+  - `AfterAllTestCases`
+- Add properties for [FatPage](#fatpage)s, [FatPageSection](#fatpagesection)s, [FatFlow](#fatflow)s that will be used in test cases
+> FatFramework will inject those properties for you at runtime so you don't need to care about constructing them.
+
+## FatPage
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.WebControls;
+
+public class HomePage : FatPage
+{
+    public ITextControl WelcomeMessage => _.Text("#welcome-message-id");
+
+    public IButtonControl LoginButton => _.Button(".some-class .login-btn");
+}
+```
+
+The role of `FatPage` is to have all elements of a page grouped in a single place so that they can be reused in multiple TestCases.
+Each page element will have defined:
+- **Type**. It can be Text, TextBox, Button, Dropdown, Link, ... or custom components
+- **Name**. We recommend to include the type of the component inside the name. eg. instead of *Login* use *LoginButton*
+- **CSS selector** used to identify the component on the page 
+
+These are being linked together by the builtin [ControlFinder](#controlfinder-aka-_) which is available using the `_` (underscore) sign. 
+
+## FatPageSection
+It is very similar to [FatPage](#fatpage), the difference between these two is semantically. The difference is that instead of `FatPage` you should use `FatPageSection`.
+
+Use `FatPage` when elements that you want to define are inside a page (which is usually linked to a URL).
+
+Use `FatPageSection` when you want to define elements that not linked to a URL, for example Header, Footer, Menu, Modals, Confirmation popups.
+
+
+## FatCustomComponent
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.WebControls;
+
+public class ArticleItem : FatCustomComponent
+{
+    public ILinkControl UserNameLink => _.Link(".author");
+    public ITextControl PublishedDateText => _.Text("span.date");
+    public ITextControl TitleText => _.Text(".preview-link h1");
+}
+
+// This is how ArticleItem custom component can be used
+public class ArticlesPage : FatPage
+{
+    public ArticleItem SelectedArticle => _.Custom<ArticleItem>(".article-item.selected");
+
+    public ArticleItem ArticleAtPosition(int index)
+    {
+        var articles = _.CustomList<ArticleItem>(".article-item");
+        return articles.ElementAt(index);
+    }
+}
+
+// Now let's see it in action in a test
+public class ArticlePageTests : FatTest
+{
+    ArticlesPage articlesPage { get; set; }
+
+    public void Test_first_article_should_has_valid_title()
+    {
+        articlesPage.ArticleAtPosition(0).TitleText.ShouldContainText("Have you been to Romania?");
+    }
+
+    public void Test_click_on_username_for_selected_article()
+    {
+        articlesPage.SelectedArticle.UserNameLink.Click();
+    }
+}
+```
+
+> Custom Components is a powerful concept in FatFramework. We recommend creating one for each Component that developer did in their source code. This way, every time they change one component you will know what needs to be adjusted in Fat project.
+
+## FatFlow
+
+```typescript
+using Yontech.Fat;
+
+public class SignInFlows : FatFlow
+{
+    SignInPage signInPage { get; set; }
+
+    public void Login(string username, string password)
+    {
+        signInPage.EmailTextInput.ClearAndTypeKeys(username);
+        signInPage.PasswordTextInput.ClearAndTypeKeys(password);
+
+        signInPage.SignInButton.Click();
+    }
+}
+
+// This is an example of how it can be used
+public class ProfilePageTests: FatTest 
+{
+    SingInFlows signInFlows { get; set; }
+
+    public void Test_something()
+    {
+        signInFlows.Login("john.snow", "hold-the-door");
+
+        // ...
+    }
+
+    // or it can be used in lifecycle events like
+    public override void BeforeEachTestCase()
+    {
+        WebBrowser.Navigate("https://example.com/login");
+        signInFlows.Login("john.snow", "hold-the-door");
+    }
+}
+
+```
+
+## ControlFinder (aka _)
+
+### The API to search for a single element
+- Text
+- TextBox
+- Button
+- Link
+- RadioButton
+- Checkbox
+- Dropdown
+- Custom
+
+### The API to search list of elements
+- TextList
+- TextBoxList
+- ButtonList
+- LinkList
+- CustomList
