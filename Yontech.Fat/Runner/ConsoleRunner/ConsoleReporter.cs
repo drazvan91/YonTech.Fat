@@ -96,7 +96,7 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
 
             PrintNormal("  {0}  ", testCase.ShortName);
-            PrintGray("in {0}ms", testCase.Duration);
+            PrintGray("in {0}ms", testCase.Duration.TotalMilliseconds);
 
             Console.WriteLine();
 

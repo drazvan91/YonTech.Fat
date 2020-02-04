@@ -11,7 +11,7 @@ namespace Yontech.Fat.Runner.Results
         public string ShortName { get; set; }
         public string LongName { get; set; }
         public ResultType Result { get; set; }
-        public long Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         public string Logs { get; set; }
         public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }

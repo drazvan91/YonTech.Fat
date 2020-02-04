@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.BusyConditions;
+using Yontech.Fat.Interceptors;
 
 namespace Yontech.Fat.Runner
 {
@@ -19,6 +20,8 @@ namespace Yontech.Fat.Runner
         public int DelayBetweenTestCases { get; set; }
         public int DelayBetweenSteps { get; set; }
         public bool RunInBackground { get; set; }
+
+        public IEnumerable<FatInterceptor> Interceptors { get; set; }
     }
 
 }
