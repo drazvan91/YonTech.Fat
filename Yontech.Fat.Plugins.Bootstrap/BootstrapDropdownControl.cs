@@ -57,6 +57,8 @@ namespace Yontech.Fat.Plugins.Bootstrap
             }
         }
 
+        public bool IsDisabled => throw new NotImplementedException();
+
         public void ToggleTextShouldBe(string text)
         {
             if (this.ToggleText != text)
