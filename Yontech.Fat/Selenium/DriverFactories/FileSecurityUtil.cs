@@ -31,7 +31,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
         private static void SetForWindows(string filePath)
         {
-            throw new NotImplementedException();
+
         }
 
         private static void SetForUnix(string filePath)

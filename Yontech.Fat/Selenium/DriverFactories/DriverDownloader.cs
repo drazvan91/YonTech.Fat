@@ -20,32 +20,36 @@ namespace Yontech.Fat.Selenium.DriverFactories
             {
                 Directory.CreateDirectory(destination);
             }
-            var httpClient = new HttpClient();
-            var downloadStream = await httpClient.GetStreamAsync(url);
 
             string tempFilename = Path.Combine(destination, $"download_{DateTime.Now.Ticks}.zip");
-            var writer = new FileStream(tempFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 
-            byte[] buffer = new byte[1024 * 1024];
-            int len = 0;
-            long megabytes = 0;
-            Console.WriteLine("Downloading driver: {0}mb", megabytes);
-
-            DateTime lastPrint = DateTime.Now;
-            while ((len = downloadStream.Read(buffer, 0, buffer.Length)) > 0)
+            var httpClient = new HttpClient();
+            using (var downloadStream = await httpClient.GetStreamAsync(url))
             {
-                megabytes += len;
-                if (DateTime.Now.Subtract(lastPrint).TotalMilliseconds > 1000)
+                using (var writer = new FileStream(tempFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 {
-                    lastPrint = DateTime.Now;
-                    Console.WriteLine("Downloading driver: {0}mb", megabytes / (1024 * 1024));
+                    byte[] buffer = new byte[1024 * 1024];
+                    int len = 0;
+                    long megabytes = 0;
+                    Console.WriteLine("Downloading driver: {0}mb", megabytes);
+
+                    DateTime lastPrint = DateTime.Now;
+                    while ((len = downloadStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        megabytes += len;
+                        if (DateTime.Now.Subtract(lastPrint).TotalMilliseconds > 1000)
+                        {
+                            lastPrint = DateTime.Now;
+                            Console.WriteLine("Downloading driver: {0}mb", megabytes / (1024 * 1024));
+                        }
+
+                        writer.Write(buffer, 0, len);
+                    }
+                    Console.WriteLine("Downloading driver finished");
+
+                    writer.Flush();
                 }
-
-                writer.Write(buffer, 0, len);
             }
-            Console.WriteLine("Downloading driver finished");
-
-            writer.Flush();
 
             ZipFile.ExtractToDirectory(tempFilename, destination.TrimEnd('/') + "/");
             File.Delete(tempFilename);

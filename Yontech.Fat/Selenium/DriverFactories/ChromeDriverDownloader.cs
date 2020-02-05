@@ -6,8 +6,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
     internal class ChromeDriverDownloader : DriverDownloader
     {
         private const string CHROME_MACOS64 = "https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_mac64.zip";
-        private const string CHROME_WIN32 = "https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_win32.zip";
-        private const string CHROME_LINUX64 = "https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip";
+        private const string CHROME_WIN32 = "https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_win32.zip";
+        private const string CHROME_LINUX64 = "https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip";
 
         protected override string GetDownloadUrl()
         {
