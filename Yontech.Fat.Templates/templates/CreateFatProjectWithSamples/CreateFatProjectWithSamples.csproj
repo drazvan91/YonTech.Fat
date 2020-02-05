@@ -8,20 +8,6 @@
 
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Yontech.Fat" Version="0.0.7" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Update="Drivers\chromedriver.exe">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\chromedriver">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\IEDriverServer-README.txt">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\IEDriverServer.exe">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+        <PackageReference Include="Yontech.Fat" Version="0.0.9" />
     </ItemGroup>
 </Project>
