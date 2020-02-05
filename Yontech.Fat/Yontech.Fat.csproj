@@ -3,32 +3,19 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Yontech.Fat</PackageId>
-        <Version>0.0.7</Version>
+        <Version>0.0.8</Version>
         <Authors>Razvan Dragomir</Authors>
         <Company>TSS Yonder</Company>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CsvHelper" Version="14.0.0" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
         <PackageReference Include="Selenium.Chrome.WebDriver" Version="79.0.0" />
         <PackageReference Include="Selenium.Support" Version="3.141.0" />
         <PackageReference Include="Selenium.WebDriver.IEDriver" Version="3.11.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
         <PackageReference Include="System.Text.Json" Version="4.7.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Update="Drivers\chromedriver.exe">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\chromedriver">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\IEDriverServer-README.txt">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Drivers\IEDriverServer.exe">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
 </Project>

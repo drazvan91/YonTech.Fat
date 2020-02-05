@@ -20,7 +20,8 @@ namespace Yontech.Fat.Runner
         public int DelayBetweenTestCases { get; set; }
         public int DelayBetweenSteps { get; set; }
         public bool RunInBackground { get; set; }
-
+        public string DriversFolder { get; set; }
+        public bool AutomaticDriverDownload { get; set; } = true;
         public IEnumerable<FatInterceptor> Interceptors { get; set; }
     }
 

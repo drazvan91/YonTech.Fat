@@ -27,7 +27,9 @@ namespace Yontech.Fat.Runner
         {
             var browserStartOptions = new BrowserStartOptions()
             {
-                RunHeadless = options.RunInBackground
+                RunHeadless = options.RunInBackground,
+                DriversFolder = options.DriversFolder ?? "drivers",
+                AutomaticDriverDownload = options.AutomaticDriverDownload
             };
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();

@@ -27,7 +27,21 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // service.Start();
             //IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
 
-            ChromeDriver webDriver = new ChromeDriver(driverPath, chromeOptions);
+            try
+            {
+                return CreateDriver(driverPath, chromeOptions);
+            }
+            catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
+            {
+                new ChromeDriverDownloader().Download(driverPath).Wait();
+
+                return CreateDriver(driverPath, chromeOptions);
+            }
+        }
+
+        private static ChromeDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
+        {
+            var webDriver = new ChromeDriver(driverPath, chromeOptions);
             return webDriver;
         }
 
