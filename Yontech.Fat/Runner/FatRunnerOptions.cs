@@ -14,6 +14,7 @@ namespace Yontech.Fat.Runner
     public class FatRunOptions
     {
         public List<Assembly> Assemblies { get; set; }
+        public ITestCaseFilter Filter { get; set; }
         public BrowserType Browser { get; set; }
         // public bool ScreenShotOnFailure { get; set; }
         // public string ReportFileLocation { get; set; }

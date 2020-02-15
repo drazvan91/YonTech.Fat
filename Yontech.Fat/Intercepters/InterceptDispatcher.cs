@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Yontech.Fat.Discoverer;
 
 namespace Yontech.Fat.Interceptors
 {
@@ -28,16 +29,11 @@ namespace Yontech.Fat.Interceptors
             });
         }
 
-        public void BeforeTestCase(Type type, MethodInfo method)
+        public void BeforeTestCase(FatTestCase fatTestCase)
         {
-            var interceptParams = new TestCaseParams()
-            {
-                TestCaseName = method.Name,
-                TestClassFullName = type.FullName
-            };
             this.SafeForEach((interceptor) =>
             {
-                interceptor.BeforeTestCase(interceptParams);
+                interceptor.BeforeTestCase(fatTestCase);
             });
         }
 
@@ -70,34 +66,30 @@ namespace Yontech.Fat.Interceptors
             });
         }
 
-        public void OnTestCaseFailed(Type type, MethodInfo method, TimeSpan duration, Exception ex)
+        public void OnTestCaseFailed(FatTestCase testCase, TimeSpan duration, Exception ex)
         {
-            var interceptParams = new OnTestCaseFailedParams()
+            var interceptParams = new FatTestCaseFailed()
             {
-                TestCaseName = method.Name,
-                TestClassFullName = type.FullName,
                 Duration = duration,
-                ErrorMessage = ex
+                Exception = ex
             };
 
             this.SafeForEach((interceptor) =>
             {
-                interceptor.OnTestCaseFailed(interceptParams);
+                interceptor.OnTestCaseFailed(testCase, interceptParams);
             });
         }
 
-        public void OnTestCasePassed(Type type, MethodInfo method, TimeSpan duration)
+        public void OnTestCasePassed(FatTestCase testCase, TimeSpan duration)
         {
-            var interceptParams = new OnTestCasePassedParams()
+            var interceptParams = new FatTestCasePassed()
             {
-                TestCaseName = method.Name,
-                TestClassFullName = type.FullName,
                 Duration = duration
             };
 
             this.SafeForEach((interceptor) =>
             {
-                interceptor.OnTestCasePassed(interceptParams);
+                interceptor.OnTestCasePassed(testCase, interceptParams);
             });
         }
 
