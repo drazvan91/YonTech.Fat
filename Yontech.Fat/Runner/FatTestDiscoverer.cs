@@ -5,81 +5,81 @@ using System.Reflection;
 
 namespace Yontech.Fat.Runner
 {
-  public class DiscoveredTestCase
-  {
-    public Type Class { get; set; }
-    public MethodInfo Method { get; set; }
-  }
-
-  public class FatTestClass
-  {
-    public Type Class { get; set; }
-    public List<DiscoveredTestCase> TestCases { get; set; }
-  }
-
-  public class FatTestDiscoverer
-  {
-    public IEnumerable<FatTestClass> GetTestClassesForAssembly(Assembly assembly)
+    public class DiscoveredTestCase
     {
-      var allTypes = assembly.GetTypes();
-      var allTestClasses = allTypes.Where(type =>
-      {
-        return type.IsSubclassOf(typeof(FatTest));
-      });
+        public Type Class { get; set; }
+        public MethodInfo Method { get; set; }
+    }
 
-      foreach (var type in allTestClasses)
-      {
-        yield return new FatTestClass()
+    public class OldFatTestClass
+    {
+        public Type Class { get; set; }
+        public List<DiscoveredTestCase> TestCases { get; set; }
+    }
+
+    public class FatTestDiscoverer
+    {
+        public IEnumerable<OldFatTestClass> GetTestClassesForAssembly(Assembly assembly)
         {
-          Class = type,
-          TestCases = GetTestCasesForClass(type).ToList(),
-        };
-      }
-    }
+            var allTypes = assembly.GetTypes();
+            var allTestClasses = allTypes.Where(type =>
+            {
+                return type.IsSubclassOf(typeof(FatTest));
+            });
 
-    public IEnumerable<Type> GetFatPages(Assembly assembly)
-    {
-      var allTypes = assembly.GetTypes();
-      var fatPages = allTypes.Where(type =>
-      {
-        return type.IsSubclassOf(typeof(FatPage));
-      });
-      return fatPages;
-    }
+            foreach (var type in allTestClasses)
+            {
+                yield return new OldFatTestClass()
+                {
+                    Class = type,
+                    TestCases = GetTestCasesForClass(type).ToList(),
+                };
+            }
+        }
 
-    public IEnumerable<Type> GetFatPageSections(Assembly assembly)
-    {
-      var allTypes = assembly.GetTypes();
-      var fatPages = allTypes.Where(type =>
-      {
-        return type.IsSubclassOf(typeof(FatPageSection));
-      });
-      return fatPages;
-    }
-
-    public IEnumerable<Type> GetFatFlows(Assembly assembly)
-    {
-      var allTypes = assembly.GetTypes();
-      var fatPages = allTypes.Where(type =>
-      {
-        return type.IsSubclassOf(typeof(FatFlow));
-      });
-      return fatPages;
-    }
-
-    public IEnumerable<DiscoveredTestCase> GetTestCasesForClass(Type testClass)
-    {
-      var allMethods = testClass.GetMethods();
-      var testCases = allMethods.Where(method => method.Name.StartsWith("Test"));
-
-      foreach (var method in testCases)
-      {
-        yield return new DiscoveredTestCase()
+        public IEnumerable<Type> GetFatPages(Assembly assembly)
         {
-          Class = testClass,
-          Method = method
-        };
-      }
+            var allTypes = assembly.GetTypes();
+            var fatPages = allTypes.Where(type =>
+            {
+                return type.IsSubclassOf(typeof(FatPage));
+            });
+            return fatPages;
+        }
+
+        public IEnumerable<Type> GetFatPageSections(Assembly assembly)
+        {
+            var allTypes = assembly.GetTypes();
+            var fatPages = allTypes.Where(type =>
+            {
+                return type.IsSubclassOf(typeof(FatPageSection));
+            });
+            return fatPages;
+        }
+
+        public IEnumerable<Type> GetFatFlows(Assembly assembly)
+        {
+            var allTypes = assembly.GetTypes();
+            var fatPages = allTypes.Where(type =>
+            {
+                return type.IsSubclassOf(typeof(FatFlow));
+            });
+            return fatPages;
+        }
+
+        public IEnumerable<DiscoveredTestCase> GetTestCasesForClass(Type testClass)
+        {
+            var allMethods = testClass.GetMethods();
+            var testCases = allMethods.Where(method => method.Name.StartsWith("Test"));
+
+            foreach (var method in testCases)
+            {
+                yield return new DiscoveredTestCase()
+                {
+                    Class = testClass,
+                    Method = method
+                };
+            }
+        }
     }
-  }
 }

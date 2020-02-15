@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.DataSources;
+using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Runner.ConsoleRunner;
 using Yontech.Fat.Runner.Results;
@@ -40,19 +41,22 @@ namespace Yontech.Fat.Runner
 
             _interceptorDispatcher = new InterceptDispatcher(options.Interceptors?.ToList());
             _iocService = new IocService(options.Assemblies, this._webBrowser);
-            var strategy = RunStrategyFactory.Create(options);
+
+            var fatDiscoverer = new FatDiscoverer();
+            var testCollections = fatDiscoverer.DiscoverTestCollections(options.Assemblies);
+            //var strategy = RunStrategyFactory.Create(options);
 
             try
             {
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
-                foreach (var collection in strategy)
+                foreach (var collection in testCollections)
                 {
                     this.ExecuteTestCollection(collection, options);
                 }
                 _interceptorDispatcher.OnExecutionFinished(new ExecutionFinishedParams());
 
-                ConsoleReporter reporter = new ConsoleReporter();
-                reporter.Report(strategy);
+                // ConsoleReporter reporter = new ConsoleReporter();
+                // reporter.Report(strategy);
 
             }
             catch (Exception ex)
@@ -67,7 +71,7 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private void ExecuteTestCollection(TestCollectionRunResult collection, FatRunOptions options)
+        private void ExecuteTestCollection(FatTestCollection collection, FatRunOptions options)
         {
             foreach (var testClass in collection.TestClasses)
             {
@@ -77,7 +81,7 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private void ExecuteTestClass(TestClassRunResult testClass, FatRunOptions options)
+        private void ExecuteTestClass(FatTestClass testClass, FatRunOptions options)
         {
             var fatTest = _iocService.GetService<FatTest>(testClass.Class) as FatTest;
 
@@ -85,35 +89,39 @@ namespace Yontech.Fat.Runner
 
             foreach (var testCase in testClass.TestCases)
             {
+                var shouldExecute = options.Filter?.ShouldExecuteTestCase(testCase) ?? true;
+                if (!shouldExecute)
+                {
+                    continue;
+                }
+
                 var watch = Stopwatch.StartNew();
                 try
                 {
-                    _interceptorDispatcher.BeforeTestCase(fatTest.GetType(), testCase.Method);
+                    _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
                     Thread.Sleep(options.DelayBetweenTestCases);
-                    _interceptorDispatcher.OnTestCasePassed(fatTest.GetType(), testCase.Method, watch.Elapsed);
+                    _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed);
                 }
                 catch (Exception ex)
                 {
                     var exception = ex.InnerException ?? ex;
-                    testCase.Result = TestCaseRunResult.ResultType.Error;
-                    testCase.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
-                    testCase.Exception = exception;
-                    _interceptorDispatcher.OnTestCaseFailed(fatTest.GetType(), testCase.Method, watch.Elapsed, ex);
+                    // testCase.Result = TestCaseRunResult.ResultType.Error;
+                    // testCase.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
+                    // testCase.Exception = exception;
+                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, ex);
                 }
                 finally
                 {
                     watch.Stop();
-                    testCase.Duration = watch.Elapsed;
                 }
             }
 
             fatTest.AfterAllTestCases();
         }
 
-        private void ExecuteTestCase(FatTest testClassInstance, TestCaseRunResult testCase)
+        private void ExecuteTestCase(FatTest testClassInstance, FatTestCase testCase)
         {
-
             var methodParameters = testCase.Method.GetParameters();
             if (methodParameters.Length == 0)
             {
@@ -135,11 +143,9 @@ namespace Yontech.Fat.Runner
                     }
                 }
             }
-
-            testCase.Result = TestCaseRunResult.ResultType.Success;
         }
 
-        private void ExecuteTestCaseWithDataSourceArguments(FatTest testClassInstance, TestCaseRunResult testCase, object[] executionArguments)
+        private void ExecuteTestCaseWithDataSourceArguments(FatTest testClassInstance, FatTestCase testCase, object[] executionArguments)
         {
             _webBrowser.SimulateFastConnection();
 

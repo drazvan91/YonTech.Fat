@@ -20,6 +20,21 @@ namespace Yontech.Fat.Interceptors
         public TimeSpan Duration { get; set; }
     }
 
+    public class FatTestCasePassed
+    {
+        public TimeSpan Duration { get; set; }
+
+    }
+
+    public class FatTestCaseFailed
+    {
+        public TimeSpan Duration { get; set; }
+        public Exception Exception { get; internal set; }
+
+    }
+
+
+
     public class OnTestCasePassedParams : TestCaseResultParams
     {
     }
