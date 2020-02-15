@@ -18,7 +18,6 @@ namespace Yontech.Fat.Runner
 
     public class FatRunner
     {
-        private readonly FatTestDiscoverer _discoverer = new FatTestDiscoverer();
         private IWebBrowser _webBrowser;
 
         private InterceptDispatcher _interceptorDispatcher;
@@ -40,9 +39,10 @@ namespace Yontech.Fat.Runner
             this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenSteps));
 
             _interceptorDispatcher = new InterceptDispatcher(options.Interceptors?.ToList());
-            _iocService = new IocService(options.Assemblies, this._webBrowser);
-
             var fatDiscoverer = new FatDiscoverer();
+
+            _iocService = new IocService(options.Assemblies, fatDiscoverer, this._webBrowser);
+
             var testCollections = fatDiscoverer.DiscoverTestCollections(options.Assemblies);
             //var strategy = RunStrategyFactory.Create(options);
 
