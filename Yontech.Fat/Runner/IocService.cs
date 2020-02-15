@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Yontech.Fat.Discoverer;
 
 namespace Yontech.Fat.Runner
 {
     public class IocService
     {
         private readonly ServiceProvider _serviceProvider;
+        private readonly FatDiscoverer discoverer;
 
-        public IocService(IEnumerable<Assembly> assemblies, IWebBrowser webBrowser)
+        public IocService(IEnumerable<Assembly> assemblies, FatDiscoverer discoverer, IWebBrowser webBrowser)
         {
+            this.discoverer = discoverer;
+
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton<IWebBrowser>(webBrowser);
 
@@ -26,26 +30,26 @@ namespace Yontech.Fat.Runner
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
 
-            var testClasses = Discoverer.GetTestClassesForAssembly(assembly);
+            var testClasses = discoverer.FindTestClasses(assembly);
 
             foreach (var testClass in testClasses)
             {
                 serviceCollection.AddTransient(testClass, testClass);
             }
 
-            var fatPages = Discoverer.GetFatPages(assembly);
+            var fatPages = discoverer.FindPages(assembly);
             foreach (var page in fatPages)
             {
                 serviceCollection.AddSingleton(page);
             }
 
-            var fatPageSections = Discoverer.GetFatPageSections(assembly);
+            var fatPageSections = discoverer.FindPageSections(assembly);
             foreach (var pageSections in fatPageSections)
             {
                 serviceCollection.AddSingleton(pageSections);
             }
 
-            var fatFlows = Discoverer.GetFatFlows(assembly);
+            var fatFlows = discoverer.FindFatFlows(assembly);
             foreach (var flow in fatFlows)
             {
                 serviceCollection.AddSingleton(flow);
