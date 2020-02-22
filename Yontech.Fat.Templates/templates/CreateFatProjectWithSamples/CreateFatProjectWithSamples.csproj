@@ -5,9 +5,11 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+        <PackageReference Include="Yontech.Fat" Version="0.1.0" />
+        <PackageReference Include="Yontech.Fat.TestAdapter" Version="0.1.0" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Yontech.Fat" Version="0.0.9" />
+        <Content Include="files\**\*" CopyToOutputDirectory="Always" />
     </ItemGroup>
 </Project>
