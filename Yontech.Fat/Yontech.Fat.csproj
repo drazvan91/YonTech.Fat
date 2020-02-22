@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Yontech.Fat</PackageId>
-        <Version>0.0.9</Version>
+        <Version>0.1.0</Version>
         <Authors>Razvan Dragomir</Authors>
         <Company>TSS Yonder</Company>
     </PropertyGroup>
