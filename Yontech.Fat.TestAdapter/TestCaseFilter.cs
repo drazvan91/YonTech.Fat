@@ -31,14 +31,17 @@ namespace Yontech.Fat.TestAdapter
 
         public bool ShouldExecuteTestCase(FatTestCase fatTestCase)
         {
-            var testCase = testCaseFactory.Create(fatTestCase);
+            if (filterExpression == null)
+            {
+                return true;
+            }
 
+            var testCase = testCaseFactory.Create(fatTestCase);
             return filterExpression.MatchTestCase(testCase, (p) => PropertyProvider(fatTestCase, p));
         }
 
         private object PropertyProvider(FatTestCase testCase, string name)
         {
-            Console.WriteLine("name: " + name);
             if (string.Equals(name, FULLY_QUALIFIED_NAME_STRING, StringComparison.OrdinalIgnoreCase))
                 return testCase.FullyQualifiedName;
             if (string.Equals(name, DISPLAY_NAME_STRING, StringComparison.OrdinalIgnoreCase))

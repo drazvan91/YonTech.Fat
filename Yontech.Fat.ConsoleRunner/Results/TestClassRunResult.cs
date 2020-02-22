@@ -2,14 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yontech.Fat.Runner.Results
+namespace Yontech.Fat.ConsoleRunner.Results
 {
     public class TestClassRunResult
     {
-        public Type Class { get; set; }
-        public string Name { get; set; }
-        public List<TestCaseRunResult> TestCases { get; set; }
+        public Type Class { get; }
+        public string Name { get; }
+        public List<TestCaseRunResult> TestCases { get; }
 
+        public TestClassRunResult(Type testClass)
+        {
+            this.Class = testClass;
+            this.Name = testClass.Name;
+            this.TestCases = new List<TestCaseRunResult>();
+        }
 
         public bool HasErrors()
         {

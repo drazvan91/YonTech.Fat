@@ -2,40 +2,95 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Yontech.Fat.Runner;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Discoverer
 {
     public class FatDiscoverer
     {
-        public IEnumerable<FatTestCollection> DiscoverTestCollections(IEnumerable<Assembly> assemblies)
+        public IEnumerable<FatTestCollection> DiscoverTestCollections(ITestCaseFilter filter = null)
         {
-            return assemblies.Select(assembly => new FatTestCollection(assembly)
-            {
-                TestClasses = DiscoverTestClasses(assembly).ToList()
-            });
+            var assemblies = AssemblyDiscoverer.DiscoverAssemblies();
+            return DiscoverTestCollections(assemblies, filter);
         }
 
-        public IEnumerable<FatTestClass> DiscoverTestClasses(Assembly assembly)
+        public IEnumerable<FatTestCollection> DiscoverTestCollections(IEnumerable<Assembly> assemblies, ITestCaseFilter filter = null)
+        {
+            foreach (var assembly in assemblies)
+            {
+                var testCollection = DiscoverTestCollection(assembly, filter);
+                if (testCollection != null)
+                {
+                    yield return testCollection;
+                }
+            }
+        }
+
+        public FatTestCollection DiscoverTestCollection<TFatTest>(ITestCaseFilter filter = null) where TFatTest : FatTest
+        {
+            var testCases = DiscoverTestCases(typeof(TFatTest), filter).ToList();
+            if (testCases.Any())
+            {
+                var testClasses = new List<FatTestClass>()
+                {
+                    new FatTestClass(typeof(TFatTest)){
+                        TestCases = testCases
+                    }
+                };
+
+                return new FatTestCollection(typeof(TFatTest).Assembly)
+                {
+                    TestClasses = testClasses
+                };
+            }
+
+            return null;
+        }
+
+        public FatTestCollection DiscoverTestCollection(Assembly assembly, ITestCaseFilter filter = null)
+        {
+            var testClasses = DiscoverTestClasses(assembly, filter).ToList();
+            if (testClasses.Any())
+            {
+                return new FatTestCollection(assembly)
+                {
+                    TestClasses = testClasses
+                };
+            }
+
+            return null;
+        }
+
+        public IEnumerable<FatTestClass> DiscoverTestClasses(Assembly assembly, ITestCaseFilter filter = null)
         {
             var allTestClasses = this.FindTestClasses(assembly);
 
             foreach (var type in allTestClasses)
             {
-                yield return new FatTestClass(type)
+                var testCases = DiscoverTestCases(type, filter).ToList();
+                if (testCases.Any())
                 {
-                    TestCases = DiscoverTestCases(type).ToList(),
-                };
+                    yield return new FatTestClass(type)
+                    {
+                        TestCases = testCases
+                    };
+                }
             }
         }
 
-        private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass)
+        private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass, ITestCaseFilter filter = null)
         {
             var allMethods = testClass.GetMethods();
             var testCases = allMethods.Where(method => method.Name.StartsWith("Test")); // todo: make this configurable
 
             foreach (var method in testCases)
             {
-                yield return new FatTestCase(method);
+                var testCase = new FatTestCase(method);
+                if (filter?.ShouldExecuteTestCase(testCase) ?? true)
+                {
+                    yield return testCase;
+                }
             }
         }
 

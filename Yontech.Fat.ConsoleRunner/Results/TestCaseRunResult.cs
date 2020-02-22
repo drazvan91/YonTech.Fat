@@ -3,19 +3,35 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Yontech.Fat.Runner.Results
+namespace Yontech.Fat.ConsoleRunner.Results
 {
     public class TestCaseRunResult
     {
-        public MethodInfo Method { get; set; }
-        public string ShortName { get; set; }
-        public string LongName { get; set; }
+        public MethodInfo Method { get; }
+        public string ShortName
+        {
+            get
+            {
+                return Method.Name;
+            }
+        }
+        public string LongName
+        {
+            get
+            {
+                return Method.ReflectedType.FullName + "." + ShortName;
+            }
+        }
         public ResultType Result { get; set; }
         public TimeSpan Duration { get; set; }
         public string Logs { get; set; }
         public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }
 
+        public TestCaseRunResult(MethodInfo testCase)
+        {
+            this.Method = testCase;
+        }
         public enum ResultType
         {
             NotStarted,

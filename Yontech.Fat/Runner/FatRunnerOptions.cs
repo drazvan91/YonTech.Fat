@@ -10,10 +10,8 @@ using Yontech.Fat.Interceptors;
 
 namespace Yontech.Fat.Runner
 {
-
-    public class FatRunOptions
+    public class FatRunnerOptions
     {
-        public List<Assembly> Assemblies { get; set; }
         public ITestCaseFilter Filter { get; set; }
         public BrowserType Browser { get; set; }
         // public bool ScreenShotOnFailure { get; set; }
@@ -24,6 +22,20 @@ namespace Yontech.Fat.Runner
         public string DriversFolder { get; set; }
         public bool AutomaticDriverDownload { get; set; } = true;
         public IEnumerable<FatInterceptor> Interceptors { get; set; }
-    }
 
+        public static FatRunnerOptions Clone(FatRunnerOptions options)
+        {
+            return new FatRunnerOptions()
+            {
+                Filter = options.Filter,
+                Browser = options.Browser,
+                DelayBetweenSteps = options.DelayBetweenSteps,
+                AutomaticDriverDownload = options.AutomaticDriverDownload,
+                DelayBetweenTestCases = options.DelayBetweenTestCases,
+                DriversFolder = options.DriversFolder,
+                Interceptors = options.Interceptors,
+                RunInBackground = options.RunInBackground
+            };
+        }
+    }
 }

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Yontech.Fat.ConsoleRunner</PackageId>
+        <Version>0.0.8</Version>
+        <Authors>Razvan Dragomir</Authors>
+        <Company>TSS Yonder</Company>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Yontech.Fat\Yontech.Fat.csproj" />
+    </ItemGroup>
+
+</Project>
