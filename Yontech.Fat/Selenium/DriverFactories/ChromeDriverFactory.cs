@@ -6,7 +6,7 @@ using Yontech.Fat.Configuration;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
-    public static class ChromeDriverFactory
+    internal static class ChromeDriverFactory
     {
         /// <summary>
         /// Creates a web driver.

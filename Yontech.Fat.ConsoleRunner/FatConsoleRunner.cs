@@ -9,40 +9,56 @@ namespace Yontech.Fat.ConsoleRunner
     public class FatConsoleRunner
     {
         private readonly ConsoleRunnerInterceptor _interceptor;
-        private readonly FatRunnerOptions _options;
+        private readonly FatConfig _options;
 
-        public FatConsoleRunner(FatRunnerOptions options)
+        public FatConsoleRunner(FatConfig options = null)
         {
             this._interceptor = new ConsoleRunnerInterceptor();
-            this._options = FatRunnerOptions.Clone(options);
 
-            var interceptors = this._options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+            if (options != null)
+            {
+                this._options = FatConfig.Clone(options);
+                AddInterceptor(this._options);
+            }
+        }
+
+        private void AddInterceptor(FatConfig config)
+        {
+            var interceptors = config.Interceptors?.ToList() ?? new List<FatInterceptor>();
             interceptors.Add(_interceptor);
-            this._options.Interceptors = interceptors;
+            config.Interceptors = interceptors;
+        }
+
+        private FatRunner CreateRunner()
+        {
+            if (this._options == null)
+            {
+                return new FatRunner(AddInterceptor);
+            }
+            else
+            {
+                return new FatRunner(this._options);
+            }
         }
 
         public void Run()
         {
-            FatRunner runner = new FatRunner(this._options);
-            runner.Run();
+            CreateRunner().Run();
         }
 
         public void Run<T>() where T : FatTest
         {
-            FatRunner runner = new FatRunner(this._options);
-            runner.Run<T>();
+            CreateRunner().Run<T>();
         }
 
         public void Run(IEnumerable<Assembly> assemblies)
         {
-            FatRunner runner = new FatRunner(this._options);
-            runner.Run(assemblies);
+            CreateRunner().Run(assemblies);
         }
 
         public void Run(Assembly assembly)
         {
-            FatRunner runner = new FatRunner(this._options);
-            runner.Run(assembly);
+            CreateRunner().Run(assembly);
         }
     }
 }

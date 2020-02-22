@@ -27,6 +27,19 @@ namespace Yontech.Fat.Discoverer
             }
         }
 
+        public FatConfig DiscoverConfig()
+        {
+            var configType = AssemblyDiscoverer.DiscoverAssemblies()
+             .SelectMany(a => FindFatConfigs(a))
+             .OrderBy(c => c.FullName.Length).FirstOrDefault();
+
+            if (configType == null) { return null; }
+
+            var config = Activator.CreateInstance(configType) as FatConfig;
+            Console.WriteLine(config.AutomaticDriverDownload);
+            return config;
+        }
+
         public FatTestCollection DiscoverTestCollection<TFatTest>(ITestCaseFilter filter = null) where TFatTest : FatTest
         {
             var testCases = DiscoverTestCases(typeof(TFatTest), filter).ToList();
@@ -125,6 +138,12 @@ namespace Yontech.Fat.Discoverer
         {
             var allTypes = assembly.GetTypes();
             return allTypes.Where(type => type.IsSubclassOf(typeof(FatFlow)));
+        }
+
+        public IEnumerable<Type> FindFatConfigs(Assembly assembly)
+        {
+            var allTypes = assembly.GetTypes();
+            return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)));
         }
     }
 }

@@ -20,14 +20,36 @@ namespace Yontech.Fat.Runner
         private InterceptDispatcher _interceptorDispatcher;
         private IocService _iocService;
         private FatDiscoverer _fatDiscoverer;
-        private readonly FatRunnerOptions _options;
+        private FatConfig _options;
 
-        public FatRunner(FatRunnerOptions options)
+        public FatRunner(Action<FatConfig> optionsCallback)
+        {
+            this._fatDiscoverer = new FatDiscoverer();
+
+            var options = this._fatDiscoverer.DiscoverConfig();
+
+            if (options == null)
+            {
+                options = FatConfig.Default();
+            }
+
+            optionsCallback(options);
+            Init(options);
+        }
+
+        public FatRunner(FatConfig options)
+        {
+            this._fatDiscoverer = new FatDiscoverer();
+            Init(options);
+        }
+
+        private void Init(FatConfig options)
         {
             this._options = options;
 
-            this._fatDiscoverer = new FatDiscoverer();
-            this._interceptorDispatcher = new InterceptDispatcher(this._options.Interceptors?.ToList());
+            var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+
+            this._interceptorDispatcher = new InterceptDispatcher(interceptors);
             this._iocService = new IocService(_fatDiscoverer, () =>
             {
                 return this._webBrowser;
