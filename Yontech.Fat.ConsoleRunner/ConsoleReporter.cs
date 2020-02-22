@@ -1,15 +1,12 @@
 using System.Collections.Generic;
-using Yontech.Fat.Runner.Results;
 using System;
 using System.Linq;
+using Yontech.Fat.ConsoleRunner.Results;
 
 namespace Yontech.Fat.Runner.ConsoleRunner
 {
     public class ConsoleReporter
     {
-        private ConsoleColor _defaultBackground;
-        private ConsoleColor _defaultForeground;
-
         public void Report(List<TestCollectionRunResult> collections)
         {
             // Console.Clear();

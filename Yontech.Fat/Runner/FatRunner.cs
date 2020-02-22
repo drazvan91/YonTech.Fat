@@ -4,14 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.DataSources;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
-using Yontech.Fat.Runner.ConsoleRunner;
-using Yontech.Fat.Runner.Results;
 
 namespace Yontech.Fat.Runner
 {
@@ -22,36 +19,78 @@ namespace Yontech.Fat.Runner
 
         private InterceptDispatcher _interceptorDispatcher;
         private IocService _iocService;
+        private FatDiscoverer _fatDiscoverer;
+        private readonly FatRunnerOptions _options;
 
-        public void Run(FatRunOptions options)
+        public FatRunner(FatRunnerOptions options)
+        {
+            this._options = options;
+
+            this._fatDiscoverer = new FatDiscoverer();
+            this._interceptorDispatcher = new InterceptDispatcher(this._options.Interceptors?.ToList());
+            this._iocService = new IocService(_fatDiscoverer, () =>
+            {
+                return this._webBrowser;
+            });
+        }
+
+        public void Run<TFatTest>() where TFatTest : FatTest
+        {
+            var testCollections = new List<FatTestCollection>();
+            var testCollection = _fatDiscoverer.DiscoverTestCollection<TFatTest>(_options.Filter);
+            if (testCollection != null)
+            {
+                testCollections.Add(testCollection);
+            }
+
+            this.Run(testCollections);
+        }
+
+        public void Run()
+        {
+            var testCollections = _fatDiscoverer.DiscoverTestCollections(_options.Filter);
+            this.Run(testCollections);
+        }
+
+        public void Run(IEnumerable<Assembly> assemblies)
+        {
+            var testCollections = _fatDiscoverer.DiscoverTestCollections(assemblies, _options.Filter);
+            this.Run(testCollections);
+        }
+
+        public void Run(Assembly assembly)
+        {
+            var testCollections = new List<FatTestCollection>();
+            var testCollection = _fatDiscoverer.DiscoverTestCollection(assembly, _options.Filter);
+            if (testCollection != null)
+            {
+                testCollections.Add(testCollection);
+            }
+
+            this.Run(testCollections);
+        }
+
+        private void Run(IEnumerable<FatTestCollection> testCollections)
         {
             var browserStartOptions = new BrowserStartOptions()
             {
-                RunHeadless = options.RunInBackground,
-                DriversFolder = options.DriversFolder ?? "drivers",
-                AutomaticDriverDownload = options.AutomaticDriverDownload
+                RunHeadless = this._options.RunInBackground,
+                DriversFolder = this._options.DriversFolder ?? "drivers",
+                AutomaticDriverDownload = this._options.AutomaticDriverDownload
             };
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
-            this._webBrowser = factory.Create(Yontech.Fat.BrowserType.Chrome, browserStartOptions);
+            this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
             this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
             this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
-            this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(options.DelayBetweenSteps));
-
-            _interceptorDispatcher = new InterceptDispatcher(options.Interceptors?.ToList());
-            var fatDiscoverer = new FatDiscoverer();
-
-            _iocService = new IocService(options.Assemblies, fatDiscoverer, this._webBrowser);
-
-            var testCollections = fatDiscoverer.DiscoverTestCollections(options.Assemblies);
-            //var strategy = RunStrategyFactory.Create(options);
+            this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(this._options.DelayBetweenSteps));
 
             try
             {
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
                 foreach (var collection in testCollections)
                 {
-                    this.ExecuteTestCollection(collection, options);
+                    this.ExecuteTestCollection(collection);
                 }
                 _interceptorDispatcher.OnExecutionFinished(new ExecutionFinishedParams());
 
@@ -62,7 +101,10 @@ namespace Yontech.Fat.Runner
             catch (Exception ex)
             {
                 Console.WriteLine("ERRRORRRRRRR");
+
                 Console.WriteLine((ex.InnerException ?? ex).StackTrace);
+                Console.WriteLine((ex).StackTrace);
+
             }
             finally
             {
@@ -71,45 +113,35 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private void ExecuteTestCollection(FatTestCollection collection, FatRunOptions options)
+        private void ExecuteTestCollection(FatTestCollection collection)
         {
             foreach (var testClass in collection.TestClasses)
             {
                 _interceptorDispatcher.BeforeTestClass(testClass.Class);
-                ExecuteTestClass(testClass, options);
+                ExecuteTestClass(testClass);
                 _interceptorDispatcher.AfterTestClass(testClass.Class);
             }
         }
 
-        private void ExecuteTestClass(FatTestClass testClass, FatRunOptions options)
+        private void ExecuteTestClass(FatTestClass testClass)
         {
             var fatTest = _iocService.GetService<FatTest>(testClass.Class) as FatTest;
 
             fatTest.BeforeAllTestCases();
-
             foreach (var testCase in testClass.TestCases)
             {
-                var shouldExecute = options.Filter?.ShouldExecuteTestCase(testCase) ?? true;
-                if (!shouldExecute)
-                {
-                    continue;
-                }
-
                 var watch = Stopwatch.StartNew();
                 try
                 {
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
-                    Thread.Sleep(options.DelayBetweenTestCases);
+                    Thread.Sleep(_options.DelayBetweenTestCases);
                     _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed);
                 }
                 catch (Exception ex)
                 {
                     var exception = ex.InnerException ?? ex;
-                    // testCase.Result = TestCaseRunResult.ResultType.Error;
-                    // testCase.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
-                    // testCase.Exception = exception;
-                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, ex);
+                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception);
                 }
                 finally
                 {
@@ -139,7 +171,6 @@ namespace Yontech.Fat.Runner
                     foreach (var arguments in executionArguments)
                     {
                         this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, arguments);
-
                     }
                 }
             }

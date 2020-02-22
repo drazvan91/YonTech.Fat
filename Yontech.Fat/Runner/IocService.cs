@@ -4,21 +4,24 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Runner
 {
     public class IocService
     {
         private readonly ServiceProvider _serviceProvider;
-        private readonly FatDiscoverer discoverer;
+        private readonly FatDiscoverer _discoverer;
+        private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(IEnumerable<Assembly> assemblies, FatDiscoverer discoverer, IWebBrowser webBrowser)
+        public IocService(FatDiscoverer discoverer, Func<IWebBrowser> webBrowserProvider)
         {
-            this.discoverer = discoverer;
+            this._discoverer = discoverer;
+            this._webBrowserProvider = webBrowserProvider;
 
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IWebBrowser>(webBrowser);
 
+            var assemblies = AssemblyDiscoverer.DiscoverAssemblies();
             foreach (var assembly in assemblies)
             {
                 this.RegisterAssembly(serviceCollection, assembly);
@@ -30,26 +33,26 @@ namespace Yontech.Fat.Runner
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
 
-            var testClasses = discoverer.FindTestClasses(assembly);
+            var testClasses = _discoverer.FindTestClasses(assembly);
 
             foreach (var testClass in testClasses)
             {
                 serviceCollection.AddTransient(testClass, testClass);
             }
 
-            var fatPages = discoverer.FindPages(assembly);
+            var fatPages = _discoverer.FindPages(assembly);
             foreach (var page in fatPages)
             {
                 serviceCollection.AddSingleton(page);
             }
 
-            var fatPageSections = discoverer.FindPageSections(assembly);
+            var fatPageSections = _discoverer.FindPageSections(assembly);
             foreach (var pageSections in fatPageSections)
             {
                 serviceCollection.AddSingleton(pageSections);
             }
 
-            var fatFlows = discoverer.FindFatFlows(assembly);
+            var fatFlows = _discoverer.FindFatFlows(assembly);
             foreach (var flow in fatFlows)
             {
                 serviceCollection.AddSingleton(flow);
@@ -90,31 +93,29 @@ namespace Yontech.Fat.Runner
 
             injectionContext.Remove(type.FullName);
 
+            var browser = this._webBrowserProvider();
+
             var fatTest = instance as FatTest;
             if (fatTest != null)
             {
-                var browser = _serviceProvider.GetService<IWebBrowser>();
                 fatTest.WebBrowser = browser;
             }
 
             var sectionPage = instance as FatPageSection;
             if (sectionPage != null)
             {
-                var browser = _serviceProvider.GetService<IWebBrowser>();
                 sectionPage.WebBrowser = browser;
             }
 
             var page = instance as FatPage;
             if (page != null)
             {
-                var browser = _serviceProvider.GetService<IWebBrowser>();
                 page.WebBrowser = browser;
             }
 
             var flow = instance as FatFlow;
             if (flow != null)
             {
-                var browser = _serviceProvider.GetService<IWebBrowser>();
                 flow.WebBrowser = browser;
             }
 
