@@ -8,7 +8,7 @@ using Yontech.Fat.Selenium.DriverFactories;
 
 namespace Yontech.Fat.Selenium
 {
-    public class SeleniumWebBrowserFactory : IWebBrowserFactory
+    internal class SeleniumWebBrowserFactory : IWebBrowserFactory
     {
         public IWebBrowser Create(BrowserType browserType)
         {

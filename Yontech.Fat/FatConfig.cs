@@ -1,31 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
-using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Interceptors;
+using Yontech.Fat.Runner;
 
-namespace Yontech.Fat.Runner
+namespace Yontech.Fat
 {
-    public class FatRunnerOptions
+    public class FatConfig
     {
         public ITestCaseFilter Filter { get; set; }
-        public BrowserType Browser { get; set; }
-        // public bool ScreenShotOnFailure { get; set; }
-        // public string ReportFileLocation { get; set; }
+        public BrowserType Browser { get; set; } = BrowserType.Chrome;
         public int DelayBetweenTestCases { get; set; }
         public int DelayBetweenSteps { get; set; }
         public bool RunInBackground { get; set; }
-        public string DriversFolder { get; set; }
+        public string DriversFolder { get; set; } = "drivers";
         public bool AutomaticDriverDownload { get; set; } = true;
         public IEnumerable<FatInterceptor> Interceptors { get; set; }
 
-        public static FatRunnerOptions Clone(FatRunnerOptions options)
+        public static FatConfig Clone(FatConfig options)
         {
-            return new FatRunnerOptions()
+            return new FatConfig()
             {
                 Filter = options.Filter,
                 Browser = options.Browser,
@@ -35,6 +27,13 @@ namespace Yontech.Fat.Runner
                 DriversFolder = options.DriversFolder,
                 Interceptors = options.Interceptors,
                 RunInBackground = options.RunInBackground
+            };
+        }
+
+        public static FatConfig Default()
+        {
+            return new FatConfig()
+            {
             };
         }
     }

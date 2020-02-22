@@ -48,17 +48,17 @@ namespace Yontech.Fat.TestAdapter
             var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
             var simpleFilter = new SimpleTestCaseFilter(runContext, testCaseFactory);
 
-            var options = new FatRunnerOptions()
-            {
-                AutomaticDriverDownload = true,
-                Browser = BrowserType.Chrome,
-                Filter = simpleFilter,
-                Interceptors = new List<FatInterceptor>(){
-                    new Interceptor(frameworkHandle, testCaseFactory)
-                }
-            };
+            var interceptor = new Interceptor(frameworkHandle, testCaseFactory);
 
-            var fatRunner = new FatRunner(options);
+            var fatRunner = new FatRunner((options) =>
+            {
+                options.Filter = simpleFilter;
+                var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+                interceptors.Add(interceptor);
+
+                options.Interceptors = interceptors;
+            });
+
             fatRunner.Run(assemblies);
         }
     }
