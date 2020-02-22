@@ -23,23 +23,22 @@ namespace Yontech.Fat.TestAdapter
 
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            var stopwatch = Stopwatch.StartNew();
-            var logger = new LoggerHelper(frameworkHandle, stopwatch);
+            var assemblies = tests.Select(s => Assembly.LoadFile(s.Source)).ToList();
 
-            var filter = new TestCaseFilter(runContext, logger, "assembly file name todo", new HashSet<string>());
-            var filteredTestCases = tests.Where(dtc => filter.MatchTestCase(dtc)).ToList();
+            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
+            var interceptor = new Interceptor(frameworkHandle, testCaseFactory);
+            var filter = new TestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
-            foreach (var testCase in filteredTestCases)
+            var fatRunner = new FatRunner((options) =>
             {
-                frameworkHandle.RecordStart(testCase);
-                var testResult = new TestResult(testCase)
-                {
-                    ComputerName = "todo: some computer", // todo:
-                    Outcome = TestOutcome.Passed,
-                };
+                options.Filter = filter;
+                var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+                interceptors.Add(interceptor);
 
-                frameworkHandle.RecordResult(testResult);
-            }
+                options.Interceptors = interceptors;
+            });
+
+            fatRunner.Run();
         }
 
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
