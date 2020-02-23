@@ -100,6 +100,8 @@ namespace Yontech.Fat.Runner
             var browserStartOptions = new BrowserStartOptions()
             {
                 RunHeadless = this._options.RunInBackground,
+                StartMaximized = this._options.StartMaximized,
+                InitialSize = this._options.InitialSize,
                 DriversFolder = this._options.DriversFolder ?? "drivers",
                 AutomaticDriverDownload = this._options.AutomaticDriverDownload
             };

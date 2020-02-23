@@ -7,6 +7,7 @@ using Yontech.Fat.WebControls;
 using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.BusyConditions;
 using OpenQA.Selenium.Chrome;
+using System.Drawing;
 
 namespace Yontech.Fat.Selenium
 {
@@ -38,6 +39,10 @@ namespace Yontech.Fat.Selenium
         public override IIFrameControl IFrameControl => this._frameControlLazy.Value;
 
         public override string CurrentUrl => WebDriver.Url;
+
+        public override string Title => WebDriver.Title;
+
+        public override Size Size => WebDriver.Manage().Window.Size;
 
         public override void Close()
         {
@@ -188,6 +193,26 @@ namespace Yontech.Fat.Selenium
                     UploadThroughput = 100000
                 };
             }
+        }
+
+        public override void Resize(int width, int height)
+        {
+            this.WebDriver.Manage().Window.Size = new Size(width, height);
+        }
+
+        public override void Fullscreen()
+        {
+            this.WebDriver.Manage().Window.FullScreen();
+        }
+
+        public override void Maximize()
+        {
+            this.WebDriver.Manage().Window.Maximize();
+        }
+
+        public override void Minimize()
+        {
+            this.WebDriver.Manage().Window.Minimize();
         }
     }
 }

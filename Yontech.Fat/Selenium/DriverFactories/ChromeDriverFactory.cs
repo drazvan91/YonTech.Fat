@@ -27,27 +27,40 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // service.Start();
             //IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
 
+
+            ChromeDriver driver = null;
             try
             {
-                return CreateDriver(driverPath, chromeOptions);
+                driver = CreateDriver(driverPath, chromeOptions);
             }
             catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
             {
                 new ChromeDriverDownloader().Download(driverPath).Wait();
 
-                return CreateDriver(driverPath, chromeOptions);
+                driver = CreateDriver(driverPath, chromeOptions);
             }
+
+            if (driver != null)
+            {
+                // this is a hotfix because selenium --start-maximized doesn't work (see below)
+                if (startOptions.StartMaximized)
+                {
+                    driver.Manage().Window.Maximize();
+                }
+            }
+
+            return driver;
         }
 
         private static ChromeDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
         {
             var webDriver = new ChromeDriver(driverPath, chromeOptions);
+
             return webDriver;
         }
 
         private static ChromeOptions CreateOptions(BrowserStartOptions startOptions)
         {
-            // Initialize default.
             startOptions = startOptions ?? new BrowserStartOptions();
 
             var chromeOptions = new ChromeOptions();
@@ -59,7 +72,15 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
             if (startOptions.StartMaximized)
             {
+                // this looks like it is not working, might be deprecated by selenium
                 chromeOptions.AddArgument("--start-maximized");
+            }
+
+            var height = startOptions.InitialSize.Height;
+            var width = startOptions.InitialSize.Width;
+            if (height > 0 && height > 0)
+            {
+                chromeOptions.AddArgument($"--window-size={height},{width}");
             }
 
             if (startOptions.DisablePopupBlocking)

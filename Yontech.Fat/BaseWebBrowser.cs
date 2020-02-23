@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
@@ -26,6 +27,8 @@ namespace Yontech.Fat
         public abstract bool AcceptAlert();
         public abstract bool DismissAlert();
         public abstract string CurrentUrl { get; }
+        public abstract string Title { get; }
+        public abstract Size Size { get; }
 
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
@@ -96,5 +99,10 @@ namespace Yontech.Fat
         public abstract void SimulateOfflineConnection();
         public abstract void SimulateSlowConnection(int delay = 1000);
         public abstract void SimulateFastConnection();
+
+        public abstract void Resize(int width, int height);
+        public abstract void Fullscreen();
+        public abstract void Maximize();
+        public abstract void Minimize();
     }
 }

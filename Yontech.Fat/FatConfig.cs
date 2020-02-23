@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Runner;
 
@@ -13,6 +14,8 @@ namespace Yontech.Fat
         public bool RunInBackground { get; set; }
         public string DriversFolder { get; set; } = "drivers";
         public bool AutomaticDriverDownload { get; set; } = true;
+        public Size InitialSize { get; set; }
+        public bool StartMaximized { get; set; } = false;
         public IEnumerable<FatInterceptor> Interceptors { get; set; }
 
         public static FatConfig Clone(FatConfig options)
@@ -26,7 +29,8 @@ namespace Yontech.Fat
                 DelayBetweenTestCases = options.DelayBetweenTestCases,
                 DriversFolder = options.DriversFolder,
                 Interceptors = options.Interceptors,
-                RunInBackground = options.RunInBackground
+                RunInBackground = options.RunInBackground,
+
             };
         }
 
