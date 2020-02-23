@@ -12,7 +12,7 @@ namespace Yontech.Fat.Interceptors
 
         protected internal virtual void OnTestCasePassed(FatTestCase testCase, FatTestCasePassed passed) { }
         protected internal virtual void OnTestCaseFailed(FatTestCase testCase, FatTestCaseFailed failed) { }
-        protected internal virtual void OnTestCaseSkipped(OnTestCaseSkippedParams skippedTest) { }
+        protected internal virtual void OnTestCaseSkipped(FatTestCase testCase) { }
 
         protected internal virtual void AfterTestClass(TestClassParams testClass) { }
     }

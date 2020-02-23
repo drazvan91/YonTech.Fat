@@ -42,6 +42,7 @@ namespace Yontech.Fat.ConsoleRunner
             testResult.ErrorMessage = failed.Exception.Message;
             testResult.Exception = failed.Exception;
             testResult.Result = TestCaseRunResult.ResultType.Error;
+            testResult.Logs = failed.Logs;
         }
 
         private TestCaseRunResult AddResult(Assembly collection, Type testClass, MethodInfo testCase)
@@ -75,6 +76,7 @@ namespace Yontech.Fat.ConsoleRunner
             var testResult = AddResult(collection, testClass, testCase);
             testResult.Duration = passed.Duration;
             testResult.Result = TestCaseRunResult.ResultType.Success;
+            testResult.Logs = passed.Logs;
         }
     }
 }

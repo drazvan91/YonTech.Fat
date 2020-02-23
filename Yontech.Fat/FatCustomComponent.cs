@@ -5,11 +5,10 @@ using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
-  public abstract class FatCustomComponent
-  {
-    internal IWebElement _webElement { get; set; }
-    internal protected IWebBrowser WebBrowser { get; internal set; }
-    internal protected IGenericControl Container { get; internal set; }
-    internal protected IControlFinder _ => Container.ControlFinder;
-  }
+    public abstract class FatCustomComponent : BaseFatDiscoverable
+    {
+        internal IWebElement _webElement { get; set; }
+        internal protected IGenericControl Container { get; internal set; }
+        internal protected IControlFinder _ => Container.ControlFinder;
+    }
 }

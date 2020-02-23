@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Yontech.Fat.ConsoleRunner.Results;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Runner.ConsoleRunner
 {
@@ -97,6 +98,37 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
             Console.WriteLine();
 
+            if (testCase.Logs.Any())
+            {
+                Console.WriteLine("Logs:");
+                foreach (var log in testCase.Logs)
+                {
+                    switch (log.Category)
+                    {
+                        case Log.ERROR:
+                            PrintRed("    {1} - ERROR: {0}", log.Message, log.TimeSpan);
+                            Console.WriteLine();
+                            break;
+
+                        case Log.WARNING:
+                            PrintYellow("    {1} - ERROR: {0}", log.Message, log.TimeSpan);
+                            Console.WriteLine();
+                            break;
+
+                        case Log.INFO:
+                            PrintNormal("    {1} - Info: {0}", log.Message, log.TimeSpan);
+                            Console.WriteLine();
+                            break;
+
+                        case Log.DEBUG:
+                            PrintGray("    {1} - Debug: {0}", log.Message, log.TimeSpan);
+                            Console.WriteLine();
+                            break;
+                    }
+
+                }
+            }
+
             if (testCase.HasErrors())
             {
                 PrintRed(" > ");
@@ -131,6 +163,13 @@ namespace Yontech.Fat.Runner.ConsoleRunner
         private void PrintRed(string format, params object[] args)
         {
             Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(format, args);
+            Console.ResetColor();
+        }
+
+        private void PrintYellow(string format, params object[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(format, args);
             Console.ResetColor();
         }

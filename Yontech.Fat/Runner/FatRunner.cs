@@ -9,6 +9,7 @@ using Yontech.Fat.Configuration;
 using Yontech.Fat.DataSources;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Runner
 {
@@ -21,6 +22,7 @@ namespace Yontech.Fat.Runner
         private IocService _iocService;
         private FatDiscoverer _fatDiscoverer;
         private FatConfig _options;
+        private LogsSink _logsSink;
 
         public FatRunner(Action<FatConfig> optionsCallback)
         {
@@ -46,11 +48,12 @@ namespace Yontech.Fat.Runner
         private void Init(FatConfig options)
         {
             this._options = options;
+            this._logsSink = new LogsSink();
 
             var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
 
             this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_fatDiscoverer, () =>
+            this._iocService = new IocService(_fatDiscoverer, _logsSink, () =>
             {
                 return this._webBrowser;
             });
@@ -147,23 +150,24 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestClass(FatTestClass testClass)
         {
-            var fatTest = _iocService.GetService<FatTest>(testClass.Class) as FatTest;
+            var fatTest = _iocService.GetService<FatTest>(testClass.Class);
 
             fatTest.BeforeAllTestCases();
             foreach (var testCase in testClass.TestCases)
             {
                 var watch = Stopwatch.StartNew();
+                _logsSink.Reset();
                 try
                 {
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
                     Thread.Sleep(_options.DelayBetweenTestCases);
-                    _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed);
+                    _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, _logsSink.GetLogs().ToList());
                 }
                 catch (Exception ex)
                 {
                     var exception = ex.InnerException ?? ex;
-                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception);
+                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, _logsSink.GetLogs().ToList());
                 }
                 finally
                 {

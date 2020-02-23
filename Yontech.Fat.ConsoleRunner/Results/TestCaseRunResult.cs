@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.ConsoleRunner.Results
 {
@@ -24,7 +25,7 @@ namespace Yontech.Fat.ConsoleRunner.Results
         }
         public ResultType Result { get; set; }
         public TimeSpan Duration { get; set; }
-        public string Logs { get; set; }
+        public List<Log> Logs { get; set; }
         public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }
 

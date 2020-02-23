@@ -66,11 +66,12 @@ namespace Yontech.Fat.Interceptors
             });
         }
 
-        public void OnTestCaseFailed(FatTestCase testCase, TimeSpan duration, Exception ex)
+        public void OnTestCaseFailed(FatTestCase testCase, TimeSpan duration, Exception ex, List<Logging.Log> list)
         {
             var interceptParams = new FatTestCaseFailed()
             {
                 Duration = duration,
+                Logs = list,
                 Exception = ex
             };
 
@@ -80,11 +81,12 @@ namespace Yontech.Fat.Interceptors
             });
         }
 
-        public void OnTestCasePassed(FatTestCase testCase, TimeSpan duration)
+        public void OnTestCasePassed(FatTestCase testCase, TimeSpan duration, List<Logging.Log> list)
         {
             var interceptParams = new FatTestCasePassed()
             {
-                Duration = duration
+                Duration = duration,
+                Logs = list
             };
 
             this.SafeForEach((interceptor) =>
@@ -93,11 +95,11 @@ namespace Yontech.Fat.Interceptors
             });
         }
 
-        public void OnTestCaseSkipped(OnTestCaseSkippedParams skippedTest)
+        public void OnTestCaseSkipped(FatTestCase testCase)
         {
             this.SafeForEach((interceptor) =>
             {
-                interceptor.OnTestCaseSkipped(skippedTest);
+                interceptor.OnTestCaseSkipped(testCase);
             });
         }
 

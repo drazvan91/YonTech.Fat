@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Runner
@@ -12,11 +13,13 @@ namespace Yontech.Fat.Runner
     {
         private readonly ServiceProvider _serviceProvider;
         private readonly FatDiscoverer _discoverer;
+        private readonly LogsSink _logsSink;
         private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(FatDiscoverer discoverer, Func<IWebBrowser> webBrowserProvider)
+        public IocService(FatDiscoverer discoverer, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
         {
             this._discoverer = discoverer;
+            this._logsSink = logsSink;
             this._webBrowserProvider = webBrowserProvider;
 
             var serviceCollection = new ServiceCollection();
@@ -95,28 +98,11 @@ namespace Yontech.Fat.Runner
 
             var browser = this._webBrowserProvider();
 
-            var fatTest = instance as FatTest;
-            if (fatTest != null)
+            var fatDiscoverable = instance as BaseFatDiscoverable;
+            if (fatDiscoverable != null)
             {
-                fatTest.WebBrowser = browser;
-            }
-
-            var sectionPage = instance as FatPageSection;
-            if (sectionPage != null)
-            {
-                sectionPage.WebBrowser = browser;
-            }
-
-            var page = instance as FatPage;
-            if (page != null)
-            {
-                page.WebBrowser = browser;
-            }
-
-            var flow = instance as FatFlow;
-            if (flow != null)
-            {
-                flow.WebBrowser = browser;
+                fatDiscoverable.WebBrowser = browser;
+                fatDiscoverable.LogsSink = this._logsSink;
             }
 
             return instance;
