@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -9,43 +9,43 @@ using Yontech.Fat.TestAdapter.Factories;
 
 namespace Yontech.Fat.TestAdapter
 {
-    internal class Interceptor : FatInterceptor
+    internal class VsTestInterceptor : FatInterceptor
     {
-        private readonly IFrameworkHandle frameworkHandle;
-        private readonly TestCaseFactory testCaseFactory;
+        private readonly IFrameworkHandle _frameworkHandle;
+        private readonly TestCaseFactory _testCaseFactory;
 
-        public Interceptor(IFrameworkHandle frameworkHandle, TestCaseFactory testCaseFactory)
+        public VsTestInterceptor(IFrameworkHandle frameworkHandle, TestCaseFactory testCaseFactory)
         {
-            this.frameworkHandle = frameworkHandle;
-            this.testCaseFactory = testCaseFactory;
+            _frameworkHandle = frameworkHandle;
+            _testCaseFactory = testCaseFactory;
         }
 
         protected override void BeforeTestCase(FatTestCase fatTestCase)
         {
-            var testCase = this.testCaseFactory.Create(fatTestCase);
-            frameworkHandle.RecordStart(testCase);
+            var testCase = _testCaseFactory.Create(fatTestCase);
+            _frameworkHandle.RecordStart(testCase);
         }
 
         protected override void OnTestCaseFailed(FatTestCase fatTestCase, FatTestCaseFailed failed)
         {
-            var testCase = this.testCaseFactory.Create(fatTestCase);
+            var testCase = this._testCaseFactory.Create(fatTestCase);
             var testResult = new TestResult(testCase)
             {
                 ComputerName = Environment.MachineName,
                 Outcome = TestOutcome.Failed,
                 Duration = failed.Duration,
                 ErrorMessage = failed.Exception.Message,
-                ErrorStackTrace = failed.Exception.StackTrace
+                ErrorStackTrace = failed.Exception.StackTrace,
             };
 
             this.AddLogs(testResult, failed.Logs);
 
-            frameworkHandle.RecordResult(testResult);
+            _frameworkHandle.RecordResult(testResult);
         }
 
         protected override void OnTestCasePassed(FatTestCase fatTestCase, FatTestCasePassed passed)
         {
-            var testCase = this.testCaseFactory.Create(fatTestCase);
+            var testCase = this._testCaseFactory.Create(fatTestCase);
             var testResult = new TestResult(testCase)
             {
                 ComputerName = Environment.MachineName,
@@ -55,7 +55,7 @@ namespace Yontech.Fat.TestAdapter
 
             this.AddLogs(testResult, passed.Logs);
 
-            frameworkHandle.RecordResult(testResult);
+            _frameworkHandle.RecordResult(testResult);
         }
 
         private void AddLogs(TestResult result, List<Log> logs)

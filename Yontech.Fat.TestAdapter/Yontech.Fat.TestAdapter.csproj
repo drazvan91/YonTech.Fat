@@ -1,19 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Yontech.Fat.TestAdapter</PackageId>
         <Version>0.2.0</Version>
         <Authors>Razvan Dragomir</Authors>
         <Company>TSS Yonder</Company>
+        <CodeAnalysisRuleSet>../StyleCop.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="../stylecop.json" Link="stylecop.json" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
         <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.5.0" />
-        <ProjectReference Include="..\Yontech.Fat\Yontech.Fat.csproj" />
-
-
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Yontech.Fat\Yontech.Fat.csproj" />
+    </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-// inspiration: https://github.com/xunit/visualstudio.xunit/blob/master/src/xunit.runner.visualstudio/VsTestRunner.cs
+﻿// inspiration: https://github.com/xunit/visualstudio.xunit/blob/master/src/xunit.runner.visualstudio/VsTestRunner.cs
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ using Yontech.Fat.TestAdapter.Factories;
 namespace Yontech.Fat.TestAdapter
 {
     [ExtensionUri(Constants.ExecutorUri)]
-    public class TestExecutor : ITestExecutor
+    public class VsTestExecutor : ITestExecutor
     {
         public void Cancel()
         {
@@ -26,8 +26,8 @@ namespace Yontech.Fat.TestAdapter
             var assemblies = tests.Select(s => Assembly.LoadFile(s.Source)).ToList();
 
             var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
-            var interceptor = new Interceptor(frameworkHandle, testCaseFactory);
-            var filter = new TestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
+            var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
+            var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
             var fatRunner = new FatRunner((options) =>
             {
@@ -45,9 +45,9 @@ namespace Yontech.Fat.TestAdapter
         {
             var assemblies = sources.Select(s => Assembly.LoadFile(s)).ToList();
             var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
-            var simpleFilter = new SimpleTestCaseFilter(runContext, testCaseFactory);
+            var simpleFilter = new VsTestCaseFilter(runContext, testCaseFactory);
 
-            var interceptor = new Interceptor(frameworkHandle, testCaseFactory);
+            var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
 
             var fatRunner = new FatRunner((options) =>
             {
@@ -61,6 +61,4 @@ namespace Yontech.Fat.TestAdapter
             fatRunner.Run(assemblies);
         }
     }
-
-
 }

@@ -1,20 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Runner;
-using Yontech.Fat.TestAdapter.Factories;
 
 namespace Yontech.Fat.TestAdapter
 {
-    internal class TestCaseFilterByFullName : ITestCaseFilter
+    internal class VsTestCaseFilterByFullName : ITestCaseFilter
     {
         private readonly IEnumerable<string> _names;
 
-        public TestCaseFilterByFullName(IEnumerable<string> names)
+        public VsTestCaseFilterByFullName(IEnumerable<string> names)
         {
             this._names = names;
         }
@@ -24,5 +20,4 @@ namespace Yontech.Fat.TestAdapter
             return this._names.Contains(fatTestCase.FullyQualifiedName);
         }
     }
-
 }
