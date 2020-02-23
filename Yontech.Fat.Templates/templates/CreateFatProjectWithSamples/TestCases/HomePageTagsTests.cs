@@ -33,7 +33,7 @@ namespace CreateFatProjectWithSamples.TestCases
         [CsvFileData("./files/tags.csv")]
         public void Test_clicking_tags_at_high_speed(string tagName)
         {
-            Log(tagName);
+            LogInfo(tagName);
             WebBrowser.SimulateFastConnection();
 
             homePage.TagList.TagWithText(tagName).Click();
