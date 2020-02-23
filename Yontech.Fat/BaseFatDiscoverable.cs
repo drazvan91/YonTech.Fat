@@ -11,26 +11,22 @@ namespace Yontech.Fat
 
         protected void LogInfo(string format, params object[] args)
         {
-            string message = String.Format(format, args);
-            LogsSink.Add(Log.INFO, message);
+            LogsSink.Add(Log.INFO, format, args);
         }
 
         protected void LogError(string format, params object[] args)
         {
-            string message = String.Format(format, args);
-            LogsSink.Add(Log.ERROR, message);
+            LogsSink.Add(Log.ERROR, format, args);
         }
 
         protected void LogWarning(string format, params object[] args)
         {
-            string message = String.Format(format, args);
-            LogsSink.Add(Log.WARNING, message);
+            LogsSink.Add(Log.WARNING, format, args);
         }
 
         protected void LogDebug(string format, params object[] args)
         {
-            string message = String.Format(format, args);
-            LogsSink.Add(Log.DEBUG, message);
+            LogsSink.Add(Log.DEBUG, format, args);
         }
 
         protected void Wait(int milliseconds)

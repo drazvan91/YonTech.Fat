@@ -9,7 +9,7 @@ using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Runner
 {
-    public class IocService
+    internal class IocService
     {
         private readonly ServiceProvider _serviceProvider;
         private readonly FatDiscoverer _discoverer;
@@ -115,8 +115,8 @@ namespace Yontech.Fat.Runner
             return properties.Where(prop =>
             {
                 return prop.PropertyType.IsSubclassOf(typeof(FatPage))
-          || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
-          || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
+                || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
+                || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
             });
         }
     }

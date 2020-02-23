@@ -49,7 +49,6 @@ namespace Yontech.Fat
                 {
                     if (condition.IsBusy(this))
                     {
-                        TraceLogger.Write("Browser is busy: {0}", condition.GetType().ToString());
                         return false;
                     }
                 }
@@ -64,7 +63,6 @@ namespace Yontech.Fat
             {
                 if (condition.IsBusy(this))
                 {
-                    TraceLogger.Write("Browser is busy: {0}", condition.GetType().ToString());
                     return false;
                 }
 
