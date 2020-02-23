@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Yontech.Fat.Interceptors;
@@ -22,25 +22,6 @@ namespace Yontech.Fat.ConsoleRunner
             }
         }
 
-        private void AddInterceptor(FatConfig config)
-        {
-            var interceptors = config.Interceptors?.ToList() ?? new List<FatInterceptor>();
-            interceptors.Add(_interceptor);
-            config.Interceptors = interceptors;
-        }
-
-        private FatRunner CreateRunner()
-        {
-            if (this._options == null)
-            {
-                return new FatRunner(AddInterceptor);
-            }
-            else
-            {
-                return new FatRunner(this._options);
-            }
-        }
-
         public void Run()
         {
             CreateRunner().Run();
@@ -59,6 +40,25 @@ namespace Yontech.Fat.ConsoleRunner
         public void Run(Assembly assembly)
         {
             CreateRunner().Run(assembly);
+        }
+
+        private void AddInterceptor(FatConfig config)
+        {
+            var interceptors = config.Interceptors?.ToList() ?? new List<FatInterceptor>();
+            interceptors.Add(_interceptor);
+            config.Interceptors = interceptors;
+        }
+
+        private FatRunner CreateRunner()
+        {
+            if (this._options == null)
+            {
+                return new FatRunner(AddInterceptor);
+            }
+            else
+            {
+                return new FatRunner(this._options);
+            }
         }
     }
 }

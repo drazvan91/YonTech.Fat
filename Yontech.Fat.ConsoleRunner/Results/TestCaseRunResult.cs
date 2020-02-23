@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -16,6 +16,7 @@ namespace Yontech.Fat.ConsoleRunner.Results
                 return Method.Name;
             }
         }
+
         public string LongName
         {
             get
@@ -23,6 +24,7 @@ namespace Yontech.Fat.ConsoleRunner.Results
                 return Method.ReflectedType.FullName + "." + ShortName;
             }
         }
+
         public ResultType Result { get; set; }
         public TimeSpan Duration { get; set; }
         public List<Log> Logs { get; set; }
@@ -33,12 +35,13 @@ namespace Yontech.Fat.ConsoleRunner.Results
         {
             this.Method = testCase;
         }
+
         public enum ResultType
         {
             NotStarted,
             Skipped,
             Success,
-            Error
+            Error,
         }
 
         public bool IsSkipped()

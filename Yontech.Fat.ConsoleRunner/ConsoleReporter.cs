@@ -1,5 +1,5 @@
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
 using Yontech.Fat.ConsoleRunner.Results;
 using Yontech.Fat.Logging;
@@ -10,11 +10,9 @@ namespace Yontech.Fat.Runner.ConsoleRunner
     {
         public void Report(List<TestCollectionRunResult> collections)
         {
-            // Console.Clear();
             Console.WriteLine("Execution results:");
             foreach (var collection in collections)
             {
-
                 foreach (var testClass in collection.TestClasses)
                 {
                     Console.WriteLine();
@@ -33,7 +31,6 @@ namespace Yontech.Fat.Runner.ConsoleRunner
 
             PrintNormal("---------------------------------------------------");
             Console.WriteLine();
-
 
             this.PrintSummary(collections);
             Console.WriteLine();
@@ -74,7 +71,6 @@ namespace Yontech.Fat.Runner.ConsoleRunner
             PrintRed(" {0} failed", failedTestCasses.Count);
             PrintNormal(", {0} total", allTestCases.Count);
             Console.WriteLine();
-
         }
 
         private void PrintTestCase(TestCaseRunResult testCase)
@@ -91,7 +87,6 @@ namespace Yontech.Fat.Runner.ConsoleRunner
                     PrintBackgroundGreen(" PASS ");
                     break;
             }
-
 
             PrintNormal("  {0}  ", testCase.ShortName);
             PrintGray("in {0}ms", testCase.Duration.TotalMilliseconds);
@@ -125,7 +120,6 @@ namespace Yontech.Fat.Runner.ConsoleRunner
                             Console.WriteLine();
                             break;
                     }
-
                 }
             }
 

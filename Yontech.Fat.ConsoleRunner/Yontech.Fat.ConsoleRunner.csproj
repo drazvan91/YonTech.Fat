@@ -6,7 +6,19 @@
         <Version>0.2.0</Version>
         <Authors>Razvan Dragomir</Authors>
         <Company>TSS Yonder</Company>
+        <CodeAnalysisRuleSet>../StyleCop.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="../stylecop.json" Link="stylecop.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Yontech.Fat\Yontech.Fat.csproj" />
