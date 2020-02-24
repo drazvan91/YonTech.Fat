@@ -7,6 +7,7 @@ namespace CreateFatProject
         public Config()
         {
             Browser = BrowserType.Chrome;
+            RunInBackground = true;
         }
     }
 }
