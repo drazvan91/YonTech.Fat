@@ -108,9 +108,7 @@ namespace Yontech.Fat.Runner
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
             this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
-            this._webBrowser.Configuration.BusyConditions.Add(new DocumentReadyBusyCondition());
-            this._webBrowser.Configuration.BusyConditions.Add(new PendingRequestsBusyCondition());
-            this._webBrowser.Configuration.BusyConditions.Add(new InstructionDelayTimeBusyCondition(this._options.DelayBetweenSteps));
+            this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
 
             try
             {
@@ -137,6 +135,17 @@ namespace Yontech.Fat.Runner
             {
                 this._webBrowser.Close();
                 this._webBrowser = null;
+            }
+        }
+
+        private IEnumerable<IBusyCondition> GetBusyConditions()
+        {
+            yield return new DocumentReadyBusyCondition();
+            yield return new PendingRequestsBusyCondition();
+            yield return new InstructionDelayTimeBusyCondition(this._options.DelayBetweenSteps);
+            foreach (var condition in this._options.BusyConditions)
+            {
+                yield return condition;
             }
         }
 

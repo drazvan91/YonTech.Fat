@@ -37,11 +37,18 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             EnsureElementExists();
 
-            this.ScrollTo();
             this.WebBrowser.WaitForIdle();
             try
             {
-                this.WebElement.Click();
+                try
+                {
+                    this.WebElement.Click();
+                }
+                catch (Exception ex) when (ex.Message.Contains("Other element would receive"))
+                {
+                    this.ScrollTo();
+                    this.WebElement.Click();
+                }
             }
             catch (InvalidOperationException ex)
             {
