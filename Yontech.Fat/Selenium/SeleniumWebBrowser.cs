@@ -8,18 +8,19 @@ using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.BusyConditions;
 using OpenQA.Selenium.Chrome;
 using System.Drawing;
+using Yontech.Fat.WebBrowser;
 
 namespace Yontech.Fat.Selenium
 {
     internal class SeleniumWebBrowser : BaseWebBrowser, IWebBrowser
     {
-        public readonly IWebDriver WebDriver;
+        public readonly RemoteWebDriver WebDriver;
         private bool _disposedValue;
         private readonly Lazy<SeleniumJsExecutor> _jsExecutorLazy;
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
 
-        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType, IEnumerable<IBusyCondition> busyConditions) : base(browserType)
+        public SeleniumWebBrowser(RemoteWebDriver webDriver, BrowserType browserType, IEnumerable<IBusyCondition> busyConditions) : base(browserType)
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
@@ -43,6 +44,7 @@ namespace Yontech.Fat.Selenium
         public override string Title => WebDriver.Title;
 
         public override Size Size => WebDriver.Manage().Window.Size;
+
 
         public override void Close()
         {
@@ -214,5 +216,10 @@ namespace Yontech.Fat.Selenium
         {
             this.WebDriver.Manage().Window.Minimize();
         }
+
+
+        public override IWebBrowserStorage LocalStorage => new WebBrowserLocalStorage(this.WebDriver);
+
+        public override IWebBrowserStorage SessionStorage => new WebBrowserSessionStorage(this.WebDriver);
     }
 }

@@ -33,8 +33,8 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             try
             {
-                WebDriverWait wait = new WebDriverWait(WebBrowser.WebDriver, timeout);
-                wait.Until(ExpectedConditions.ElementToBeClickable(this.WebElement));
+                // WebDriverWait wait = new WebDriverWait(WebBrowser.WebDriver, timeout);
+                // wait.Until(ExpectedConditions.ElementToBeClickable(this.WebElement));
 
                 return true;
             }

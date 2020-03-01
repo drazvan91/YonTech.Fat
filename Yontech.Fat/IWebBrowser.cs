@@ -2,6 +2,7 @@
 using System.Drawing;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.WebBrowser;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
@@ -38,6 +39,9 @@ namespace Yontech.Fat
         void Fullscreen();
         void Maximize();
         void Minimize();
+
+        IWebBrowserStorage LocalStorage { get; }
+        IWebBrowserStorage SessionStorage { get; }
 
         ISnapshot TakeSnapshot();
     }

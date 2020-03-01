@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Remote;
 using Yontech.Fat.Configuration;
 
 namespace Yontech.Fat.Selenium.DriverFactories
@@ -12,7 +13,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
         /// <param name="driversPath">Path to the folder containg the web driver.</param>
         /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
         /// <returns>An instance of Internet Explorer Driver.</returns>
-        public static IWebDriver Create(string driversPath, BrowserStartOptions startOptions)
+        public static RemoteWebDriver Create(string driversPath, BrowserStartOptions startOptions)
         {
             var options = CreateOptions(startOptions);
             var driver = new InternetExplorerDriver(driversPath, options);

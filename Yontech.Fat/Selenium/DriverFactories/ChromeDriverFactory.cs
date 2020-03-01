@@ -14,7 +14,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
         /// <param name="driverPath">Path to the folder containg the web driver.</param>
         /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
         /// <returns>An instance of Chrome Driver.</returns>
-        public static IWebDriver Create(string driverPath, BrowserStartOptions startOptions)
+        public static RemoteWebDriver Create(string driverPath, BrowserStartOptions startOptions)
         {
             var chromeOptions = CreateOptions(startOptions);
 
@@ -49,13 +49,14 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 }
             }
 
+
+
             return driver;
         }
 
         private static ChromeDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
         {
             var webDriver = new ChromeDriver(driverPath, chromeOptions);
-
             return webDriver;
         }
 
@@ -88,6 +89,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 chromeOptions.AddArgument("--disable-popup-blocking");
             }
 
+            // chromeOptions.AddAdditionalCapability(CapabilityType.SupportsWebStorage, 1);
             return chromeOptions;
         }
     }

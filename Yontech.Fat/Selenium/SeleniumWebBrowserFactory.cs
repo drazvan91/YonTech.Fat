@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +23,7 @@ namespace Yontech.Fat.Selenium
 
         public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<IBusyCondition> busyConditions)
         {
-            IWebDriver webDriver = null;
+            RemoteWebDriver webDriver = null;
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
             location = Path.GetDirectoryName(location);
             string driversPath = Path.Combine(location, startOptions.DriversFolder);

@@ -4,6 +4,7 @@ using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
+using Yontech.Fat.WebBrowser;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
@@ -104,5 +105,7 @@ namespace Yontech.Fat
         public abstract void Fullscreen();
         public abstract void Maximize();
         public abstract void Minimize();
+        public abstract IWebBrowserStorage LocalStorage { get; }
+        public abstract IWebBrowserStorage SessionStorage { get; }
     }
 }
