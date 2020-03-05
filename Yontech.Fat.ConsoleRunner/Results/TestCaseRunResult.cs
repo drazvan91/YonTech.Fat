@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Yontech.Fat.Logging;
 
@@ -65,6 +66,14 @@ namespace Yontech.Fat.ConsoleRunner.Results
             }
         }
 
+        private readonly static Type[] FAT_TYPES = new Type[]{
+            typeof(FatPage),
+            typeof(FatPageSection),
+            typeof(FatFlow),
+            typeof(FatTest),
+            typeof(FatCustomComponent),
+        };
+
         private IEnumerable<StackFrame> GetFatTestFrames(StackTrace st)
         {
             for (int i = 0; i < st.FrameCount; i++)
@@ -72,13 +81,12 @@ namespace Yontech.Fat.ConsoleRunner.Results
                 var frame = st.GetFrame(i);
                 if (frame.HasMethod())
                 {
-                    var method = frame.GetMethod();
-                    if (method.ReflectedType.IsSubclassOf(typeof(FatFlow)))
-                    {
-                        yield return frame;
-                    }
+                    // todo: maybe it is not a good idea to filter the stack trace
+                    // maybe we should make it configurable
+                    // yield return frame;
 
-                    if (method.ReflectedType.IsSubclassOf(typeof(FatTest)))
+                    var method = frame.GetMethod();
+                    if (FAT_TYPES.Any(fatType => method.ReflectedType.IsSubclassOf(fatType)))
                     {
                         yield return frame;
                     }
