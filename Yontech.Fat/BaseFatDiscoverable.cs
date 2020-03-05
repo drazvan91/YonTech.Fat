@@ -33,5 +33,10 @@ namespace Yontech.Fat
         {
             Thread.Sleep(milliseconds);
         }
+
+        protected void WaitForTrue(Func<bool> condition)
+        {
+            Waiters.Waiter.WaitForConditionToBeTrue(condition, WebBrowser.Configuration.DefaultTimeout);
+        }
     }
 }

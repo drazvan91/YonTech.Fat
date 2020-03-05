@@ -31,10 +31,11 @@ namespace Yontech.Fat.Selenium.WebControls
             WebElement.Clear();
         }
 
-        public new void Click()
-        {
-            WebElement.Click();
-        }
+        // public void Click()
+        // {
+        //     EnsureElementExists();
+        //     WebElement.Click();
+        // }
 
         public void TypeKeys(string keys)
         {
@@ -63,6 +64,11 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             this.ClearText();
             this.TypeKeysSlowly(keys, delayBetweenKeys);
+        }
+
+        public void SendKeys(string keys)
+        {
+            this.ClearAndTypeKeys(keys);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Yontech.Fat.WebControls
         void TypeKeys(string keys);
         void TypeKeysSlowly(string keys, int delayBetweenKeys = 300);
         void ClearText();
-        void Click();
+
+        // todo: make this deprecated
+        void SendKeys(string keys);
     }
 }

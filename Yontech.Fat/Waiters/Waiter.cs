@@ -23,6 +23,18 @@ namespace Yontech.Fat.Waiters
             throw new Exception("Operation did timeout. One or more busy conditions indicate that Browser is still busy.");
         }
 
+        internal static void WaitForConditionToBeTrueOrTimeout(Func<bool> condition, int timeout)
+        {
+            DateTime timeoutDate = DateTime.Now.AddMilliseconds(timeout);
+            while (DateTime.Now < timeoutDate)
+            {
+                if (condition() == true)
+                    return;
+
+                Wait(50);
+            }
+        }
+
         public static void Wait(int timeToWait)
         {
             Thread.CurrentThread.Join(timeToWait);

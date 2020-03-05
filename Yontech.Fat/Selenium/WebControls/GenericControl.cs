@@ -24,26 +24,6 @@ namespace Yontech.Fat.Selenium.WebControls
 
         public IControlFinder ControlFinder => new SeleniumControlFinder(WebElement, WebBrowser);
 
-        public bool WaitForClickable()
-        {
-            return WaitForClickable(Constants.CLICK_WAITING_TIMEOUT);
-        }
-
-        public bool WaitForClickable(TimeSpan timeout)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(WebBrowser.WebDriver, timeout);
-                wait.Until(ExpectedConditions.ElementToBeClickable(this.WebElement));
-
-                return true;
-            }
-            catch (WebDriverTimeoutException)
-            {
-                return false;
-            }
-        }
-
         public IEnumerable<IGenericControl> Find(string cssSelector)
         {
             EnsureElementExists();
@@ -51,12 +31,6 @@ namespace Yontech.Fat.Selenium.WebControls
             {
                 yield return new GenericControl(element, WebBrowser);
             }
-        }
-
-        public string GetAttribute(string attributeName)
-        {
-            EnsureElementExists();
-            return WebElement.GetAttribute(attributeName);
         }
     }
 }

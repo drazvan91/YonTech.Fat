@@ -118,7 +118,7 @@ namespace Yontech.Fat.Discoverer
             var allTypes = assembly.GetTypes();
             return allTypes.Where(type =>
             {
-                return type.IsSubclassOf(typeof(FatTest));
+                return type.IsSubclassOf(typeof(FatTest)) && type.IsAbstract == false;
             });
         }
 
