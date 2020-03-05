@@ -35,7 +35,6 @@ namespace Yontech.Fat.Runner
 
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
-
             var testClasses = _discoverer.FindTestClasses(assembly);
 
             foreach (var testClass in testClasses)
@@ -108,16 +107,32 @@ namespace Yontech.Fat.Runner
             return instance;
         }
 
-        private IEnumerable<PropertyInfo> GetInjectableProperties(Type type)
-        {
-            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        private readonly static Type[] FAT_TYPES = new Type[]{
+            typeof(FatPage),
+            typeof(FatPageSection),
+            typeof(FatFlow),
+            typeof(FatTest)
+        };
 
-            return properties.Where(prop =>
+        private List<PropertyInfo> GetInjectableProperties(Type type)
+        {
+            var injectableProperties = new List<PropertyInfo>();
+
+            var refType = type;
+            while (!FAT_TYPES.Contains(refType))
             {
-                return prop.PropertyType.IsSubclassOf(typeof(FatPage))
-                || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
-                || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
-            });
+                var properties = refType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                var injectable = properties.Where(prop =>
+                {
+                    return prop.PropertyType.IsSubclassOf(typeof(FatPage))
+                    || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
+                    || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
+                });
+                injectableProperties.AddRange(injectable);
+                refType = refType.BaseType;
+            }
+
+            return injectableProperties;
         }
     }
 }
