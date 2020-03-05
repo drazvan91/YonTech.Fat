@@ -2,9 +2,9 @@ using System;
 
 namespace Yontech.Fat.BusyConditions
 {
-  public class PendingRequestsBusyCondition : IBusyCondition
-  {
-    private string script = @"
+    public class PendingRequestsBusyCondition : IBusyCondition
+    {
+        private string script = @"
       function initPendingRequestsBusy() {
         if(window.fatData && window.fatData.pendingRequests!== undefined) return;
 
@@ -28,25 +28,33 @@ namespace Yontech.Fat.BusyConditions
           this.onload = fatOperations.requestFinished; 
           oldOpen.apply(this, arguments); 
         };
+
+        let oldFetch = window.fetch;
+        window.fetch = (args) => {
+            fatOperations.requestStarted(); 
+            let result = oldFetch(args);
+            result.finally(fatOperations.requestFinished);
+            return result;
+        };
       }; 
 
       initPendingRequestsBusy();
 
       return window.fatData.pendingRequests;
     ";
-    public bool IsBusy(IWebBrowser webBrowser)
-    {
-      try
-      {
-        var pendingRequests = (Int64)webBrowser.JavaScriptExecutor.ExecuteScript(this.script);
-        // Console.WriteLine("Pending: " + pendingRequests);
-        return pendingRequests > 0;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex.Message);
-        return false;
-      }
+        public bool IsBusy(IWebBrowser webBrowser)
+        {
+            try
+            {
+                var pendingRequests = (Int64)webBrowser.JavaScriptExecutor.ExecuteScript(this.script);
+                // Console.WriteLine("Pending: " + pendingRequests);
+                return pendingRequests > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
-  }
 }
