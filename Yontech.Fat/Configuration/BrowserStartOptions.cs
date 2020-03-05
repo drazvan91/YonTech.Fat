@@ -11,5 +11,6 @@ namespace Yontech.Fat.Configuration
         public bool DisablePopupBlocking { get; set; }
         public string DriversFolder { get; set; }
         public bool AutomaticDriverDownload { get; set; }
+        public ChromeVersion ChromeVersion { get; set; }
     }
 }

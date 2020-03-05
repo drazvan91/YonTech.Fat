@@ -13,8 +13,10 @@ namespace Yontech.Fat
         public int DelayBetweenTestCases { get; set; }
         public int DelayBetweenSteps { get; set; }
         public bool RunInBackground { get; set; }
+        public bool DisablePopupBlocking { get; set; }
         public string DriversFolder { get; set; } = "drivers";
         public bool AutomaticDriverDownload { get; set; } = true;
+        public ChromeVersion AutomaticDriverDownloadChromeVersion { get; set; } = ChromeVersion.Latest;
         public Size InitialSize { get; set; }
         public bool StartMaximized { get; set; } = false;
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
@@ -29,8 +31,10 @@ namespace Yontech.Fat
                 DelayBetweenTestCases = options.DelayBetweenTestCases,
                 DelayBetweenSteps = options.DelayBetweenSteps,
                 RunInBackground = options.RunInBackground,
+                DisablePopupBlocking = options.DisablePopupBlocking,
                 DriversFolder = options.DriversFolder,
                 AutomaticDriverDownload = options.AutomaticDriverDownload,
+                AutomaticDriverDownloadChromeVersion = options.AutomaticDriverDownloadChromeVersion,
                 InitialSize = options.InitialSize,
                 StartMaximized = options.StartMaximized,
                 Interceptors = options.Interceptors,

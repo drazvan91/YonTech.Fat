@@ -18,24 +18,14 @@ namespace Yontech.Fat.Selenium.DriverFactories
         {
             var chromeOptions = CreateOptions(startOptions);
 
-            // In the past there was one issue with dotnetcore 1.0 on windows which created 
-            // performance issues. We need to investigate, if it still happens then 
-            // we should use the RemoteWebDriver instead (code below)
-            // if not then we should remove this comment and code below
-            // ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
-            // service.Port = 5555; // Some port value.
-            // service.Start();
-            //IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
-
-
-            ChromeDriver driver = null;
+            IWebDriver driver = null;
             try
             {
                 driver = CreateDriver(driverPath, chromeOptions);
             }
             catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
             {
-                new ChromeDriverDownloader().Download(driverPath).Wait();
+                new ChromeDriverDownloader(startOptions.ChromeVersion).Download(driverPath).Wait();
 
                 driver = CreateDriver(driverPath, chromeOptions);
             }
@@ -52,11 +42,19 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return driver;
         }
 
-        private static ChromeDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
+        private static IWebDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
         {
-            var webDriver = new ChromeDriver(driverPath, chromeOptions);
-
+            // for some reason if we use ChromeDriver instead of RemoteWebDriver there is a performance issue on 
+            // initial load, we believe that is because of dotnetcore
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
+            service.Port = 5555; // Some port value.
+            service.Start();
+            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
             return webDriver;
+
+            // this is how it should be done.
+            // var webDriver = new ChromeDriver(driverPath, chromeOptions);
+            // return webDriver;
         }
 
         private static ChromeOptions CreateOptions(BrowserStartOptions startOptions)
