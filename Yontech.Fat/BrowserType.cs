@@ -12,4 +12,11 @@ namespace Yontech.Fat
         Firefox,
         Opera
     }
+
+    public enum ChromeVersion : int
+    {
+        Latest = 0,
+        v79 = 79,
+        v80 = 80,
+    }
 }

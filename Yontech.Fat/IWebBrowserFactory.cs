@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 
 namespace Yontech.Fat
 {
-    public interface IWebBrowserFactory
+    internal interface IWebBrowserFactory
     {
         IWebBrowser Create(BrowserType browserType);
         IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions);

@@ -8,9 +8,13 @@ namespace Yontech.Fat.WebControls
     public interface ITextBoxControl : IWebControl
     {
         string Text { get; }
-        string Value { get; }
-        void SendKeys(string keys);
+        void ClearAndTypeKeys(string keys);
+        void ClearAndTypeKeysSlowly(string keys, int delayBetweenKeys = 300);
+        void TypeKeys(string keys);
+        void TypeKeysSlowly(string keys, int delayBetweenKeys = 300);
         void ClearText();
-        void Click();
+
+        // todo: make this deprecated
+        void SendKeys(string keys);
     }
 }

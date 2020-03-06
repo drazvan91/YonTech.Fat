@@ -8,7 +8,6 @@ namespace Yontech.Fat.WebControls
     public interface IButtonControl : IWebControl
     {
         string Text { get; }
-        void Click();
-        void RageClick(int numberOfClicks);
+
     }
 }

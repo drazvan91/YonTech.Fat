@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
@@ -25,6 +27,8 @@ namespace Yontech.Fat
         public abstract bool AcceptAlert();
         public abstract bool DismissAlert();
         public abstract string CurrentUrl { get; }
+        public abstract string Title { get; }
+        public abstract Size Size { get; }
 
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
@@ -48,7 +52,6 @@ namespace Yontech.Fat
                 {
                     if (condition.IsBusy(this))
                     {
-                        TraceLogger.Write("Browser is busy: {0}", condition.GetType().ToString());
                         return false;
                     }
                 }
@@ -63,13 +66,21 @@ namespace Yontech.Fat
             {
                 if (condition.IsBusy(this))
                 {
-                    TraceLogger.Write("Browser is busy: {0}", condition.GetType().ToString());
                     return false;
                 }
 
                 return true;
             }, this.Configuration.DefaultTimeout);
         }
+
+        public void WaitForConditionToBeTrue(Func<bool> condition)
+        {
+            Waiter.WaitForConditionToBeTrue(() =>
+                        {
+                            return condition();
+                        }, this.Configuration.DefaultTimeout);
+        }
+
 
         public void WaitForElementToAppear(string cssSelector, int timeout)
         {
@@ -84,5 +95,14 @@ namespace Yontech.Fat
         {
             this.WaitForElementToAppear(cssSelector, this.Configuration.DefaultTimeout);
         }
+
+        public abstract void SimulateOfflineConnection();
+        public abstract void SimulateSlowConnection(int delay = 1000);
+        public abstract void SimulateFastConnection();
+
+        public abstract void Resize(int width, int height);
+        public abstract void Fullscreen();
+        public abstract void Maximize();
+        public abstract void Minimize();
     }
 }

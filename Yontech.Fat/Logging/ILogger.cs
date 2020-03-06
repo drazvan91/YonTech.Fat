@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System;
 
 namespace Yontech.Fat.Logging
 {
     public interface ILogger
     {
-        void Write(string message, params string[] args);
+        void Debug(string debug, params object[] args);
+        void Info(string format, params object[] args);
+        void Warning(string format, params object[] args);
+        void Error(string format, params object[] args);
+        void Error(Exception exception, bool includeInnerExceptions = true);
     }
 }

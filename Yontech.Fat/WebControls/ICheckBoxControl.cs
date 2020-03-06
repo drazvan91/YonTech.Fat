@@ -9,6 +9,5 @@ namespace Yontech.Fat.WebControls
     {
         bool IsChecked { get; }
         void Toggle();
-        void Click();
     }
 }

@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "razvan.dragomir",
+    "classifications": [ "Console" ], 
+    "name": "Fat Framework Project with samples",
+    "identity": "YonTech.Fat.CreateFatProjectWithSamples",         
+    "groupIdentity":"YonTech.Fat.CreateFatProjectWithSamples",
+    "shortName": "create-fat-project-with-samples",                
+    "tags": {
+      "language": "C#",                         
+      "type":"project"
+    },
+    "sourceName": "CreateFatProjectWithSamples",        
+    "preferNameDirectory":true
+  }
