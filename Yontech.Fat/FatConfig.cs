@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Interceptors;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 
 namespace Yontech.Fat
@@ -19,6 +20,8 @@ namespace Yontech.Fat
         public ChromeVersion AutomaticDriverDownloadChromeVersion { get; set; } = ChromeVersion.Latest;
         public Size InitialSize { get; set; }
         public bool StartMaximized { get; set; } = false;
+        public LogLevel LogLevel { get; set; } = LogLevel.Info;
+        public Dictionary<string, LogLevel> LogLevelConfig { get; set; } = new Dictionary<string, LogLevel>();
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
         public List<IBusyCondition> BusyConditions { get; set; } = new List<IBusyCondition>();
 
@@ -37,6 +40,8 @@ namespace Yontech.Fat
                 AutomaticDriverDownloadChromeVersion = options.AutomaticDriverDownloadChromeVersion,
                 InitialSize = options.InitialSize,
                 StartMaximized = options.StartMaximized,
+                LogLevel = options.LogLevel,
+                LogLevelConfig = options.LogLevelConfig,
                 Interceptors = options.Interceptors,
                 BusyConditions = options.BusyConditions,
             };

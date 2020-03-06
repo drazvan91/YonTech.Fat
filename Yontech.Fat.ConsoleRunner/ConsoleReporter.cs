@@ -4,7 +4,7 @@ using System.Linq;
 using Yontech.Fat.ConsoleRunner.Results;
 using Yontech.Fat.Logging;
 
-namespace Yontech.Fat.Runner.ConsoleRunner
+namespace Yontech.Fat.ConsoleRunner
 {
     public class ConsoleReporter
     {

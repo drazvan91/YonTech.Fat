@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Yontech.Fat.Interceptors;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 
 namespace Yontech.Fat.ConsoleRunner
@@ -53,11 +54,15 @@ namespace Yontech.Fat.ConsoleRunner
         {
             if (this._options == null)
             {
-                return new FatRunner(AddInterceptor);
+                // todo: this is a bug because it does not take into consideration any FatConfig file
+                var defaultConfig = new FatConfig();
+                var loggerFactory = new ConsoleLoggerFactory(defaultConfig.LogLevel, defaultConfig.LogLevelConfig);
+                return new FatRunner(loggerFactory, AddInterceptor);
             }
             else
             {
-                return new FatRunner(this._options);
+                var loggerFactory = new ConsoleLoggerFactory(this._options.LogLevel, this._options.LogLevelConfig);
+                return new FatRunner(loggerFactory, this._options);
             }
         }
     }

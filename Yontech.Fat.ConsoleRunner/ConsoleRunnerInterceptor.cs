@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Yontech.Fat.ConsoleRunner.Results;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
-using Yontech.Fat.Runner.ConsoleRunner;
 
 namespace Yontech.Fat.ConsoleRunner
 {

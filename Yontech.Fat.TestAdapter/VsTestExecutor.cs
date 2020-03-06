@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.TestAdapter.Factories;
 
@@ -29,7 +30,10 @@ namespace Yontech.Fat.TestAdapter
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
             var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
-            var fatRunner = new FatRunner((options) =>
+            // todo: we should read info from config file and also integrate with vstest
+            var loggerFactory = new ConsoleLoggerFactory(LogLevel.Info, new Dictionary<string, Fat.Logging.LogLevel>());
+
+            var fatRunner = new FatRunner(loggerFactory, (options) =>
             {
                 options.Filter = filter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
@@ -49,7 +53,10 @@ namespace Yontech.Fat.TestAdapter
 
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
 
-            var fatRunner = new FatRunner((options) =>
+            // todo: we should read info from config file and also integrate with vstest
+            var loggerFactory = new ConsoleLoggerFactory(LogLevel.Info, new Dictionary<string, Fat.Logging.LogLevel>());
+
+            var fatRunner = new FatRunner(loggerFactory, (options) =>
             {
                 options.Filter = simpleFilter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();

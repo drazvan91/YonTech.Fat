@@ -23,13 +23,15 @@ namespace Yontech.Fat.Runner
         private FatDiscoverer _fatDiscoverer;
         private FatConfig _options;
         private LogsSink _logsSink;
+        private ILogger _logger;
+        private ILoggerFactory _loggerFactory;
 
-        public FatRunner(Action<FatConfig> optionsCallback)
+        public FatRunner(ILoggerFactory loggerFactory, Action<FatConfig> optionsCallback)
         {
+            this._loggerFactory = loggerFactory;
             this._fatDiscoverer = new FatDiscoverer();
 
             var options = this._fatDiscoverer.DiscoverConfig();
-
             if (options == null)
             {
                 options = FatConfig.Default();
@@ -39,14 +41,16 @@ namespace Yontech.Fat.Runner
             Init(options);
         }
 
-        public FatRunner(FatConfig options)
+        public FatRunner(ILoggerFactory loggerFactory, FatConfig options)
         {
+            this._loggerFactory = loggerFactory;
             this._fatDiscoverer = new FatDiscoverer();
             Init(options);
         }
 
         private void Init(FatConfig options)
         {
+            this._logger = _loggerFactory.Create(this);
             this._options = options;
             this._logsSink = new LogsSink();
 
@@ -106,30 +110,26 @@ namespace Yontech.Fat.Runner
                 AutomaticDriverDownload = this._options.AutomaticDriverDownload
             };
 
-            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory();
+            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._loggerFactory);
             this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
             this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
+            _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
 
             try
             {
+                _logger.Info("Execution started");
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
                 foreach (var collection in testCollections)
                 {
                     this.ExecuteTestCollection(collection);
                 }
+                _logger.Info("Execution finished successful");
                 _interceptorDispatcher.OnExecutionFinished(new ExecutionFinishedParams());
-
-                // ConsoleReporter reporter = new ConsoleReporter();
-                // reporter.Report(strategy);
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERRRORRRRRRR");
-
-                Console.WriteLine((ex.InnerException ?? ex).StackTrace);
-                Console.WriteLine((ex).StackTrace);
-
+                _logger.Error("Execution stopped");
+                _logger.Error(ex);
             }
             finally
             {
@@ -170,14 +170,18 @@ namespace Yontech.Fat.Runner
                 _logsSink.Reset();
                 try
                 {
+                    _logger.Info("Executing testcase '{0}'", testCase.FullyQualifiedName);
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
                     Thread.Sleep(_options.DelayBetweenTestCases);
                     _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, _logsSink.GetLogs().ToList());
+                    _logger.Info("Passed");
                 }
                 catch (Exception ex)
                 {
                     var exception = ex.InnerException ?? ex;
+                    _logger.Error("Failed");
+                    _logger.Error(exception);
                     _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, _logsSink.GetLogs().ToList());
                 }
                 finally
