@@ -1,4 +1,8 @@
-﻿Under construction
+﻿This is the initial version of Fat Framework and it is not supported anymore.
+Check master branch: https://github.com/drazvan91/YonTech.Fat/tree/master
+
+--------------
+Under construction
 
 #Welcome to Yontech Fat Framework
 
