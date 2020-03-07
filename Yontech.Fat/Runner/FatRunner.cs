@@ -112,7 +112,13 @@ namespace Yontech.Fat.Runner
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._loggerFactory);
             this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
+
             this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
+            foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
+            {
+                _iocService.InjectFatDiscoverableProps(busyCondition);
+            }
+
             _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
 
             try
@@ -138,7 +144,7 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private IEnumerable<IBusyCondition> GetBusyConditions()
+        private IEnumerable<FatBusyCondition> GetBusyConditions()
         {
             yield return new DocumentReadyBusyCondition();
             yield return new PendingRequestsBusyCondition();

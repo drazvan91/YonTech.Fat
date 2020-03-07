@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.WebControls;
 
@@ -25,7 +24,7 @@ namespace Yontech.Fat
         void Close();
         void WaitForIdle();
         void WaitForIdle(int timout);
-        void WaitForCondition(IBusyCondition condition);
+        void WaitForCondition(FatBusyCondition condition);
         void WaitForConditionToBeTrue(Func<bool> condition);
         void WaitForElementToAppear(string cssSelector);
         void WaitForElementToAppear(string cssSelector, int timeout);

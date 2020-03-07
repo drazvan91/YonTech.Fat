@@ -8,6 +8,6 @@ namespace Yontech.Fat
     {
         IWebBrowser Create(BrowserType browserType);
         IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions);
-        IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<IBusyCondition> busyConditions);
+        IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<FatBusyCondition> busyConditions);
     }
 }

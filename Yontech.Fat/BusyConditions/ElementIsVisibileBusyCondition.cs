@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Yontech.Fat.BusyConditions
 {
-    public class ElementIsVisibileBusyCondition : IBusyCondition
+    public class ElementIsVisibileBusyCondition : FatBusyCondition
     {
         private readonly string _elementCssSelector;
 
@@ -13,15 +11,22 @@ namespace Yontech.Fat.BusyConditions
             this._elementCssSelector = elementCssSelector;
         }
 
-        public bool IsBusy(IWebBrowser webBrowser)
+        protected internal override bool IsBusy()
         {
             try
             {
-                var element = webBrowser.ControlFinder.Generic(this._elementCssSelector);
+                var element = WebBrowser.ControlFinder.Generic(this._elementCssSelector);
+
+                if (element.IsVisible == false)
+                {
+                    LogDebug("Element with selector '{0}' is not visible yet");
+                }
+
                 return element.IsVisible;
             }
-            catch (Exception) // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
+            catch (Exception ex) // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
             {
+                LogDebug("Element with selector '{0}' threw exception {1}", ex.Message);
                 return true;
             }
         }

@@ -19,7 +19,7 @@ namespace Yontech.Fat.Selenium
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
 
-        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType, IEnumerable<IBusyCondition> busyConditions) : base(browserType)
+        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions) : base(browserType)
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
