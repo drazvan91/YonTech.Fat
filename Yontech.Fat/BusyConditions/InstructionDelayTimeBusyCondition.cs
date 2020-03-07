@@ -1,20 +1,18 @@
-using System.Threading;
-
 namespace Yontech.Fat.BusyConditions
 {
-  public class InstructionDelayTimeBusyCondition : IBusyCondition
-  {
-    public int DelayTime { get; set; }
-
-    public InstructionDelayTimeBusyCondition(int delay = 0)
+    internal class InstructionDelayTimeBusyCondition : FatBusyCondition
     {
-      this.DelayTime = delay;
-    }
+        public int DelayTime { get; set; }
 
-    public bool IsBusy(IWebBrowser webBrowser)
-    {
-      Thread.Sleep(this.DelayTime);
-      return false;
+        public InstructionDelayTimeBusyCondition(int delay = 0)
+        {
+            this.DelayTime = delay;
+        }
+
+        protected internal override bool IsBusy()
+        {
+            Wait(this.DelayTime);
+            return false;
+        }
     }
-  }
 }

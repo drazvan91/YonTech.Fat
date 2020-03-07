@@ -2,57 +2,64 @@ using System;
 
 namespace Yontech.Fat.BusyConditions
 {
-    public class PendingRequestsBusyCondition : IBusyCondition
+    public class PendingRequestsBusyCondition : FatBusyCondition
     {
         private string script = @"
-      function initPendingRequestsBusy() {
-        if(window.fatData && window.fatData.pendingRequests!== undefined) return;
+            function initPendingRequestsBusy() {
+                if(window.fatData && window.fatData.pendingRequests!== undefined) return;
 
-        window.fatData = window.fatData || {};
-        window.fatData.pendingRequests = window.fatData.pendingRequests || 0;
+                window.fatData = window.fatData || {};
+                window.fatData.pendingRequests = window.fatData.pendingRequests || 0;
 
-        window.fatOperations = {
-          requestStarted: () => { 
-            window.fatData.pendingRequests = window.fatData.pendingRequests+1; 
-            console.log('pending requests: '+window.fatData.pendingRequests);
-          },
-          requestFinished: () => {
-            window.fatData.pendingRequests = Math.max(window.fatData.pendingRequests-1, 0); 
-            console.log('pending requests: '+window.fatData.pendingRequests);
-          }
-        };
+                window.fatOperations = {
+                requestStarted: () => { 
+                    window.fatData.pendingRequests = window.fatData.pendingRequests+1; 
+                    console.log('pending requests: '+window.fatData.pendingRequests);
+                },
+                requestFinished: () => {
+                    window.fatData.pendingRequests = Math.max(window.fatData.pendingRequests-1, 0); 
+                    console.log('pending requests: '+window.fatData.pendingRequests);
+                }
+                };
 
-        let oldOpen = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(args) { 
-          fatOperations.requestStarted(); 
-          this.onload = fatOperations.requestFinished; 
-          oldOpen.apply(this, arguments); 
-        };
+                let oldOpen = XMLHttpRequest.prototype.open;
+                XMLHttpRequest.prototype.open = function(args) { 
+                fatOperations.requestStarted(); 
+                this.onload = fatOperations.requestFinished; 
+                oldOpen.apply(this, arguments); 
+                };
 
-        let oldFetch = window.fetch;
-        window.fetch = (args) => {
-            fatOperations.requestStarted(); 
-            let result = oldFetch(args);
-            result.finally(fatOperations.requestFinished);
-            return result;
-        };
-      }; 
+                let oldFetch = window.fetch;
+                window.fetch = (args) => {
+                    fatOperations.requestStarted(); 
+                    let result = oldFetch(args);
+                    result.finally(fatOperations.requestFinished);
+                    return result;
+                };
+            }; 
 
-      initPendingRequestsBusy();
+            initPendingRequestsBusy();
 
-      return window.fatData.pendingRequests;
-    ";
-        public bool IsBusy(IWebBrowser webBrowser)
+            return window.fatData.pendingRequests;
+            ";
+
+        private Int64 _lastPendingRequestsValue = 0;
+        protected internal override bool IsBusy()
         {
             try
             {
-                var pendingRequests = (Int64)webBrowser.JavaScriptExecutor.ExecuteScript(this.script);
-                // Console.WriteLine("Pending: " + pendingRequests);
+                var pendingRequests = (Int64)WebBrowser.JavaScriptExecutor.ExecuteScript(this.script);
+                if (pendingRequests != _lastPendingRequestsValue)
+                {
+                    LogDebug("Pending requests: {0}  (wait iteration number: {1})", pendingRequests, WaitSessionPollingNumber);
+                }
+
+                _lastPendingRequestsValue = pendingRequests;
                 return pendingRequests > 0;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                LogDebug("An exception was thrown {0}", ex.Message);
                 return false;
             }
         }

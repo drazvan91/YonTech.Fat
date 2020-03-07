@@ -23,7 +23,7 @@ namespace Yontech.Fat
         public LogLevel LogLevel { get; set; } = LogLevel.Info;
         public Dictionary<string, LogLevel> LogLevelConfig { get; set; } = new Dictionary<string, LogLevel>();
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
-        public List<IBusyCondition> BusyConditions { get; set; } = new List<IBusyCondition>();
+        public List<FatBusyCondition> BusyConditions { get; set; } = new List<FatBusyCondition>();
 
         public static FatConfig Clone(FatConfig options)
         {

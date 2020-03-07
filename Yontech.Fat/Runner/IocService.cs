@@ -36,6 +36,15 @@ namespace Yontech.Fat.Runner
             this._serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
+        public void InjectFatDiscoverableProps(BaseFatDiscoverable fatDiscoverable)
+        {
+            var browser = this._webBrowserProvider();
+
+            fatDiscoverable.WebBrowser = browser;
+            fatDiscoverable.LogsSink = this._logsSink;
+            fatDiscoverable.Logger = this._loggerFactory.Create(fatDiscoverable);
+        }
+
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
             var testClasses = _discoverer.FindTestClasses(assembly);
@@ -98,14 +107,10 @@ namespace Yontech.Fat.Runner
 
             injectionContext.Remove(type.FullName);
 
-            var browser = this._webBrowserProvider();
-
             var fatDiscoverable = instance as BaseFatDiscoverable;
             if (fatDiscoverable != null)
             {
-                fatDiscoverable.WebBrowser = browser;
-                fatDiscoverable.LogsSink = this._logsSink;
-                fatDiscoverable.Logger = this._loggerFactory.Create(fatDiscoverable);
+                InjectFatDiscoverableProps(fatDiscoverable);
             }
 
             return instance;

@@ -46,11 +46,15 @@ namespace Yontech.Fat
 
         public void WaitForIdle(int timeout)
         {
+            int pollingNumber = 0;
+
             Waiter.WaitForConditionToBeTrue(() =>
             {
+                pollingNumber++;
                 foreach (var condition in Configuration.BusyConditions)
                 {
-                    if (condition.IsBusy(this))
+                    condition.WaitSessionPollingNumber = pollingNumber;
+                    if (condition.IsBusy())
                     {
                         return false;
                     }
@@ -60,11 +64,16 @@ namespace Yontech.Fat
             }, timeout);
         }
 
-        public void WaitForCondition(IBusyCondition condition)
+        public void WaitForCondition(FatBusyCondition condition)
         {
+            int pollingNumber = 0;
+
             Waiter.WaitForConditionToBeTrue(() =>
             {
-                if (condition.IsBusy(this))
+                pollingNumber++;
+                condition.WaitSessionPollingNumber = pollingNumber;
+
+                if (condition.IsBusy())
                 {
                     return false;
                 }

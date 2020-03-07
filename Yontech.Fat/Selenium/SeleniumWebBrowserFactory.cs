@@ -30,7 +30,7 @@ namespace Yontech.Fat.Selenium
             return this.Create(browserType, startOptions, null);
         }
 
-        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<IBusyCondition> busyConditions)
+        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<FatBusyCondition> busyConditions)
         {
             this.ValidateStartOptions(startOptions);
 
@@ -56,7 +56,7 @@ namespace Yontech.Fat.Selenium
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
                 webDriver: webDriver,
                 browserType: browserType,
-                busyConditions: busyConditions ?? new List<IBusyCondition>());
+                busyConditions: busyConditions ?? new List<FatBusyCondition>());
 
             return browser;
         }
