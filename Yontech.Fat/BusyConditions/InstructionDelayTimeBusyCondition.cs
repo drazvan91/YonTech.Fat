@@ -1,4 +1,4 @@
-namespace Yontech.Fat.BusyConditions
+﻿namespace Yontech.Fat.BusyConditions
 {
     internal class InstructionDelayTimeBusyCondition : FatBusyCondition
     {

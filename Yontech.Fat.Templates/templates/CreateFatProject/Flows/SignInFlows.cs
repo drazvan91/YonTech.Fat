@@ -1,4 +1,4 @@
-using CreateFatProject.Pages;
+﻿using CreateFatProject.Pages;
 using Yontech.Fat;
 
 namespace CreateFatProject.Flows

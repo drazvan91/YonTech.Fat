@@ -1,4 +1,4 @@
-using Yontech.Fat;
+﻿using Yontech.Fat;
 using CreateFatProject.Pages;
 using CreateFatProject.Data;
 

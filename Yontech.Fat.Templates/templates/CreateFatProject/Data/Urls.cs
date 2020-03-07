@@ -1,4 +1,4 @@
-namespace CreateFatProject.Data
+﻿namespace CreateFatProject.Data
 {
     public static class Urls
     {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Yontech.Fat.Utils;

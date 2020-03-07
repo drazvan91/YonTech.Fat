@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Interceptors;

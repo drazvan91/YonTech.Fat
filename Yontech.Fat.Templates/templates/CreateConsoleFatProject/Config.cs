@@ -1,4 +1,4 @@
-using Yontech.Fat;
+﻿using Yontech.Fat;
 
 namespace CreateConsoleFatProject
 {

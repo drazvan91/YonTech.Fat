@@ -1,4 +1,4 @@
-namespace CreateFatProjectWithSamples.Data
+﻿namespace CreateFatProjectWithSamples.Data
 {
     public class UserData
     {

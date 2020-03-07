@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Yontech.Fat.Discoverer;
 
 namespace Yontech.Fat.Interceptors
