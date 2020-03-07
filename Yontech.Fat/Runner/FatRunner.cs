@@ -57,7 +57,7 @@ namespace Yontech.Fat.Runner
             var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
 
             this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_fatDiscoverer, _logsSink, () =>
+            this._iocService = new IocService(_fatDiscoverer, _loggerFactory, _logsSink, () =>
             {
                 return this._webBrowser;
             });
@@ -123,7 +123,7 @@ namespace Yontech.Fat.Runner
                 {
                     this.ExecuteTestCollection(collection);
                 }
-                _logger.Info("Execution finished successful");
+                _logger.Info("Execution finished");
                 _interceptorDispatcher.OnExecutionFinished(new ExecutionFinishedParams());
             }
             catch (Exception ex)
