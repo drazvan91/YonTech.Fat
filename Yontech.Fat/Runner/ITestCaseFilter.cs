@@ -1,4 +1,4 @@
-using Yontech.Fat.Discoverer;
+﻿using Yontech.Fat.Discoverer;
 
 namespace Yontech.Fat.Runner
 {

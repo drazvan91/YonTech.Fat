@@ -1,4 +1,4 @@
-using CreateFatProjectWithSamples.PageSections;
+﻿using CreateFatProjectWithSamples.PageSections;
 using Yontech.Fat;
 using Yontech.Fat.WebControls;
 

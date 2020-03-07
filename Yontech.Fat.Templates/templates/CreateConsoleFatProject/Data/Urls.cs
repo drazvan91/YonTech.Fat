@@ -1,4 +1,4 @@
-namespace CreateConsoleFatProject.Data
+﻿namespace CreateConsoleFatProject.Data
 {
     public static class Urls
     {

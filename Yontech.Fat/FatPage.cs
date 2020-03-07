@@ -1,4 +1,4 @@
-
+﻿
 namespace Yontech.Fat
 {
     public abstract class FatPage : BaseFatDiscoverable

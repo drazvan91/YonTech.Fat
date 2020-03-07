@@ -1,4 +1,4 @@
-namespace Yontech.Fat
+﻿namespace Yontech.Fat
 {
     public abstract class FatBusyCondition : BaseFatDiscoverable
     {

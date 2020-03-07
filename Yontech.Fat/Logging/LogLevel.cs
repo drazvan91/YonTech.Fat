@@ -1,4 +1,4 @@
-namespace Yontech.Fat.Logging
+﻿namespace Yontech.Fat.Logging
 {
     public enum LogLevel
     {

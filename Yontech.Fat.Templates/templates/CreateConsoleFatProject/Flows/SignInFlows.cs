@@ -1,4 +1,4 @@
-using CreateConsoleFatProject.Pages;
+﻿using CreateConsoleFatProject.Pages;
 using Yontech.Fat;
 
 namespace CreateConsoleFatProject.Flows

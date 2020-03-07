@@ -2,7 +2,7 @@
 
 namespace Yontech.Fat.WebControls
 {
-    public interface IDropdownControl:IWebControl
+    public interface IDropdownControl : IWebControl
     {
         bool IsOpen { get; }
         string ToggleText { get; }

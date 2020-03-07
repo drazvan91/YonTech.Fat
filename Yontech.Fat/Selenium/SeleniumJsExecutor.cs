@@ -28,10 +28,10 @@ namespace Yontech.Fat.Selenium
             _javascriptExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", seleniumControl.WebElement);
         }
 
-        public void WaitToFinishAjaxRequests(int timeout=5000)
+        public void WaitToFinishAjaxRequests(int timeout = 5000)
         {
             DateTime dateToTimeout = DateTime.Now.AddMilliseconds(timeout);
-            while (DateTime.Now < dateToTimeout) 
+            while (DateTime.Now < dateToTimeout)
             {
                 var ajaxIsComplete = (bool)ExecuteScript("return jQuery.active == 0");
                 if (ajaxIsComplete)

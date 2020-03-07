@@ -1,4 +1,4 @@
-using CreateConsoleFatProject.Components;
+﻿using CreateConsoleFatProject.Components;
 using CreateConsoleFatProject.PageSections;
 using Yontech.Fat;
 

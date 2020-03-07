@@ -1,4 +1,4 @@
-using Yontech.Fat;
+﻿using Yontech.Fat;
 using CreateFatProjectWithSamples.Flows;
 using CreateFatProjectWithSamples.Pages;
 using CreateFatProjectWithSamples.PageSections;
