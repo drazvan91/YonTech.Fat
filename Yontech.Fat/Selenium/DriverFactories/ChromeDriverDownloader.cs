@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
@@ -12,7 +13,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
         private const string LINUX64 = "chromedriver_linux64.zip";
         private readonly ChromeVersion _chromeVersion;
 
-        public ChromeDriverDownloader(ChromeVersion version)
+        public ChromeDriverDownloader(ILoggerFactory loggerFactory, ChromeVersion version)
+            : base(loggerFactory)
         {
             this._chromeVersion = version;
         }

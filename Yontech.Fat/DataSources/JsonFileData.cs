@@ -23,7 +23,6 @@ namespace Yontech.Fat.DataSources
 
             if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
             {
-                Console.WriteLine("bau");
                 return GetObjectLike(text, parameters[0]);
             }
 

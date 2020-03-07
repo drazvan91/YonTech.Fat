@@ -11,10 +11,12 @@ namespace Yontech.Fat.Selenium
 {
     internal class SeleniumWebBrowserFactory : IWebBrowserFactory
     {
+        private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
 
         public SeleniumWebBrowserFactory(ILoggerFactory loggerFactory)
         {
+            this._loggerFactory = loggerFactory;
             this._logger = loggerFactory.Create(this);
         }
 
@@ -42,7 +44,7 @@ namespace Yontech.Fat.Selenium
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = ChromeDriverFactory.Create(driversPath, startOptions);
+                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions);
                     break;
                 case BrowserType.InternetExplorer:
                     webDriver = InternetExplorerDriverFactory.Create(driversPath, startOptions);

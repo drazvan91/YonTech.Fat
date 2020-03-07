@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
@@ -14,7 +15,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
         /// <param name="driverPath">Path to the folder containg the web driver.</param>
         /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
         /// <returns>An instance of Chrome Driver.</returns>
-        public static IWebDriver Create(string driverPath, BrowserStartOptions startOptions)
+        public static IWebDriver Create(ILoggerFactory loggerFactory, string driverPath, BrowserStartOptions startOptions)
         {
             var chromeOptions = CreateOptions(startOptions);
 
@@ -25,7 +26,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
             catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
             {
-                new ChromeDriverDownloader(startOptions.ChromeVersion).Download(driverPath).Wait();
+                new ChromeDriverDownloader(loggerFactory, startOptions.ChromeVersion).Download(driverPath).Wait();
 
                 driver = CreateDriver(driverPath, chromeOptions);
             }
