@@ -14,11 +14,14 @@ namespace Yontech.Fat.Runner
         private readonly ServiceProvider _serviceProvider;
         private readonly FatDiscoverer _discoverer;
         private readonly LogsSink _logsSink;
+        private readonly ILoggerFactory _loggerFactory;
+
         private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(FatDiscoverer discoverer, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
+        public IocService(FatDiscoverer discoverer, ILoggerFactory loggerFactory, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
         {
             this._discoverer = discoverer;
+            this._loggerFactory = loggerFactory;
             this._logsSink = logsSink;
             this._webBrowserProvider = webBrowserProvider;
 
@@ -102,6 +105,7 @@ namespace Yontech.Fat.Runner
             {
                 fatDiscoverable.WebBrowser = browser;
                 fatDiscoverable.LogsSink = this._logsSink;
+                fatDiscoverable.Logger = this._loggerFactory.Create(fatDiscoverable);
             }
 
             return instance;
