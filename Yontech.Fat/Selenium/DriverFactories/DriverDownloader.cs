@@ -3,11 +3,19 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
     internal abstract class DriverDownloader
     {
+        private readonly ILogger _logger;
+
+        public DriverDownloader(ILoggerFactory loggerFactory)
+        {
+            this._logger = loggerFactory.Create(this);
+        }
+
         public async Task Download(string destinationFolder)
         {
             string url = this.GetDownloadUrl();
@@ -31,7 +39,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
                     byte[] buffer = new byte[1024 * 1024];
                     int len = 0;
                     long megabytes = 0;
-                    Console.WriteLine("Downloading driver: {0}mb", megabytes);
+                    _logger.Info("Downloading driver: {0}mb", megabytes);
 
                     DateTime lastPrint = DateTime.Now;
                     while ((len = downloadStream.Read(buffer, 0, buffer.Length)) > 0)
@@ -40,12 +48,12 @@ namespace Yontech.Fat.Selenium.DriverFactories
                         if (DateTime.Now.Subtract(lastPrint).TotalMilliseconds > 1000)
                         {
                             lastPrint = DateTime.Now;
-                            Console.WriteLine("Downloading driver: {0}mb", megabytes / (1024 * 1024));
+                            _logger.Info("Downloading driver: {0}mb", megabytes / (1024 * 1024));
                         }
 
                         writer.Write(buffer, 0, len);
                     }
-                    Console.WriteLine("Downloading driver finished");
+                    _logger.Info("Downloading driver finished");
 
                     writer.Flush();
                 }

@@ -36,7 +36,6 @@ namespace Yontech.Fat.Discoverer
             if (configType == null) { return null; }
 
             var config = Activator.CreateInstance(configType) as FatConfig;
-            Console.WriteLine(config.AutomaticDriverDownload);
             return config;
         }
 
