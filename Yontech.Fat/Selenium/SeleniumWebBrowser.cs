@@ -5,7 +5,6 @@ using OpenQA.Selenium.Remote;
 using System.Reflection;
 using Yontech.Fat.WebControls;
 using Yontech.Fat.Selenium.WebControls;
-using Yontech.Fat.BusyConditions;
 using OpenQA.Selenium.Chrome;
 using System.Drawing;
 
@@ -46,6 +45,11 @@ namespace Yontech.Fat.Selenium
 
         public override void Close()
         {
+            if (this.BrowserType == BrowserType.RemoteChrome)
+            {
+                return;
+            }
+
             WebDriver.Close();
         }
 
@@ -132,7 +136,10 @@ namespace Yontech.Fat.Selenium
             {
                 if (disposing)
                 {
-                    WebDriver.Dispose();
+                    if (this.BrowserType != BrowserType.RemoteChrome)
+                    {
+                        WebDriver.Dispose();
+                    }
                 }
 
                 _disposedValue = true;

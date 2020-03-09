@@ -16,6 +16,7 @@ namespace Yontech.Fat
         public bool RunInBackground { get; set; }
         public bool DisablePopupBlocking { get; set; }
         public string DriversFolder { get; set; } = "drivers";
+        public string RemoteDebuggerAddress { get; set; }
         public bool AutomaticDriverDownload { get; set; } = true;
         public ChromeVersion AutomaticDriverDownloadChromeVersion { get; set; } = ChromeVersion.Latest;
         public Size InitialSize { get; set; }
@@ -36,6 +37,7 @@ namespace Yontech.Fat
                 RunInBackground = options.RunInBackground,
                 DisablePopupBlocking = options.DisablePopupBlocking,
                 DriversFolder = options.DriversFolder,
+                RemoteDebuggerAddress = options.RemoteDebuggerAddress,
                 AutomaticDriverDownload = options.AutomaticDriverDownload,
                 AutomaticDriverDownloadChromeVersion = options.AutomaticDriverDownloadChromeVersion,
                 InitialSize = options.InitialSize,

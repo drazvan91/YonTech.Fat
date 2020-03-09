@@ -15,9 +15,9 @@ namespace Yontech.Fat.Selenium.DriverFactories
         /// <param name="driverPath">Path to the folder containg the web driver.</param>
         /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
         /// <returns>An instance of Chrome Driver.</returns>
-        public static IWebDriver Create(ILoggerFactory loggerFactory, string driverPath, BrowserStartOptions startOptions)
+        public static IWebDriver Create(ILoggerFactory loggerFactory, string driverPath, BrowserStartOptions startOptions, bool useRemote)
         {
-            var chromeOptions = CreateOptions(startOptions);
+            var chromeOptions = useRemote ? CreateRemoteOptions(startOptions) : CreateOptions(startOptions);
 
             IWebDriver driver = null;
             try
@@ -31,7 +31,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 driver = CreateDriver(driverPath, chromeOptions);
             }
 
-            if (driver != null)
+            if (driver != null && useRemote == false)
             {
                 // this is a hotfix because selenium --start-maximized doesn't work (see below)
                 if (startOptions.StartMaximized)
@@ -56,6 +56,13 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // this is how it should be done.
             // var webDriver = new ChromeDriver(driverPath, chromeOptions);
             // return webDriver;
+        }
+        private static ChromeOptions CreateRemoteOptions(BrowserStartOptions startOptions)
+        {
+            return new ChromeOptions()
+            {
+                DebuggerAddress = startOptions.RemoteDebuggerAddress
+            };
         }
 
         private static ChromeOptions CreateOptions(BrowserStartOptions startOptions)

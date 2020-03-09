@@ -32,7 +32,7 @@ namespace Yontech.Fat.Selenium
 
         public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<FatBusyCondition> busyConditions)
         {
-            this.ValidateStartOptions(startOptions);
+            this.ValidateStartOptions(browserType, startOptions);
 
             IWebDriver webDriver = null;
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
@@ -44,7 +44,10 @@ namespace Yontech.Fat.Selenium
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions);
+                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions, false);
+                    break;
+                case BrowserType.RemoteChrome:
+                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions, true);
                     break;
                 case BrowserType.InternetExplorer:
                     webDriver = InternetExplorerDriverFactory.Create(driversPath, startOptions);
@@ -61,8 +64,18 @@ namespace Yontech.Fat.Selenium
             return browser;
         }
 
-        private void ValidateStartOptions(BrowserStartOptions startOptions)
+        private void ValidateStartOptions(BrowserType browserType, BrowserStartOptions startOptions)
         {
+            if (browserType == BrowserType.RemoteChrome)
+            {
+                if (startOptions.RemoteDebuggerAddress == null)
+                {
+                    var error = "When using RemoteChrome browser you need to specify DebuggerAddress. Run chrome.exe (in your program files) with --remote-debugging-port=9222 and then set DebuggerAddress=\"localhost:9222\" in FatConfig";
+                    _logger.Error(error);
+                    throw new Exception(error);
+                }
+            }
+
             if (startOptions.InitialSize.IsEmpty == false && startOptions.StartMaximized)
             {
                 _logger.Warning("Both StartMaximized and InitialSize have been set and they cannot work together. Only StartMaximized will be taken into consideration");

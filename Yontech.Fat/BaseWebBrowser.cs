@@ -11,8 +11,7 @@ namespace Yontech.Fat
     public abstract class BaseWebBrowser : IWebBrowser
     {
         public WebBrowserConfiguration Configuration { get; private set; }
-        public BrowserType Type { get; private set; }
-
+        public BrowserType BrowserType { get; private set; }
 
         public abstract IControlFinder ControlFinder { get; }
         public abstract IJsExecutor JavaScriptExecutor { get; }
@@ -35,7 +34,7 @@ namespace Yontech.Fat
 
         protected BaseWebBrowser(BrowserType type)
         {
-            this.Type = type;
+            this.BrowserType = type;
             this.Configuration = new WebBrowserConfiguration();
         }
 

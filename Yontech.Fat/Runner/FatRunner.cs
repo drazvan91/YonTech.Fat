@@ -107,7 +107,8 @@ namespace Yontech.Fat.Runner
                 StartMaximized = this._options.StartMaximized,
                 InitialSize = this._options.InitialSize,
                 DriversFolder = this._options.DriversFolder ?? "drivers",
-                AutomaticDriverDownload = this._options.AutomaticDriverDownload
+                AutomaticDriverDownload = this._options.AutomaticDriverDownload,
+                RemoteDebuggerAddress = this._options.RemoteDebuggerAddress,
             };
 
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._loggerFactory);

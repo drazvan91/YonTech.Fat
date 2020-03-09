@@ -8,6 +8,7 @@ namespace Yontech.Fat
     public enum BrowserType
     {
         Chrome,
+        RemoteChrome,
         InternetExplorer,
         Firefox,
         Opera
