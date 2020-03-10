@@ -11,6 +11,7 @@ using Yontech.Fat.Interceptors;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.TestAdapter.Factories;
+using Yontech.Fat.TestAdapter.Logging;
 
 namespace Yontech.Fat.TestAdapter
 {
@@ -30,7 +31,7 @@ namespace Yontech.Fat.TestAdapter
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
             var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
-            var loggerFactory = new ConsoleLoggerFactory();
+            var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
 
             var fatRunner = new FatRunner(loggerFactory, (options) =>
             {
@@ -52,7 +53,7 @@ namespace Yontech.Fat.TestAdapter
 
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
 
-            var loggerFactory = new ConsoleLoggerFactory();
+            var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
 
             var fatRunner = new FatRunner(loggerFactory, (options) =>
             {

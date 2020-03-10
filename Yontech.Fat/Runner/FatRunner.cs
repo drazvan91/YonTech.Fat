@@ -177,7 +177,16 @@ namespace Yontech.Fat.Runner
         {
             var fatTest = _iocService.GetService<FatTest>(testClass.Class);
 
-            fatTest.BeforeAllTestCases();
+            Exception beforeAllTestCasesException = null;
+            try
+            {
+                fatTest.BeforeAllTestCases();
+            }
+            catch (Exception ex)
+            {
+                beforeAllTestCasesException = ex;
+            }
+
             foreach (var testCase in testClass.TestCases)
             {
                 var watch = Stopwatch.StartNew();
@@ -185,16 +194,19 @@ namespace Yontech.Fat.Runner
                 try
                 {
                     _logger.Info("Executing testcase '{0}'", testCase.FullyQualifiedName);
+                    if (beforeAllTestCasesException != null)
+                    {
+                        throw beforeAllTestCasesException;
+                    }
+
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
-                    Thread.Sleep(_options.DelayBetweenTestCases);
                     _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, _logsSink.GetLogs().ToList());
                     _logger.Info("Passed");
                 }
                 catch (Exception ex)
                 {
                     var exception = ex.InnerException ?? ex;
-                    _logger.Error("Failed");
                     _logger.Error(exception);
                     _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, _logsSink.GetLogs().ToList());
                 }
@@ -202,9 +214,19 @@ namespace Yontech.Fat.Runner
                 {
                     watch.Stop();
                 }
+
+                Thread.Sleep(_options.DelayBetweenTestCases);
             }
 
-            fatTest.AfterAllTestCases();
+            try
+            {
+                fatTest.AfterAllTestCases();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
         }
 
         private void ExecuteTestCase(FatTest testClassInstance, FatTestCase testCase)

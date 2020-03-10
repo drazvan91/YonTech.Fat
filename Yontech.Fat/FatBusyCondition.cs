@@ -6,5 +6,10 @@
         protected internal int WaitSessionPollingNumber { get; set; }
 
         protected internal abstract bool IsBusy();
+
+        public FatBusyCondition()
+        {
+            SinkableLogs = false;
+        }
     }
 }

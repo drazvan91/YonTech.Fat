@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Yontech.Fat.Logging
 {
@@ -87,44 +84,10 @@ namespace Yontech.Fat.Logging
 
         public void PrintException(Exception exception, bool includeInnerExceptions, bool includeFatStackFrames = true)
         {
-            var st = new StackTrace(exception, true);
-            var fatTestFrames = this.GetFatTestFrames(st);
-            foreach (var frame in fatTestFrames)
-            {
-                var fileDetails = $"{frame.GetFileName()}:line {frame.GetFileLineNumber()}";
-                PrintRed(fileDetails);
-            }
-        }
+            var lines = StackFrameHelper.GetJoinedStackLines(exception, includeInnerExceptions, includeFatStackFrames);
 
-        private readonly static Type[] FAT_TYPES = new Type[]{
-            typeof(FatPage),
-            typeof(FatPageSection),
-            typeof(FatFlow),
-            typeof(FatTest),
-            typeof(FatCustomComponent),
-        };
-
-        private IEnumerable<StackFrame> GetFatTestFrames(StackTrace st, bool includeFatStackFrames = true)
-        {
-            for (int i = 0; i < st.FrameCount; i++)
-            {
-                var frame = st.GetFrame(i);
-                if (frame.HasMethod())
-                {
-                    if (includeFatStackFrames)
-                    {
-                        yield return frame;
-                    }
-                    else
-                    {
-                        var method = frame.GetMethod();
-                        if (FAT_TYPES.Any(fatType => method.ReflectedType.IsSubclassOf(fatType)))
-                        {
-                            yield return frame;
-                        }
-                    }
-                }
-            }
+            PrintRed(lines);
+            Console.WriteLine();
         }
     }
 }
