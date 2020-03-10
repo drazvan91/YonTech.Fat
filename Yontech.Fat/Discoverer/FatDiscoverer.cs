@@ -142,7 +142,7 @@ namespace Yontech.Fat.Discoverer
         public IEnumerable<Type> FindFatConfigs(Assembly assembly)
         {
             var allTypes = assembly.GetTypes();
-            return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)));
+            return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)) && type != typeof(DefaultFatConfig));
         }
     }
 }

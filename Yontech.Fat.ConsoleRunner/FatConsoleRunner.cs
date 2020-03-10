@@ -18,7 +18,7 @@ namespace Yontech.Fat.ConsoleRunner
 
             if (options != null)
             {
-                this._options = FatConfig.Clone(options);
+                this._options = options;
                 AddInterceptor(this._options);
             }
         }
@@ -54,9 +54,7 @@ namespace Yontech.Fat.ConsoleRunner
         {
             if (this._options == null)
             {
-                // todo: this is a bug because it does not take into consideration any FatConfig file
-                var defaultConfig = new FatConfig();
-                var loggerFactory = new ConsoleLoggerFactory(defaultConfig.LogLevel, defaultConfig.LogLevelConfig);
+                var loggerFactory = new ConsoleLoggerFactory();
                 return new FatRunner(loggerFactory, AddInterceptor);
             }
             else

@@ -48,9 +48,9 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // for some reason if we use ChromeDriver instead of RemoteWebDriver there is a performance issue on 
             // initial load, we believe that is because of dotnetcore
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
-            service.Port = 5555; // Some port value.
+            service.Port = 5556; // Some port value.
             service.Start();
-            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5555"), chromeOptions);
+            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5556"), chromeOptions);
             return webDriver;
 
             // this is how it should be done.

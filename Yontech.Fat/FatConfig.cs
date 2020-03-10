@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 
 namespace Yontech.Fat
 {
-    public class FatConfig
+    public class DefaultFatConfig : FatConfig
+    {
+    }
+
+    public abstract class FatConfig
     {
         public ITestCaseFilter Filter { get; set; }
         public BrowserType Browser { get; set; } = BrowserType.Chrome;
@@ -26,34 +29,20 @@ namespace Yontech.Fat
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
         public List<FatBusyCondition> BusyConditions { get; set; } = new List<FatBusyCondition>();
 
-        public static FatConfig Clone(FatConfig options)
+        internal void Log(ILoggerFactory loggerFactory)
         {
-            return new FatConfig()
-            {
-                Filter = options.Filter,
-                Browser = options.Browser,
-                DelayBetweenTestCases = options.DelayBetweenTestCases,
-                DelayBetweenSteps = options.DelayBetweenSteps,
-                RunInBackground = options.RunInBackground,
-                DisablePopupBlocking = options.DisablePopupBlocking,
-                DriversFolder = options.DriversFolder,
-                RemoteDebuggerAddress = options.RemoteDebuggerAddress,
-                AutomaticDriverDownload = options.AutomaticDriverDownload,
-                AutomaticDriverDownloadChromeVersion = options.AutomaticDriverDownloadChromeVersion,
-                InitialSize = options.InitialSize,
-                StartMaximized = options.StartMaximized,
-                LogLevel = options.LogLevel,
-                LogLevelConfig = options.LogLevelConfig,
-                Interceptors = options.Interceptors,
-                BusyConditions = options.BusyConditions,
-            };
-        }
+            var logger = loggerFactory.Create(this);
+            logger.Info("Configuration file being used: {0}", this.GetType().FullName);
+            logger.Info("Log level: {0}", logger.LogLevel);
 
-        public static FatConfig Default()
-        {
-            return new FatConfig()
-            {
-            };
+            logger.Debug($@"
+    Browser: {Browser}, 
+    RemoteDebuggerAddress: {RemoteDebuggerAddress}
+    DriversFolder: {DriversFolder}
+    AutomaticDriverDownload: {AutomaticDriverDownload}
+    DelayBetweenTestCases: {DelayBetweenTestCases}
+    DelayBetweenSteps: {DelayBetweenSteps}
+            ");
         }
     }
 }

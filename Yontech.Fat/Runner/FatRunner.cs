@@ -34,7 +34,12 @@ namespace Yontech.Fat.Runner
             var options = this._fatDiscoverer.DiscoverConfig();
             if (options == null)
             {
-                options = FatConfig.Default();
+                options = new DefaultFatConfig();
+            }
+            else
+            {
+                _loggerFactory.LogLevel = options.LogLevel;
+                _loggerFactory.LogLevelConfig = options.LogLevelConfig;
             }
 
             optionsCallback(options);
@@ -52,6 +57,8 @@ namespace Yontech.Fat.Runner
         {
             this._logger = _loggerFactory.Create(this);
             this._options = options;
+            this._options.Log(_loggerFactory);
+
             this._logsSink = new LogsSink();
 
             var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();

@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using Yontech.Fat.Logging;
+﻿using System.Collections.Generic;
 
 namespace Yontech.Fat.Logging
 {
     public class ConsoleLoggerFactory : ILoggerFactory
     {
-        private readonly LogLevel _defaultLogLevel;
-        private readonly Dictionary<string, LogLevel> _logLevelConfigs;
+        public LogLevel LogLevel { get; set; }
+        public Dictionary<string, LogLevel> LogLevelConfig { get; set; }
+        public ConsoleLoggerFactory() : this(LogLevel.Info, new Dictionary<string, LogLevel>())
+        {
+        }
+
         public ConsoleLoggerFactory(LogLevel logLevel, Dictionary<string, LogLevel> logLevelConfigs)
         {
-            _defaultLogLevel = logLevel;
-            _logLevelConfigs = logLevelConfigs;
+            LogLevel = logLevel;
+            LogLevelConfig = logLevelConfigs;
         }
 
         public ILogger Create<T>(T forObject)
         {
             var componentName = forObject.GetType().FullName.Replace("Yontech.", "").Replace("YonTech.", "");
-            var logLevel = _defaultLogLevel;
+            var logLevel = LogLevel;
 
-            if (this._logLevelConfigs.TryGetValue(componentName, out LogLevel value))
+            if (this.LogLevelConfig.TryGetValue(componentName, out LogLevel value))
             {
                 logLevel = value;
             }

@@ -9,6 +9,8 @@ namespace Yontech.Fat.Logging
         private readonly LogLevel _logLevel;
         private readonly ConsolePrinter _print;
 
+        public LogLevel LogLevel => _logLevel;
+
         public ConsoleLogger(string componentName, LogLevel logLevel)
         {
             this._componentName = componentName;

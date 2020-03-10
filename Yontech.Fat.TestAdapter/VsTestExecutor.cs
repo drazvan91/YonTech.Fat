@@ -30,8 +30,7 @@ namespace Yontech.Fat.TestAdapter
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
             var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
-            // todo: we should read info from config file and also integrate with vstest
-            var loggerFactory = new ConsoleLoggerFactory(LogLevel.Info, new Dictionary<string, Fat.Logging.LogLevel>());
+            var loggerFactory = new ConsoleLoggerFactory();
 
             var fatRunner = new FatRunner(loggerFactory, (options) =>
             {
@@ -53,8 +52,7 @@ namespace Yontech.Fat.TestAdapter
 
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
 
-            // todo: we should read info from config file and also integrate with vstest
-            var loggerFactory = new ConsoleLoggerFactory(LogLevel.Info, new Dictionary<string, Fat.Logging.LogLevel>());
+            var loggerFactory = new ConsoleLoggerFactory();
 
             var fatRunner = new FatRunner(loggerFactory, (options) =>
             {
