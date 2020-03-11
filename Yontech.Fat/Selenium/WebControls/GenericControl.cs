@@ -8,8 +8,8 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class GenericControl : BaseSeleniumControl, IGenericControl
     {
-        public GenericControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-            : base(webElement, webBrowser)
+        public GenericControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
         }
 
@@ -22,14 +22,19 @@ namespace Yontech.Fat.Selenium.WebControls
             }
         }
 
-        public IControlFinder ControlFinder => new SeleniumControlFinder(WebElement, WebBrowser);
+        public IControlFinder ControlFinder => _;
+        public IControlFinder _ => new SeleniumControlFinder(SelectorNode, WebElement, WebBrowser);
 
         public IEnumerable<IGenericControl> Find(string cssSelector)
         {
             EnsureElementExists();
+            int index = 0;
             foreach (var element in WebElement.FindElements(By.CssSelector(cssSelector)))
             {
-                yield return new GenericControl(element, WebBrowser);
+                var newNode = new SelectorNode(cssSelector, null, base.SelectorNode);
+
+                yield return new GenericControl(newNode, element, WebBrowser);
+                index++;
             }
         }
     }

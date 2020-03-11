@@ -5,7 +5,8 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class CheckboxControl : ButtonControl, ICheckboxControl
     {
-        public CheckboxControl(IWebElement webElement, SeleniumWebBrowser webBrowser) : base(webElement, webBrowser)
+        public CheckboxControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+        : base(selectorNode, webElement, webBrowser)
         {
         }
 

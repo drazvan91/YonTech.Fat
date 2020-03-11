@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Yontech.Fat.Selenium;
 
 namespace Yontech.Fat.Exceptions
 {
-    public class MultipleWebControlsFoundException : Exception
+    public class MultipleWebControlsFoundException : FatException
     {
-        public MultipleWebControlsFoundException() : base("Multiple elements found")
-        {
-        }
-        public MultipleWebControlsFoundException(string message) : base(message)
+        internal MultipleWebControlsFoundException(SelectorNode selectorNode) : base($"Multiple web-controls were found for selector '{selectorNode.GetFullPath()}' instead of single one.")
         {
         }
     }

@@ -7,8 +7,8 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class TextBoxControl : BaseSeleniumControl, ITextBoxControl
     {
-        public TextBoxControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-            : base(webElement, webBrowser)
+        public TextBoxControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
         }
 

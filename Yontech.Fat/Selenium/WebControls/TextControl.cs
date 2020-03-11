@@ -10,8 +10,8 @@ namespace Yontech.Fat.Selenium.WebControls
     internal class TextControl : BaseSeleniumControl, ITextControl
     {
 
-        public TextControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-            : base(webElement, webBrowser)
+        public TextControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
         }
         public string Text

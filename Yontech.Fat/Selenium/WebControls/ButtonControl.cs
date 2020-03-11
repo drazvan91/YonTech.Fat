@@ -7,8 +7,8 @@ namespace Yontech.Fat.Selenium.WebControls
     internal class ButtonControl : BaseSeleniumControl, IButtonControl
     {
 
-        public ButtonControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-          : base(webElement, webBrowser)
+        public ButtonControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+          : base(selectorNode, webElement, webBrowser)
         {
         }
 

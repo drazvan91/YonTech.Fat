@@ -9,8 +9,8 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class LinkControl : BaseSeleniumControl, ILinkControl
     {
-        public LinkControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
-            : base(webElement, webBrowser)
+        public LinkControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
         }
         public string Text

@@ -10,12 +10,14 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class BaseSeleniumControl : IWebControl
     {
-        protected readonly internal IWebElement WebElement;
-        protected readonly internal SeleniumWebBrowser WebBrowser;
+        protected internal readonly SelectorNode SelectorNode;
+        protected internal readonly IWebElement WebElement;
+        protected internal readonly SeleniumWebBrowser WebBrowser;
 
 
-        public BaseSeleniumControl(IWebElement webElement, SeleniumWebBrowser webBrowser)
+        public BaseSeleniumControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
         {
+            this.SelectorNode = selectorNode;
             this.WebElement = webElement;
             this.WebBrowser = webBrowser;
         }
@@ -123,7 +125,7 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             if (WebElement == null)
             {
-                throw new WebControlNotFoundException("Element not found");
+                throw new FatAssertException($"Element with selector '{this.SelectorNode.GetFullPath()}' should exist but it doesn't.");
             }
         }
 
@@ -134,8 +136,7 @@ namespace Yontech.Fat.Selenium.WebControls
             var remoteWebElem = WebElement as RemoteWebElement;
             if (remoteWebElem == null || !remoteWebElem.Displayed)
             {
-                // todo
-                throw new WebControlNotFoundException("Element not visible");
+                throw new FatAssertException($"Element with selector '{this.SelectorNode.GetFullPath()}' should be visible but it isn't.");
             }
         }
 
@@ -144,7 +145,7 @@ namespace Yontech.Fat.Selenium.WebControls
             var remoteWebElem = WebElement as RemoteWebElement;
             if (remoteWebElem != null && remoteWebElem.Displayed)
             {
-                throw new Exception("Element is visible and it shouldn't");
+                throw new FatAssertException($"Element with selector '{this.SelectorNode.GetFullPath()}' should NOT be visible but it is.");
             }
         }
 
@@ -185,6 +186,8 @@ namespace Yontech.Fat.Selenium.WebControls
                 return clickable == WebElement;
             }
         }
+
+        public string SelectorDescription => SelectorNode.GetFullPath();
 
         public string GetAttribute(string attributeName)
         {

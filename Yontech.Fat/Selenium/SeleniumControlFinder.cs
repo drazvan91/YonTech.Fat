@@ -12,13 +12,15 @@ namespace Yontech.Fat.Selenium
 {
     internal class SeleniumControlFinder : IControlFinder
     {
+        private readonly SelectorNode _selectorNode;
         private readonly ISearchContext _elementScope;
         private readonly SeleniumWebBrowser _webBrowser;
 
-        public SeleniumControlFinder(SeleniumWebBrowser webBrowser) : this(webBrowser.WebDriver, webBrowser) { }
+        public SeleniumControlFinder(SeleniumWebBrowser webBrowser) : this(null, webBrowser.WebDriver, webBrowser) { }
 
-        public SeleniumControlFinder(ISearchContext elementScope, SeleniumWebBrowser webBrowser)
+        public SeleniumControlFinder(SelectorNode selectorNode, ISearchContext elementScope, SeleniumWebBrowser webBrowser)
         {
+            this._selectorNode = selectorNode;
             this._elementScope = elementScope;
             this._webBrowser = webBrowser;
         }
@@ -31,7 +33,8 @@ namespace Yontech.Fat.Selenium
                 var elements = this._elementScope.FindElements(selector);
                 if (elements.Count > 1)
                 {
-                    throw new MultipleWebControlsFoundException();
+                    SelectorNode newNode = new SelectorNode(selector.ToString(), 0, this._selectorNode);
+                    throw new MultipleWebControlsFoundException(newNode);
                 }
 
                 webElement = elements.FirstOrDefault();
@@ -56,92 +59,107 @@ namespace Yontech.Fat.Selenium
         public IButtonControl Button(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new ButtonControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new ButtonControl(newNode, element, _webBrowser);
         }
 
         public IRadioButtonControl RadioButton(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new RadioButtonControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new RadioButtonControl(newNode, element, _webBrowser);
         }
 
         public ICheckboxControl Checkbox(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new CheckboxControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new CheckboxControl(newNode, element, _webBrowser);
         }
 
         public ITextBoxControl TextBox(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new TextBoxControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new TextBoxControl(newNode, element, _webBrowser);
         }
 
         public ITextControl Text(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new TextControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new TextControl(newNode, element, _webBrowser);
         }
 
         public ILinkControl Link(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new LinkControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new LinkControl(newNode, element, _webBrowser);
         }
 
         public IDropdownControl Dropdown(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new DropdownControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new DropdownControl(newNode, element, _webBrowser);
         }
 
         public IGenericControl Generic(string cssSelector)
         {
             var element = FindElement(By.CssSelector(cssSelector));
-            return new GenericControl(element, _webBrowser);
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+            return new GenericControl(newNode, element, _webBrowser);
         }
 
         public IEnumerable<ITextControl> TextList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
-            var textControlElements = new List<ITextControl>();
+            int index = 0;
             foreach (var el in elements)
             {
-                textControlElements.Add(new TextControl(el, _webBrowser));
+                var newNode = new SelectorNode(cssSelector, index, this._selectorNode);
+                yield return new TextControl(newNode, el, _webBrowser);
+                index++;
             }
-            return textControlElements;
         }
 
         public IEnumerable<ITextBoxControl> TextBoxList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
-            var textBoxControlElements = new List<ITextBoxControl>();
+            int index = 0;
             foreach (var el in elements)
             {
-                textBoxControlElements.Add(new TextBoxControl(el, _webBrowser));
-            }
+                var newNode = new SelectorNode(cssSelector, index, this._selectorNode);
+                yield return new TextBoxControl(newNode, el, _webBrowser);
 
-            return textBoxControlElements;
+                index++;
+            }
         }
 
         public IEnumerable<IButtonControl> ButtonList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
-            var buttonControlElements = new List<IButtonControl>();
+            int index = 0;
             foreach (var el in elements)
             {
-                buttonControlElements.Add(new ButtonControl(el, _webBrowser));
-            }
+                var newNode = new SelectorNode(cssSelector, index, this._selectorNode);
+                yield return new ButtonControl(newNode, el, _webBrowser);
 
-            return buttonControlElements;
+                index++;
+            }
         }
 
         public IEnumerable<ILinkControl> LinkList(string cssSelector)
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+            int index = 0;
             foreach (var el in elements)
             {
-                yield return new LinkControl(el, _webBrowser);
+                var newNode = new SelectorNode(cssSelector, index, this._selectorNode);
+                yield return new LinkControl(newNode, el, _webBrowser);
+
+                index++;
             }
         }
 
@@ -149,46 +167,58 @@ namespace Yontech.Fat.Selenium
         {
             var element = FindElement(By.CssSelector(cssSelector));
 
+            var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
+
             var custom = new TComponent();
             custom.WebBrowser = this._webBrowser;
-            custom.Container = new GenericControl(element, this._webBrowser);
+            custom.Container = new GenericControl(newNode, element, this._webBrowser);
             return custom;
         }
 
         public IEnumerable<TComponent> CustomList<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new()
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
+            int index = 0;
             foreach (var element in elements)
             {
+                var newNode = new SelectorNode(cssSelector, index, this._selectorNode);
+
                 var custom = new TComponent();
                 custom.WebBrowser = this._webBrowser;
-                custom.Container = new GenericControl(element, this._webBrowser);
+                custom.Container = new GenericControl(newNode, element, this._webBrowser);
                 yield return custom;
+
+                index++;
             }
         }
 
         public IButtonControl ButtonByXPath(string xPathSelector)
         {
             var element = FindElement(By.XPath(xPathSelector));
-            return new ButtonControl(element, _webBrowser);
+            var newNode = new SelectorNode(xPathSelector, null, this._selectorNode);
+
+            return new ButtonControl(newNode, element, _webBrowser);
         }
 
         public ITextControl TextByXPath(string xPathSelector)
         {
             var element = FindElement(By.XPath(xPathSelector));
-            return new TextControl(element, _webBrowser);
+            var newNode = new SelectorNode(xPathSelector, null, this._selectorNode);
+            return new TextControl(newNode, element, _webBrowser);
         }
 
         public ITextBoxControl TextBoxByXPath(string xPathSelector)
         {
             var element = FindElement(By.XPath(xPathSelector));
-            return new TextBoxControl(element, _webBrowser);
+            var newNode = new SelectorNode(xPathSelector, null, this._selectorNode);
+            return new TextBoxControl(newNode, element, _webBrowser);
         }
 
         public IGenericControl GenericByXPath(string xPathSelector)
         {
             var element = FindElement(By.XPath(xPathSelector));
-            return new GenericControl(element, _webBrowser);
+            var newNode = new SelectorNode(xPathSelector, null, this._selectorNode);
+            return new GenericControl(newNode, element, _webBrowser);
         }
 
         public bool Exists(string cssSelector)

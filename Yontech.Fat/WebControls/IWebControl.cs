@@ -6,6 +6,8 @@
         void ShouldBeVisible();
         void ShouldNotBeVisible();
 
+        string SelectorDescription { get; }
+
         bool IsVisible { get; }
         bool Exists { get; }
         bool IsDisabled { get; }

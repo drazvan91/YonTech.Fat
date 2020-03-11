@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
 
 namespace Yontech.Fat
@@ -46,6 +47,11 @@ namespace Yontech.Fat
         protected void Wait(int milliseconds)
         {
             Thread.Sleep(milliseconds);
+        }
+
+        protected void Fail(string messageFormat, params object[] args)
+        {
+            throw new FatAssertException(messageFormat, args);
         }
 
         protected void WaitForTrue(Func<bool> condition)
