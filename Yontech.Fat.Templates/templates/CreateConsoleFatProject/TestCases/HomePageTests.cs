@@ -21,6 +21,7 @@ namespace CreateConsoleFatProject.TestCases
 
         public void Test_should_contain_docs_folder()
         {
+            LogInfo("Testing for docs folder");
             homePage.FileList.ShouldContainFile("docs");
         }
     }
