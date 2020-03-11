@@ -125,7 +125,7 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             if (WebElement == null)
             {
-                throw new FatAssertException($"Element with selector '{this.SelectorNode.GetFullPath()}' should exist but it doesn't.");
+                throw new FatException($"Element with selector '{this.SelectorNode.GetFullPath()}' should exist but it doesn't.");
             }
         }
 
