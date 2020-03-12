@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
@@ -50,7 +52,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
             service.Port = 5556; // Some port value.
             service.Start();
-            IWebDriver webDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:5556"), chromeOptions);
+            var webDriver = new CustomChromeDriver(new Uri("http://127.0.0.1:5556"), chromeOptions);
             return webDriver;
 
             // this is how it should be done.

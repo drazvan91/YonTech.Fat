@@ -7,6 +7,8 @@ using Yontech.Fat.WebControls;
 using Yontech.Fat.Selenium.WebControls;
 using OpenQA.Selenium.Chrome;
 using System.Drawing;
+using Yontech.Fat.Selenium.DriverFactories;
+using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Selenium
 {
@@ -18,7 +20,8 @@ namespace Yontech.Fat.Selenium
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
 
-        public SeleniumWebBrowser(IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions) : base(browserType)
+        public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
+            : base(loggerFactory, browserType)
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
@@ -159,7 +162,7 @@ namespace Yontech.Fat.Selenium
 
         public override void SimulateOfflineConnection()
         {
-            var chromeDriver = this.WebDriver as ChromeDriver;
+            var chromeDriver = this.WebDriver as CustomChromeDriver;
             if (chromeDriver != null)
             {
                 chromeDriver.NetworkConditions = new ChromeNetworkConditions()
@@ -169,12 +172,17 @@ namespace Yontech.Fat.Selenium
                     DownloadThroughput = 200,
                     UploadThroughput = 200
                 };
+                Logger.Debug("Network condition is being simulated as offline");
+            }
+            else
+            {
+                Logger.Debug("Simulate network conditions is not supported for this Browser");
             }
         }
 
         public override void SimulateSlowConnection(int delay = 1000)
         {
-            var chromeDriver = this.WebDriver as ChromeDriver;
+            var chromeDriver = this.WebDriver as CustomChromeDriver;
             if (chromeDriver != null)
             {
                 chromeDriver.NetworkConditions = new ChromeNetworkConditions()
@@ -184,12 +192,17 @@ namespace Yontech.Fat.Selenium
                     DownloadThroughput = 20000,
                     UploadThroughput = 20000
                 };
+                Logger.Debug("Network condition is being simulated as slow with a delay of '{0}'", delay);
+            }
+            else
+            {
+                Logger.Debug("Simulate network conditions is not supported for this Browser");
             }
         }
 
         public override void SimulateFastConnection()
         {
-            var chromeDriver = this.WebDriver as ChromeDriver;
+            var chromeDriver = this.WebDriver as CustomChromeDriver;
             if (chromeDriver != null)
             {
                 chromeDriver.NetworkConditions = new ChromeNetworkConditions()
@@ -199,6 +212,11 @@ namespace Yontech.Fat.Selenium
                     DownloadThroughput = 100000,
                     UploadThroughput = 100000
                 };
+                Logger.Debug("Network condition is being simulated as fast with no delay");
+            }
+            else
+            {
+                Logger.Debug("Simulate network conditions is not supported for this Browser");
             }
         }
 

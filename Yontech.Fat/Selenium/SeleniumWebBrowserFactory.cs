@@ -57,6 +57,7 @@ namespace Yontech.Fat.Selenium
             }
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
+                this._loggerFactory,
                 webDriver: webDriver,
                 browserType: browserType,
                 busyConditions: busyConditions ?? new List<FatBusyCondition>());

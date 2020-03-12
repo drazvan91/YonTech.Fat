@@ -10,8 +10,10 @@ namespace Yontech.Fat
 {
     public abstract class BaseWebBrowser : IWebBrowser
     {
-        public WebBrowserConfiguration Configuration { get; private set; }
-        public BrowserType BrowserType { get; private set; }
+        public WebBrowserConfiguration Configuration { get; set; }
+        public ILoggerFactory LoggerFactory { get; }
+        public ILogger Logger { get; }
+        public BrowserType BrowserType { get; set; }
 
         public abstract IControlFinder ControlFinder { get; }
         public abstract IJsExecutor JavaScriptExecutor { get; }
@@ -32,8 +34,10 @@ namespace Yontech.Fat
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
 
-        protected BaseWebBrowser(BrowserType type)
+        protected BaseWebBrowser(ILoggerFactory loggerFactory, BrowserType type)
         {
+            this.LoggerFactory = loggerFactory;
+            this.Logger = loggerFactory.Create(this);
             this.BrowserType = type;
             this.Configuration = new WebBrowserConfiguration();
         }
@@ -84,9 +88,9 @@ namespace Yontech.Fat
         public void WaitForConditionToBeTrue(Func<bool> condition)
         {
             Waiter.WaitForConditionToBeTrue(() =>
-                        {
-                            return condition();
-                        }, this.Configuration.DefaultTimeout);
+            {
+                return condition();
+            }, this.Configuration.DefaultTimeout);
         }
 
 
