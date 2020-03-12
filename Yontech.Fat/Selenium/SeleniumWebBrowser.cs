@@ -20,6 +20,14 @@ namespace Yontech.Fat.Selenium
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
 
+        private readonly ChromeNetworkConditions FAST_NETWORK_CONDITION = new ChromeNetworkConditions()
+        {
+            Latency = TimeSpan.FromMilliseconds(1),
+            IsOffline = false,
+            DownloadThroughput = 100000,
+            UploadThroughput = 100000
+        };
+
         public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
             : base(loggerFactory, browserType)
         {
@@ -31,6 +39,12 @@ namespace Yontech.Fat.Selenium
             if (busyConditions != null)
             {
                 this.Configuration.BusyConditions.AddRange(busyConditions);
+            }
+
+            var chromeDriver = this.WebDriver as CustomChromeDriver;
+            if (chromeDriver != null)
+            {
+                chromeDriver.NetworkConditions = FAST_NETWORK_CONDITION;
             }
         }
 
@@ -163,60 +177,59 @@ namespace Yontech.Fat.Selenium
         public override void SimulateOfflineConnection()
         {
             var chromeDriver = this.WebDriver as CustomChromeDriver;
-            if (chromeDriver != null)
-            {
-                chromeDriver.NetworkConditions = new ChromeNetworkConditions()
-                {
-                    Latency = TimeSpan.FromMilliseconds(1),
-                    IsOffline = true,
-                    DownloadThroughput = 200,
-                    UploadThroughput = 200
-                };
-                Logger.Debug("Network condition is being simulated as offline");
-            }
-            else
+            if (chromeDriver == null)
             {
                 Logger.Debug("Simulate network conditions is not supported for this Browser");
+                return;
             }
+
+            if (chromeDriver.NetworkConditions.IsOffline)
+            {
+                return;
+            }
+
+            chromeDriver.NetworkConditions = new ChromeNetworkConditions()
+            {
+                Latency = TimeSpan.FromMilliseconds(1),
+                IsOffline = true,
+                DownloadThroughput = 200,
+                UploadThroughput = 200
+            };
+            Logger.Debug("Network condition is being simulated as offline");
         }
 
         public override void SimulateSlowConnection(int delay = 1000)
         {
             var chromeDriver = this.WebDriver as CustomChromeDriver;
-            if (chromeDriver != null)
-            {
-                chromeDriver.NetworkConditions = new ChromeNetworkConditions()
-                {
-                    Latency = TimeSpan.FromMilliseconds(delay / 2),
-                    IsOffline = false,
-                    DownloadThroughput = 20000,
-                    UploadThroughput = 20000
-                };
-                Logger.Debug("Network condition is being simulated as slow with a delay of '{0}'", delay);
-            }
-            else
+            if (chromeDriver == null)
             {
                 Logger.Debug("Simulate network conditions is not supported for this Browser");
+                return;
             }
+            var newLatency = TimeSpan.FromMilliseconds(delay / 2);
+
+            if (chromeDriver.NetworkConditions.Latency == newLatency)
+            {
+                return;
+            }
+
+            chromeDriver.NetworkConditions = new ChromeNetworkConditions()
+            {
+                Latency = newLatency,
+                IsOffline = false,
+                DownloadThroughput = 20000,
+                UploadThroughput = 20000
+            };
+            Logger.Debug("Network condition is being simulated as slow with a delay of '{0}'", delay);
         }
 
         public override void SimulateFastConnection()
         {
             var chromeDriver = this.WebDriver as CustomChromeDriver;
-            if (chromeDriver != null)
+            if (chromeDriver != null && chromeDriver.NetworkConditions.Latency != FAST_NETWORK_CONDITION.Latency)
             {
-                chromeDriver.NetworkConditions = new ChromeNetworkConditions()
-                {
-                    Latency = TimeSpan.FromMilliseconds(1),
-                    IsOffline = false,
-                    DownloadThroughput = 100000,
-                    UploadThroughput = 100000
-                };
+                chromeDriver.NetworkConditions = FAST_NETWORK_CONDITION;
                 Logger.Debug("Network condition is being simulated as fast with no delay");
-            }
-            else
-            {
-                Logger.Debug("Simulate network conditions is not supported for this Browser");
             }
         }
 

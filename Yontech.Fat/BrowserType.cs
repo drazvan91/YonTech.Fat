@@ -17,6 +17,7 @@ namespace Yontech.Fat
     public enum ChromeVersion : int
     {
         Latest = 0,
+        v74 = 74,
         v79 = 79,
         v80 = 80,
     }
