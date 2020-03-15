@@ -5,7 +5,7 @@ using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.EnvData
 {
-    public class EnvDataTextResolver
+    internal class EnvDataTextResolver
     {
         private readonly ILogger _logger;
 

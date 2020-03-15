@@ -79,11 +79,8 @@ namespace Yontech.Fat.Runner
             {
                 serviceCollection.AddSingleton(fatEnvData, (s) =>
                 {
-                    _logger.Debug("Requested");
-                    var instance = Activator.CreateInstance(fatEnvData) as FatEnvData;
-                    EnvDataTextResolver r = new EnvDataTextResolver(this._loggerFactory);
-                    r.Resolve(instance);
-                    return instance;
+                    var envDataResolver = new EnvDataResolver(this._loggerFactory);
+                    return envDataResolver.Resolve(fatEnvData);
                 });
             }
         }
