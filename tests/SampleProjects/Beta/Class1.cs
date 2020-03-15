@@ -1,4 +1,4 @@
-namespace Beta
+﻿namespace Beta
 {
     public class Class1
     {

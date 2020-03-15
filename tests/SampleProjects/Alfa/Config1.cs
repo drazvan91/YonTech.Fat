@@ -1,4 +1,4 @@
-using Yontech.Fat;
+﻿using Yontech.Fat;
 
 namespace Alfa
 {
@@ -7,6 +7,7 @@ namespace Alfa
         public Config1()
         {
             Browser = BrowserType.Chrome;
+            RunInBackground = true;
             DriversFolder = "alfa1_drivers";
         }
     }

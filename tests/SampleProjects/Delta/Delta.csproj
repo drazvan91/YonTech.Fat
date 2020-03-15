@@ -7,5 +7,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
         <ProjectReference Include="..\..\..\Yontech.Fat\Yontech.Fat.csproj" />
+        <ProjectReference Include="..\..\..\Yontech.Fat.TestAdapter\Yontech.Fat.TestAdapter.csproj" />
     </ItemGroup>
 </Project>
