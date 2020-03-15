@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.EnvData;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Utils;
 
@@ -15,13 +16,14 @@ namespace Yontech.Fat.Runner
         private readonly FatDiscoverer _discoverer;
         private readonly LogsSink _logsSink;
         private readonly ILoggerFactory _loggerFactory;
-
+        private readonly ILogger _logger;
         private readonly Func<IWebBrowser> _webBrowserProvider;
 
         public IocService(FatDiscoverer discoverer, ILoggerFactory loggerFactory, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
         {
             this._discoverer = discoverer;
             this._loggerFactory = loggerFactory;
+            this._logger = loggerFactory.Create(this);
             this._logsSink = logsSink;
             this._webBrowserProvider = webBrowserProvider;
 
@@ -71,6 +73,19 @@ namespace Yontech.Fat.Runner
             {
                 serviceCollection.AddSingleton(flow);
             }
+
+            var fatEnvDatas = _discoverer.FindFatEnvDatas(assembly);
+            foreach (var fatEnvData in fatEnvDatas)
+            {
+                serviceCollection.AddSingleton(fatEnvData, (s) =>
+                {
+                    _logger.Debug("Requested");
+                    var instance = Activator.CreateInstance(fatEnvData) as FatEnvData;
+                    EnvDataTextResolver r = new EnvDataTextResolver(this._loggerFactory);
+                    r.Resolve(instance);
+                    return instance;
+                });
+            }
         }
 
         internal T GetService<T>(Type type) where T : class
@@ -87,7 +102,6 @@ namespace Yontech.Fat.Runner
 
             foreach (var prop in injectableProperties)
             {
-
                 if (prop.GetValue(instance) == null)
                 {
                     object fatPageProp = null;
@@ -116,27 +130,31 @@ namespace Yontech.Fat.Runner
             return instance;
         }
 
-        private readonly static Type[] FAT_TYPES = new Type[]{
+        private readonly static Type[] BASE_FAT_TYPES = new Type[]{
             typeof(FatPage),
             typeof(FatPageSection),
             typeof(FatFlow),
-            typeof(FatTest)
+            typeof(FatTest),
+            typeof(FatEnvData)
         };
+
+        private bool IsInjectableProperty(PropertyInfo prop)
+        {
+            return prop.PropertyType.IsSubclassOf(typeof(FatPage))
+                || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
+                || prop.PropertyType.IsSubclassOf(typeof(FatFlow))
+                || prop.PropertyType.IsSubclassOf(typeof(FatEnvData));
+        }
 
         private List<PropertyInfo> GetInjectableProperties(Type type)
         {
             var injectableProperties = new List<PropertyInfo>();
 
             var refType = type;
-            while (!FAT_TYPES.Contains(refType))
+            while (!BASE_FAT_TYPES.Contains(refType))
             {
                 var properties = refType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                var injectable = properties.Where(prop =>
-                {
-                    return prop.PropertyType.IsSubclassOf(typeof(FatPage))
-                    || prop.PropertyType.IsSubclassOf(typeof(FatPageSection))
-                    || prop.PropertyType.IsSubclassOf(typeof(FatFlow));
-                });
+                var injectable = properties.Where(IsInjectableProperty);
                 injectableProperties.AddRange(injectable);
                 refType = refType.BaseType;
             }

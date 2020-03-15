@@ -143,6 +143,7 @@ namespace Yontech.Fat.Runner
             catch (Exception ex)
             {
                 _logger.Error("Execution stopped");
+                _logger.Error(ex.Message);
                 _logger.Error(ex);
             }
             finally

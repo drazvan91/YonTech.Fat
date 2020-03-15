@@ -138,6 +138,11 @@ namespace Yontech.Fat.Discoverer
             var allTypes = assembly.GetTypes();
             return allTypes.Where(type => type.IsSubclassOf(typeof(FatFlow)));
         }
+        public IEnumerable<Type> FindFatEnvDatas(Assembly assembly)
+        {
+            var allTypes = assembly.GetTypes();
+            return allTypes.Where(type => type.IsSubclassOf(typeof(FatEnvData)));
+        }
 
         public IEnumerable<Type> FindFatConfigs(Assembly assembly)
         {

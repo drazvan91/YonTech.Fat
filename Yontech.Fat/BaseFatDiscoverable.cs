@@ -53,6 +53,21 @@ namespace Yontech.Fat
         {
             throw new FatAssertException(messageFormat, args);
         }
+        protected void FailIf(bool condition, string messageFormat, params object[] args)
+        {
+            if (condition)
+            {
+                throw new FatAssertException(messageFormat, args);
+            }
+        }
+
+        protected void FailIf(Func<bool> condition, string messageFormat, params object[] args)
+        {
+            if (condition())
+            {
+                throw new FatAssertException(messageFormat, args);
+            }
+        }
 
         protected void WaitForTrue(Func<bool> condition)
         {

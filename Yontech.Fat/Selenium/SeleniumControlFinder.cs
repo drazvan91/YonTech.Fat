@@ -166,6 +166,10 @@ namespace Yontech.Fat.Selenium
         public TComponent Custom<TComponent>(string cssSelector) where TComponent : FatCustomComponent, new()
         {
             var element = FindElement(By.CssSelector(cssSelector));
+            if (element == null)
+            {
+                throw new FatException($"element with selector '{cssSelector}' not found");
+            }
 
             var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
 
