@@ -19,7 +19,7 @@ namespace Yontech.Fat.Runner
         private readonly ILogger _logger;
         private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(FatDiscoverer discoverer, ILoggerFactory loggerFactory, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
+        public IocService(FatDiscoverer discoverer, IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
         {
             this._discoverer = discoverer;
             this._loggerFactory = loggerFactory;
@@ -29,7 +29,7 @@ namespace Yontech.Fat.Runner
 
             var serviceCollection = new ServiceCollection();
 
-            var assemblies = AssemblyDiscoverer.DiscoverAssemblies();
+            var assemblies = assemblyDiscoverer.DiscoverAssemblies();
             foreach (var assembly in assemblies)
             {
                 this.RegisterAssembly(serviceCollection, assembly);

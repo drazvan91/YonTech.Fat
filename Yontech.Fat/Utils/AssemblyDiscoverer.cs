@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace Yontech.Fat.Utils
 {
-    internal static class AssemblyDiscoverer
+    public class AssemblyDiscoverer : IAssemblyDiscoverer
     {
-        public static IEnumerable<Assembly> DiscoverAssemblies()
+        public IEnumerable<Assembly> DiscoverAssemblies()
         {
             var refAssembyNames = Assembly.GetExecutingAssembly()
                 .GetReferencedAssemblies();

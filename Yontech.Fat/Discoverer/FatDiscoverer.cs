@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 
@@ -9,9 +10,18 @@ namespace Yontech.Fat.Discoverer
 {
     public class FatDiscoverer
     {
+        private readonly IAssemblyDiscoverer _assemblyDiscoverer;
+        private readonly ILogger _logger;
+
+        public FatDiscoverer(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory)
+        {
+            this._assemblyDiscoverer = assemblyDiscoverer;
+            this._logger = loggerFactory.Create(this);
+        }
+
         public IEnumerable<FatTestCollection> DiscoverTestCollections(ITestCaseFilter filter = null)
         {
-            var assemblies = AssemblyDiscoverer.DiscoverAssemblies();
+            var assemblies = this._assemblyDiscoverer.DiscoverAssemblies();
             return DiscoverTestCollections(assemblies, filter);
         }
 
@@ -29,11 +39,22 @@ namespace Yontech.Fat.Discoverer
 
         public FatConfig DiscoverConfig()
         {
-            var configType = AssemblyDiscoverer.DiscoverAssemblies()
+            var configTypes = this._assemblyDiscoverer.DiscoverAssemblies()
              .SelectMany(a => FindFatConfigs(a))
-             .OrderBy(c => c.FullName.Length).FirstOrDefault();
+             .OrderBy(c => c.FullName.Length).ToList();
 
-            if (configType == null) { return null; }
+            if (configTypes.Count == 0)
+            {
+                _logger.Debug("No FatConfig has been found");
+                return null;
+            }
+
+            var configType = configTypes.First();
+
+            if (configTypes.Count > 1)
+            {
+                _logger.Warning("Multiple FatConfig files have been found. The one with the shortest name has been chosen: {0}", configType.FullName);
+            }
 
             var config = Activator.CreateInstance(configType) as FatConfig;
             return config;

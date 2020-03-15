@@ -10,6 +10,7 @@ using Yontech.Fat.DataSources;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Runner
 {
@@ -24,12 +25,14 @@ namespace Yontech.Fat.Runner
         private FatConfig _options;
         private LogsSink _logsSink;
         private ILogger _logger;
-        private ILoggerFactory _loggerFactory;
+        private readonly IAssemblyDiscoverer _assemblyDiscoverer;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public FatRunner(ILoggerFactory loggerFactory, Action<FatConfig> optionsCallback)
+        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, Action<FatConfig> optionsCallback)
         {
+            this._assemblyDiscoverer = assemblyDiscoverer;
             this._loggerFactory = loggerFactory;
-            this._fatDiscoverer = new FatDiscoverer();
+            this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
 
             var options = this._fatDiscoverer.DiscoverConfig();
             if (options == null)
@@ -46,10 +49,11 @@ namespace Yontech.Fat.Runner
             Init(options);
         }
 
-        public FatRunner(ILoggerFactory loggerFactory, FatConfig options)
+        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, FatConfig options)
         {
+            this._assemblyDiscoverer = assemblyDiscoverer;
             this._loggerFactory = loggerFactory;
-            this._fatDiscoverer = new FatDiscoverer();
+            this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
             Init(options);
         }
 
@@ -64,7 +68,7 @@ namespace Yontech.Fat.Runner
             var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
 
             this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_fatDiscoverer, _loggerFactory, _logsSink, () =>
+            this._iocService = new IocService(_fatDiscoverer, _assemblyDiscoverer, _loggerFactory, _logsSink, () =>
             {
                 return this._webBrowser;
             });

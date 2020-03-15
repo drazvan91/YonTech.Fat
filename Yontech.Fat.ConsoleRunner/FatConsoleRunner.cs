@@ -4,6 +4,7 @@ using System.Reflection;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.ConsoleRunner
 {
@@ -52,15 +53,16 @@ namespace Yontech.Fat.ConsoleRunner
 
         private FatRunner CreateRunner()
         {
+            var assemblyDiscoverer = new AssemblyDiscoverer();
             if (this._options == null)
             {
                 var loggerFactory = new ConsoleLoggerFactory();
-                return new FatRunner(loggerFactory, AddInterceptor);
+                return new FatRunner(assemblyDiscoverer, loggerFactory, AddInterceptor);
             }
             else
             {
                 var loggerFactory = new ConsoleLoggerFactory(this._options.LogLevel, this._options.LogLevelConfig);
-                return new FatRunner(loggerFactory, this._options);
+                return new FatRunner(assemblyDiscoverer, loggerFactory, this._options);
             }
         }
     }
