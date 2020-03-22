@@ -12,13 +12,15 @@ namespace CreateConsoleFatProject
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             FatConsoleRunner runner = new FatConsoleRunner(new Config());
-            runner.Run();
+            var results = runner.Run();
 
             // or a specific TestClass
-            // runner.Run<HomePageTests>();
+            // var results = runner.Run<HomePageTests>();
+
+            return results.Failed;
         }
     }
 }
