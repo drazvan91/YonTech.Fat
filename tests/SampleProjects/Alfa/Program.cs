@@ -8,7 +8,7 @@ namespace Alfa
         static int Main(string[] args)
         {
             FatConsoleRunner runner = new FatConsoleRunner();
-            runner.Run();
+            return runner.Run().Failed;
         }
     }
 }

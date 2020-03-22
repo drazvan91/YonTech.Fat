@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.EnvData;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Utils;
 
@@ -87,7 +88,13 @@ namespace Yontech.Fat.Runner
 
         internal T GetService<T>(Type type) where T : class
         {
-            return GetPropertyInjectedService(type, new HashSet<string>()) as T;
+            var service = GetPropertyInjectedService(type, new HashSet<string>()) as T;
+            if (service == null)
+            {
+                throw new FatException("Type '{0}' cound not be found. Have you registered all assemblies?", type.FullName);
+            }
+
+            return service;
         }
 
         private object GetPropertyInjectedService(Type type, HashSet<string> injectionContext)

@@ -24,24 +24,24 @@ namespace Yontech.Fat.ConsoleRunner
             }
         }
 
-        public void Run()
+        public RunResults Run()
         {
-            CreateRunner().Run();
+            return CreateRunner().Run();
         }
 
-        public void Run<T>() where T : FatTest
+        public RunResults Run<T>() where T : FatTest
         {
-            CreateRunner().Run<T>();
+            return CreateRunner().Run<T>();
         }
 
-        public void Run(IEnumerable<Assembly> assemblies)
+        public RunResults Run(IEnumerable<Assembly> assemblies)
         {
-            CreateRunner().Run(assemblies);
+            return CreateRunner().Run(assemblies);
         }
 
-        public void Run(Assembly assembly)
+        public RunResults Run(Assembly assembly)
         {
-            CreateRunner().Run(assembly);
+            return CreateRunner().Run(assembly);
         }
 
         private void AddInterceptor(FatConfig config)

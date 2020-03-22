@@ -25,6 +25,7 @@ namespace Yontech.Fat.Runner
         private FatConfig _options;
         private LogsSink _logsSink;
         private ILogger _logger;
+        private RunResults _runResults;
         private readonly IAssemblyDiscoverer _assemblyDiscoverer;
         private readonly ILoggerFactory _loggerFactory;
 
@@ -74,7 +75,7 @@ namespace Yontech.Fat.Runner
             });
         }
 
-        public void Run<TFatTest>() where TFatTest : FatTest
+        public RunResults Run<TFatTest>() where TFatTest : FatTest
         {
             var testCollections = new List<FatTestCollection>();
             var testCollection = _fatDiscoverer.DiscoverTestCollection<TFatTest>(_options.Filter);
@@ -83,22 +84,22 @@ namespace Yontech.Fat.Runner
                 testCollections.Add(testCollection);
             }
 
-            this.Run(testCollections);
+            return this.Run(testCollections);
         }
 
-        public void Run()
+        public RunResults Run()
         {
             var testCollections = _fatDiscoverer.DiscoverTestCollections(_options.Filter);
-            this.Run(testCollections);
+            return this.Run(testCollections);
         }
 
-        public void Run(IEnumerable<Assembly> assemblies)
+        public RunResults Run(IEnumerable<Assembly> assemblies)
         {
             var testCollections = _fatDiscoverer.DiscoverTestCollections(assemblies, _options.Filter);
-            this.Run(testCollections);
+            return this.Run(testCollections);
         }
 
-        public void Run(Assembly assembly)
+        public RunResults Run(Assembly assembly)
         {
             var testCollections = new List<FatTestCollection>();
             var testCollection = _fatDiscoverer.DiscoverTestCollection(assembly, _options.Filter);
@@ -107,10 +108,10 @@ namespace Yontech.Fat.Runner
                 testCollections.Add(testCollection);
             }
 
-            this.Run(testCollections);
+            return this.Run(testCollections);
         }
 
-        private void Run(IEnumerable<FatTestCollection> testCollections)
+        private RunResults Run(IEnumerable<FatTestCollection> testCollections)
         {
             var browserStartOptions = new BrowserStartOptions()
             {
@@ -135,6 +136,7 @@ namespace Yontech.Fat.Runner
 
             try
             {
+                _runResults = new RunResults();
                 _logger.Info("Execution started");
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
                 foreach (var collection in testCollections)
@@ -155,6 +157,8 @@ namespace Yontech.Fat.Runner
                 this._webBrowser.Close();
                 this._webBrowser = null;
             }
+
+            return _runResults;
         }
 
         private IEnumerable<FatBusyCondition> GetBusyConditions()
@@ -180,11 +184,12 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestClass(FatTestClass testClass)
         {
-            var fatTest = _iocService.GetService<FatTest>(testClass.Class);
+            FatTest fatTest = null;
 
             Exception beforeAllTestCasesException = null;
             try
             {
+                fatTest = _iocService.GetService<FatTest>(testClass.Class);
                 fatTest.BeforeAllTestCases();
             }
             catch (Exception ex)
@@ -206,11 +211,13 @@ namespace Yontech.Fat.Runner
 
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
+                    _runResults.Passed++;
                     _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, _logsSink.GetLogs().ToList());
                     _logger.Info("Passed");
                 }
                 catch (Exception ex)
                 {
+                    _runResults.Failed++;
                     var exception = ex.InnerException ?? ex;
                     _logger.Error(exception);
                     _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, _logsSink.GetLogs().ToList());
