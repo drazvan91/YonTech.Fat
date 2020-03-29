@@ -73,6 +73,8 @@ namespace Yontech.Fat.Runner
             {
                 return this._webBrowser;
             });
+
+            this._logger.Info("Using Fat Framework version {0}", AssemblyVersionUtils.GetFatVersion());
         }
 
         public RunResults Run<TFatTest>() where TFatTest : FatTest
