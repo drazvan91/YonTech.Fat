@@ -66,7 +66,8 @@ namespace Yontech.Fat.ConsoleRunner.Results
             }
         }
 
-        private readonly static Type[] FAT_TYPES = new Type[]{
+        private readonly static Type[] FAT_TYPES = new Type[]
+        {
             typeof(FatPage),
             typeof(FatPageSection),
             typeof(FatFlow),
@@ -81,10 +82,11 @@ namespace Yontech.Fat.ConsoleRunner.Results
                 var frame = st.GetFrame(i);
                 if (frame.HasMethod())
                 {
-                    // todo: maybe it is not a good idea to filter the stack trace
-                    // maybe we should make it configurable
-                    // yield return frame;
-
+                    /*
+                    todo: maybe it is not a good idea to filter the stack trace
+                    maybe we should make it configurable
+                     yield return frame;
+                    */
                     var method = frame.GetMethod();
                     if (FAT_TYPES.Any(fatType => method.ReflectedType.IsSubclassOf(fatType)))
                     {

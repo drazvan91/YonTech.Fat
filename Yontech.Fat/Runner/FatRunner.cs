@@ -128,6 +128,9 @@ namespace Yontech.Fat.Runner
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._loggerFactory);
             this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
 
+            this._webBrowser.Configuration.DefaultTimeout = this._options.Timeouts.DefaultTimeout;
+            this._webBrowser.Configuration.FinderTimeout = this._options.Timeouts.FinderTimeout;
+
             this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
             foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
             {

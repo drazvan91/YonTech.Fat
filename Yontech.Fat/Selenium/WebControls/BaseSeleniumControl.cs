@@ -4,6 +4,7 @@ using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using System;
 using Yontech.Fat.Exceptions;
+using Yontech.Fat.Selenium.SeleniumExtensions;
 using Yontech.Fat.Waiters;
 
 namespace Yontech.Fat.Selenium.WebControls
@@ -179,11 +180,18 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             get
             {
-                // todo: validate this
                 EnsureElementExists();
-                var clickable = ExpectedConditions.ElementToBeClickable(WebElement)(WebBrowser.WebDriver);
+                Waiter.WaitForConditionToBeTrueOrTimeout(() =>
+                {
+                    if (WebElement.IsClickable())
+                    {
+                        return true;
+                    }
 
-                return clickable == WebElement;
+                    return false;
+                }, WebBrowser.Configuration.DefaultTimeout);
+
+                return WebElement.IsClickable();
             }
         }
 
@@ -249,8 +257,15 @@ namespace Yontech.Fat.Selenium.WebControls
 
         public void WaitForClickable()
         {
-            WebDriverWait wait = new WebDriverWait(WebBrowser.WebDriver, TimeSpan.FromMilliseconds(WebBrowser.Configuration.DefaultTimeout));
-            wait.Until(ExpectedConditions.ElementToBeClickable(this.WebElement));
+            Waiter.WaitForConditionToBeTrue(() =>
+                {
+                    if (WebElement.IsClickable())
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }, WebBrowser.Configuration.DefaultTimeout);
         }
     }
 }

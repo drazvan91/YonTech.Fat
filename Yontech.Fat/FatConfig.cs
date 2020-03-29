@@ -6,6 +6,12 @@ using Yontech.Fat.Runner;
 
 namespace Yontech.Fat
 {
+    public class FatConfigTimeouts
+    {
+        public int DefaultTimeout { get; set; } = 5000;
+        public int FinderTimeout { get; set; } = 1000;
+    }
+
     public class DefaultFatConfig : FatConfig
     {
     }
@@ -28,6 +34,8 @@ namespace Yontech.Fat
         public Dictionary<string, LogLevel> LogLevelConfig { get; set; } = new Dictionary<string, LogLevel>();
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
         public List<FatBusyCondition> BusyConditions { get; set; } = new List<FatBusyCondition>();
+
+        public FatConfigTimeouts Timeouts { get; set; } = new FatConfigTimeouts();
 
         internal void Log(ILoggerFactory loggerFactory)
         {

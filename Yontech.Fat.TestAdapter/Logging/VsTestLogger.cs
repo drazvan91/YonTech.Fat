@@ -8,11 +8,11 @@ namespace Yontech.Fat.TestAdapter.Logging
     {
         private readonly string _componentName;
         private readonly LogLevel _logLevel;
-        private readonly IMessageLogger vsLogger;
+        private readonly IMessageLogger _vsLogger;
 
         public VsTestLogger(IMessageLogger vsLogger, string componentName, LogLevel logLevel)
         {
-            this.vsLogger = vsLogger;
+            this._vsLogger = vsLogger;
             this._componentName = componentName;
             this._logLevel = logLevel;
         }
@@ -21,7 +21,10 @@ namespace Yontech.Fat.TestAdapter.Logging
 
         public void Debug(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Debug) return;
+            if (_logLevel > LogLevel.Debug)
+            {
+                return;
+            }
 
             SendMessage(TestMessageLevel.Informational, format, args);
         }
@@ -39,22 +42,28 @@ namespace Yontech.Fat.TestAdapter.Logging
 
         public void Info(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Info) return;
+            if (_logLevel > LogLevel.Info)
+            {
+                return;
+            }
 
             SendMessage(TestMessageLevel.Informational, format, args);
         }
 
         public void Warning(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Warning) return;
+            if (_logLevel > LogLevel.Warning)
+            {
+                return;
+            }
 
             SendMessage(TestMessageLevel.Warning, format, args);
         }
 
-        void SendMessage(TestMessageLevel level, string format, params object[] args)
+        private void SendMessage(TestMessageLevel level, string format, params object[] args)
         {
             var message = string.Format(format, args);
-            vsLogger.SendMessage(level, $"[Fat] {message}");
+            _vsLogger.SendMessage(level, $"[Fat] {message}");
         }
     }
 }

@@ -75,6 +75,9 @@
         <!-- XML comment analysis is disabled due to project configuration -->
         <Rule Id="SA0001" Action="None" />
 
+        <!-- The 'static' modifier should appear before 'readonly' -->
+        <Rule Id="SA1206" Action="None" />
+
         <!-- Use string.Empty for empty strings -->
         <Rule Id="SA1122" Action="None" />
 

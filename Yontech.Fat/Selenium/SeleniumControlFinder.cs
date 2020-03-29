@@ -52,7 +52,7 @@ namespace Yontech.Fat.Selenium
                 {
                     return false;
                 }
-            }, _webBrowser.Configuration.DefaultTimeout);
+            }, _webBrowser.Configuration.FinderTimeout);
             return webElement;
         }
 

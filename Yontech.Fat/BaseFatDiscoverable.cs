@@ -73,5 +73,10 @@ namespace Yontech.Fat
         {
             Waiters.Waiter.WaitForConditionToBeTrue(condition, WebBrowser.Configuration.DefaultTimeout);
         }
+
+        protected void WaitForInputKey()
+        {
+            Console.ReadKey();
+        }
     }
 }
