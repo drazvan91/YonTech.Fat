@@ -6,7 +6,7 @@ namespace Yontech.Fat.Utils
 {
     public static class GuidGenerator
     {
-        readonly static HashAlgorithm Hasher = SHA1.Create();
+        private readonly static HashAlgorithm Hasher = SHA1.Create();
         public static Guid FromString(string data)
         {
             var hash = Hasher.ComputeHash(Encoding.Unicode.GetBytes(data));

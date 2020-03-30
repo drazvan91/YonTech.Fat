@@ -5,7 +5,8 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class RadioButtonControl : ButtonControl, IRadioButtonControl
     {
-        public RadioButtonControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser) : base(selectorNode, webElement, webBrowser)
+        public RadioButtonControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
         }
 

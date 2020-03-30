@@ -4,12 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using CsvHelper;
 
 namespace Yontech.Fat.DataSources
 {
-
     public class CsvFileData : TestCaseDataSource
     {
         private readonly string _filename;
@@ -44,23 +42,25 @@ namespace Yontech.Fat.DataSources
                     var recordProps = (IDictionary<string, object>)record;
                     var paramsValues = parameters.Select(param =>
                     {
-                        return convertDynamicToType((string)recordProps[param.Name.ToLower()], param.ParameterType);
+                        return ConvertDynamicToType((string)recordProps[param.Name.ToLower()], param.ParameterType);
                     });
                     yield return paramsValues.ToArray();
                 }
             }
         }
 
-        private object convertDynamicToType(string value, Type parameterType)
+        private object ConvertDynamicToType(string value, Type parameterType)
         {
             if (parameterType == typeof(int))
             {
                 return int.Parse(value);
             }
+
             if (parameterType == typeof(string))
             {
                 return value;
             }
+
             if (parameterType == typeof(bool))
             {
                 return bool.Parse(value);

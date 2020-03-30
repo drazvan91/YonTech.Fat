@@ -75,6 +75,12 @@
         <!-- XML comment analysis is disabled due to project configuration -->
         <Rule Id="SA0001" Action="None" />
 
+        <!-- Do not prefix calls with base unless local implementation exists -->
+        <Rule Id="SA1100" Action="None" />
+
+        <!-- The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines -->
+        <Rule Id="SA1116" Action="None" />
+
         <!-- The 'static' modifier should appear before 'readonly' -->
         <Rule Id="SA1206" Action="None" />
 
@@ -83,6 +89,12 @@
 
         <!-- Prefix local calls with this -->
         <Rule Id="SA1101" Action="None" />
+
+        <!-- File may only contain a single type -->
+        <Rule Id="SA1402" Action="None" />
+
+        <!-- Element should not be on a single line -->
+        <Rule Id="SA1502" Action="None" />
 
         <!-- Braces should not be omitted -->
         <Rule Id="SA1503" Action="None" />

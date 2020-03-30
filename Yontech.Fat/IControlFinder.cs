@@ -26,7 +26,4 @@ namespace Yontech.Fat
         ITextControl TextByXPath(string xPathSelector);
         ITextBoxControl TextBoxByXPath(string xPathSelector);
     }
-
 }
-
-

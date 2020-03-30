@@ -31,7 +31,6 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
         private static void SetForWindows(string filePath)
         {
-
         }
 
         private static void SetForUnix(string filePath)
@@ -42,6 +41,5 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 | FileAccessPermissions.GroupRead
                 | FileAccessPermissions.OtherRead;
         }
-
     }
 }

@@ -24,8 +24,9 @@ namespace Yontech.Fat.BusyConditions
 
                 return element.Exists;
             }
-            catch (Exception ex) // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
+            catch (Exception ex)
             {
+                // sometimes is throws element not attached if IsDisplayed is called right after element becomes hidden
                 LogDebug("Element with selector '{0}' threw exception {1}", ex.Message);
                 return true;
             }

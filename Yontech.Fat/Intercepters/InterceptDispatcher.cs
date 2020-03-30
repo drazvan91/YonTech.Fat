@@ -5,9 +5,9 @@ using Yontech.Fat.Discoverer;
 
 namespace Yontech.Fat.Interceptors
 {
-    // The purpose of this class is act as a service which receive an event and 
-    // dispatches it to a list of interceptors. More than that it handles exceptions
-    // and in the future it might handle timeout.
+    /* The purpose of this class is act as a service which receive an event and
+    dispatches it to a list of interceptors. More than that it handles exceptions
+    and in the future it might handle timeout. */
     internal class InterceptDispatcher
     {
         private readonly List<FatInterceptor> _interceptors;
@@ -16,11 +16,12 @@ namespace Yontech.Fat.Interceptors
         {
             this._interceptors = interceptors;
         }
+
         public void AfterTestClass(Type @class)
         {
             var interceptParams = new TestClassParams()
             {
-                TestClassFullName = @class.FullName
+                TestClassFullName = @class.FullName,
             };
 
             this.SafeForEach((interceptor) =>
@@ -41,7 +42,7 @@ namespace Yontech.Fat.Interceptors
         {
             var interceptParams = new TestClassParams()
             {
-                TestClassFullName = @class.FullName
+                TestClassFullName = @class.FullName,
             };
 
             this.SafeForEach((interceptor) =>
@@ -72,7 +73,7 @@ namespace Yontech.Fat.Interceptors
             {
                 Duration = duration,
                 Logs = list,
-                Exception = ex
+                Exception = ex,
             };
 
             this.SafeForEach((interceptor) =>
@@ -86,7 +87,7 @@ namespace Yontech.Fat.Interceptors
             var interceptParams = new FatTestCasePassed()
             {
                 Duration = duration,
-                Logs = list
+                Logs = list,
             };
 
             this.SafeForEach((interceptor) =>

@@ -1,5 +1,4 @@
 ﻿using System;
-using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Logging
 {
@@ -18,15 +17,12 @@ namespace Yontech.Fat.Logging
             this._print = new ConsolePrinter();
         }
 
-        private void PrintTag()
-        {
-            _print.PrintBackgroundGray("[{0}]", _componentName);
-            _print.PrintNormal(" ");
-        }
-
         public void Debug(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Debug) return;
+            if (_logLevel > LogLevel.Debug)
+            {
+                return;
+            }
 
             PrintTag();
             _print.PrintGray(format, args);
@@ -35,7 +31,10 @@ namespace Yontech.Fat.Logging
 
         public void Info(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Info) return;
+            if (_logLevel > LogLevel.Info)
+            {
+                return;
+            }
 
             PrintTag();
             _print.PrintNormal(format, args);
@@ -44,7 +43,10 @@ namespace Yontech.Fat.Logging
 
         public void Warning(string format, params object[] args)
         {
-            if (_logLevel > LogLevel.Warning) return;
+            if (_logLevel > LogLevel.Warning)
+            {
+                return;
+            }
 
             PrintTag();
             _print.PrintYellow(format, args);
@@ -63,6 +65,12 @@ namespace Yontech.Fat.Logging
             PrintTag();
             _print.PrintException(exception, includeInnerExceptions);
             _print.Enter();
+        }
+
+        private void PrintTag()
+        {
+            _print.PrintBackgroundGray("[{0}]", _componentName);
+            _print.PrintNormal(" ");
         }
     }
 }

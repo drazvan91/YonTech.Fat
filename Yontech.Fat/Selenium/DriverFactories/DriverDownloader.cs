@@ -22,6 +22,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
             await DownloadAndUnzip(url, destinationFolder);
         }
 
+        protected abstract string GetDownloadUrl();
+
         private async Task DownloadAndUnzip(string url, string destination)
         {
             if (!Directory.Exists(destination))
@@ -53,6 +55,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
                         writer.Write(buffer, 0, len);
                     }
+
                     _logger.Info("Downloading driver finished");
 
                     writer.Flush();
@@ -65,7 +68,5 @@ namespace Yontech.Fat.Selenium.DriverFactories
             string unzippedFile = Path.Combine(destination, $"chromedriver");
             FileSecurityUtil.SetExecutionRight(unzippedFile);
         }
-
-        protected abstract string GetDownloadUrl();
     }
 }

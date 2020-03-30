@@ -1,32 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
-using System.Reflection;
-using Yontech.Fat.WebControls;
-using Yontech.Fat.Selenium.WebControls;
-using OpenQA.Selenium.Chrome;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using Yontech.Fat.Selenium.DriverFactories;
+using System.Reflection;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Selenium.DriverFactories;
+using Yontech.Fat.Selenium.WebControls;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium
 {
     internal class SeleniumWebBrowser : BaseWebBrowser, IWebBrowser
     {
-        public readonly IWebDriver WebDriver;
-        private bool _disposedValue;
         private readonly Lazy<SeleniumJsExecutor> _jsExecutorLazy;
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
+        private bool _disposedValue;
+        public IWebDriver WebDriver { get; }
 
+#pragma warning disable SX1309
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1306:FieldNamesMustBeginWithLowerCaseLetter", Justification = "It is a constant initiated at load time")]
         private readonly ChromeNetworkConditions FAST_NETWORK_CONDITION = new ChromeNetworkConditions()
         {
             Latency = TimeSpan.FromMilliseconds(1),
             IsOffline = false,
             DownloadThroughput = 100000,
-            UploadThroughput = 100000
+            UploadThroughput = 100000,
         };
+#pragma warning restore SX1309
 
         public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
             : base(loggerFactory, browserType)
@@ -70,14 +74,12 @@ namespace Yontech.Fat.Selenium
             WebDriver.Close();
         }
 
-
         public override void Navigate(string url)
         {
             WebDriver.Url = url;
             WebDriver.Navigate();
             this.WaitForIdle();
         }
-
 
         public override bool AcceptAlert()
         {
@@ -93,9 +95,9 @@ namespace Yontech.Fat.Selenium
             finally
             {
                 this.WaitForIdle();
-
             }
         }
+
         public override bool DismissAlert()
         {
             try
@@ -126,11 +128,13 @@ namespace Yontech.Fat.Selenium
                 var shot = takesScreenshot.GetScreenshot();
                 return new SeleniumSnapshot(shot);
             }
+
             IHasCapabilities hasCapability = WebDriver as IHasCapabilities;
             if (hasCapability == null)
             {
                 throw new WebDriverException("Driver does not implement ITakesScreenshot or IHasCapabilities");
             }
+
             if (!hasCapability.Capabilities.HasCapability(CapabilityType.TakesScreenshot) || !(bool)hasCapability.Capabilities.GetCapability(CapabilityType.TakesScreenshot))
             {
                 throw new WebDriverException("Driver capabilities do not support taking screenshots");
@@ -145,22 +149,6 @@ namespace Yontech.Fat.Selenium
             }
 
             return new SeleniumSnapshot(new Screenshot(response.Value.ToString()));
-        }
-
-        protected void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    if (this.BrowserType != BrowserType.RemoteChrome)
-                    {
-                        WebDriver.Dispose();
-                    }
-                }
-
-                _disposedValue = true;
-            }
         }
 
         // This code added to correctly implement the disposable pattern.
@@ -193,7 +181,7 @@ namespace Yontech.Fat.Selenium
                 Latency = TimeSpan.FromMilliseconds(1),
                 IsOffline = true,
                 DownloadThroughput = 200,
-                UploadThroughput = 200
+                UploadThroughput = 200,
             };
             Logger.Debug("Network condition is being simulated as offline");
         }
@@ -206,6 +194,7 @@ namespace Yontech.Fat.Selenium
                 Logger.Debug("Simulate network conditions is not supported for this Browser");
                 return;
             }
+
             var newLatency = TimeSpan.FromMilliseconds(delay / 2);
 
             if (chromeDriver.NetworkConditions.Latency == newLatency)
@@ -218,8 +207,9 @@ namespace Yontech.Fat.Selenium
                 Latency = newLatency,
                 IsOffline = false,
                 DownloadThroughput = 20000,
-                UploadThroughput = 20000
+                UploadThroughput = 20000,
             };
+
             Logger.Debug("Network condition is being simulated as slow with a delay of '{0}'", delay);
         }
 
@@ -251,6 +241,22 @@ namespace Yontech.Fat.Selenium
         public override void Minimize()
         {
             this.WebDriver.Manage().Window.Minimize();
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    if (this.BrowserType != BrowserType.RemoteChrome)
+                    {
+                        WebDriver.Dispose();
+                    }
+                }
+
+                _disposedValue = true;
+            }
         }
     }
 }

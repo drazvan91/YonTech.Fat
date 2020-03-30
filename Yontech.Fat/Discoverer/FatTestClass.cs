@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Discoverer
 {
@@ -17,6 +15,5 @@ namespace Yontech.Fat.Discoverer
             this.Name = this.Class.FullName;
             this.TestCases = new List<FatTestCase>();
         }
-
     }
 }

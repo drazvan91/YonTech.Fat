@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Yontech.Fat.WebControls;
 using OpenQA.Selenium;
-using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.Exceptions;
+using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.Waiters;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium
 {
@@ -16,44 +15,16 @@ namespace Yontech.Fat.Selenium
         private readonly ISearchContext _elementScope;
         private readonly SeleniumWebBrowser _webBrowser;
 
-        public SeleniumControlFinder(SeleniumWebBrowser webBrowser) : this(null, webBrowser.WebDriver, webBrowser) { }
+        public SeleniumControlFinder(SeleniumWebBrowser webBrowser)
+            : this(null, webBrowser.WebDriver, webBrowser)
+        {
+        }
 
         public SeleniumControlFinder(SelectorNode selectorNode, ISearchContext elementScope, SeleniumWebBrowser webBrowser)
         {
             this._selectorNode = selectorNode;
             this._elementScope = elementScope;
             this._webBrowser = webBrowser;
-        }
-
-        private IWebElement FindElement(By selector)
-        {
-            IWebElement webElement = null;
-            Waiter.WaitForConditionToBeTrueOrTimeout(() =>
-            {
-                var elements = this._elementScope.FindElements(selector);
-                if (elements.Count > 1)
-                {
-                    SelectorNode newNode = new SelectorNode(selector.ToString(), 0, this._selectorNode);
-                    throw new MultipleWebControlsFoundException(newNode);
-                }
-
-                webElement = elements.FirstOrDefault();
-
-                if (webElement == null)
-                {
-                    return false;
-                }
-
-                try
-                {
-                    return webElement.Displayed;
-                }
-                catch (Exception ex) when (ex.Message.Contains("element is not attached to the page document"))
-                {
-                    return false;
-                }
-            }, _webBrowser.Configuration.FinderTimeout);
-            return webElement;
         }
 
         public IButtonControl Button(string cssSelector)
@@ -229,6 +200,37 @@ namespace Yontech.Fat.Selenium
         {
             var elements = this._elementScope.FindElements(By.CssSelector(cssSelector));
             return elements.Count > 0;
+        }
+
+        private IWebElement FindElement(By selector)
+        {
+            IWebElement webElement = null;
+            Waiter.WaitForConditionToBeTrueOrTimeout(() =>
+            {
+                var elements = this._elementScope.FindElements(selector);
+                if (elements.Count > 1)
+                {
+                    SelectorNode newNode = new SelectorNode(selector.ToString(), 0, this._selectorNode);
+                    throw new MultipleWebControlsFoundException(newNode);
+                }
+
+                webElement = elements.FirstOrDefault();
+
+                if (webElement == null)
+                {
+                    return false;
+                }
+
+                try
+                {
+                    return webElement.Displayed;
+                }
+                catch (Exception ex) when (ex.Message.Contains("element is not attached to the page document"))
+                {
+                    return false;
+                }
+            }, _webBrowser.Configuration.FinderTimeout);
+            return webElement;
         }
     }
 }

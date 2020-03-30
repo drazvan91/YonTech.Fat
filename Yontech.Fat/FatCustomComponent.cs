@@ -1,16 +1,17 @@
-﻿
+﻿using System.Diagnostics.CodeAnalysis;
 using OpenQA.Selenium;
-using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat
 {
     public abstract class FatCustomComponent : BaseFatDiscoverable
     {
-        internal IWebElement _webElement { get; set; }
-        internal protected IGenericControl Container { get; internal set; }
-        internal protected IControlFinder _ => Container.ControlFinder;
-        internal protected IControlFinder ControlFinder => _;
+        internal IWebElement WebElement { get; set; }
+        protected internal IGenericControl Container { get; internal set; }
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "This is an alias to improve readability")]
+        protected internal IControlFinder _ => Container.ControlFinder;
+
+        protected internal IControlFinder ControlFinder => _;
 
         public void WaitToDisappear()
         {

@@ -6,7 +6,8 @@ namespace Yontech.Fat.Logging
     {
         public LogLevel LogLevel { get; set; }
         public Dictionary<string, LogLevel> LogLevelConfig { get; set; }
-        public BaseLoggerFactory() : this(LogLevel.Info, new Dictionary<string, LogLevel>())
+        public BaseLoggerFactory()
+            : this(LogLevel.Info, new Dictionary<string, LogLevel>())
         {
         }
 

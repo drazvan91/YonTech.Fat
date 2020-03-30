@@ -1,8 +1,8 @@
-﻿using Yontech.Fat.WebControls;
-using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using OpenQA.Selenium.Support.UI;
+using System.Diagnostics.CodeAnalysis;
+using OpenQA.Selenium;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
@@ -23,6 +23,8 @@ namespace Yontech.Fat.Selenium.WebControls
         }
 
         public IControlFinder ControlFinder => _;
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "This is an alias to improve readability")]
         public IControlFinder _ => new SeleniumControlFinder(SelectorNode, WebElement, WebBrowser);
 
         public IEnumerable<IGenericControl> Find(string cssSelector)

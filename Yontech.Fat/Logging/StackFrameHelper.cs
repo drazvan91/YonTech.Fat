@@ -7,7 +7,8 @@ namespace Yontech.Fat.Logging
 {
     public static class StackFrameHelper
     {
-        private readonly static Type[] FAT_TYPES = new Type[]{
+        private readonly static Type[] FAT_TYPES = new Type[]
+        {
             typeof(FatPage),
             typeof(FatPageSection),
             typeof(FatFlow),

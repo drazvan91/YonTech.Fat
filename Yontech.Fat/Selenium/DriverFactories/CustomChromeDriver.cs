@@ -54,29 +54,6 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
         }
 
-
-        internal Dictionary<string, object> ToDictionary(ChromeNetworkConditions network)
-        {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            dictionary["offline"] = network.IsOffline;
-            if (network.Latency != TimeSpan.Zero)
-            {
-                dictionary["latency"] = Convert.ToInt64(network.Latency.TotalMilliseconds);
-            }
-
-            if (network.DownloadThroughput >= 0)
-            {
-                dictionary["download_throughput"] = network.DownloadThroughput;
-            }
-
-            if (network.UploadThroughput >= 0)
-            {
-                dictionary["upload_throughput"] = network.UploadThroughput;
-            }
-
-            return dictionary;
-        }
-
         static internal ChromeNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
         {
             ChromeNetworkConditions conditions = new ChromeNetworkConditions();
@@ -101,6 +78,28 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
 
             return conditions;
+        }
+
+        internal Dictionary<string, object> ToDictionary(ChromeNetworkConditions network)
+        {
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+            dictionary["offline"] = network.IsOffline;
+            if (network.Latency != TimeSpan.Zero)
+            {
+                dictionary["latency"] = Convert.ToInt64(network.Latency.TotalMilliseconds);
+            }
+
+            if (network.DownloadThroughput >= 0)
+            {
+                dictionary["download_throughput"] = network.DownloadThroughput;
+            }
+
+            if (network.UploadThroughput >= 0)
+            {
+                dictionary["upload_throughput"] = network.UploadThroughput;
+            }
+
+            return dictionary;
         }
 
         private void AddCustomChromeCommand(string commandName, string method, string resourcePath)

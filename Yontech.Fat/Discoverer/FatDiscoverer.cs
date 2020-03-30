@@ -67,14 +67,15 @@ namespace Yontech.Fat.Discoverer
             {
                 var testClasses = new List<FatTestClass>()
                 {
-                    new FatTestClass(typeof(TFatTest)){
-                        TestCases = testCases
-                    }
+                    new FatTestClass(typeof(TFatTest))
+                    {
+                        TestCases = testCases,
+                    },
                 };
 
                 return new FatTestCollection(typeof(TFatTest).Assembly)
                 {
-                    TestClasses = testClasses
+                    TestClasses = testClasses,
                 };
             }
 
@@ -88,7 +89,7 @@ namespace Yontech.Fat.Discoverer
             {
                 return new FatTestCollection(assembly)
                 {
-                    TestClasses = testClasses
+                    TestClasses = testClasses,
                 };
             }
 
@@ -106,23 +107,8 @@ namespace Yontech.Fat.Discoverer
                 {
                     yield return new FatTestClass(type)
                     {
-                        TestCases = testCases
+                        TestCases = testCases,
                     };
-                }
-            }
-        }
-
-        private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass, ITestCaseFilter filter = null)
-        {
-            var allMethods = testClass.GetMethods();
-            var testCases = allMethods.Where(method => method.Name.StartsWith("Test")); // todo: make this configurable
-
-            foreach (var method in testCases)
-            {
-                var testCase = new FatTestCase(method);
-                if (filter?.ShouldExecuteTestCase(testCase) ?? true)
-                {
-                    yield return testCase;
                 }
             }
         }
@@ -159,6 +145,7 @@ namespace Yontech.Fat.Discoverer
             var allTypes = assembly.GetTypes();
             return allTypes.Where(type => type.IsSubclassOf(typeof(FatFlow)));
         }
+
         public IEnumerable<Type> FindFatEnvDatas(Assembly assembly)
         {
             var allTypes = assembly.GetTypes();
@@ -169,6 +156,21 @@ namespace Yontech.Fat.Discoverer
         {
             var allTypes = assembly.GetTypes();
             return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)) && type != typeof(DefaultFatConfig));
+        }
+
+        private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass, ITestCaseFilter filter = null)
+        {
+            var allMethods = testClass.GetMethods();
+            var testCases = allMethods.Where(method => method.Name.StartsWith("Test")); // todo: make this configurable
+
+            foreach (var method in testCases)
+            {
+                var testCase = new FatTestCase(method);
+                if (filter?.ShouldExecuteTestCase(testCase) ?? true)
+                {
+                    yield return testCase;
+                }
+            }
         }
     }
 }

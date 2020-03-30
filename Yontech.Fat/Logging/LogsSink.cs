@@ -7,12 +7,11 @@ namespace Yontech.Fat.Logging
     internal class LogsSink
     {
         private List<Log> _logs = new List<Log>();
-        private Stopwatch stopWatch = Stopwatch.StartNew();
-
+        private Stopwatch _stopWatch = Stopwatch.StartNew();
 
         public void Reset()
         {
-            this.stopWatch.Restart();
+            this._stopWatch.Restart();
             this._logs.Clear();
         }
 
@@ -21,7 +20,12 @@ namespace Yontech.Fat.Logging
             var message = string.Format(format, arguments);
             var escapedMessage = EscapeInvalidHexChars(message);
 
-            this._logs.Add(new Log(category, escapedMessage, stopWatch.Elapsed));
+            this._logs.Add(new Log(category, escapedMessage, _stopWatch.Elapsed));
+        }
+
+        public IEnumerable<Log> GetLogs()
+        {
+            return _logs.AsReadOnly();
         }
 
         /// copied from Xunit.Sdk.TestOutputHelper
@@ -32,29 +36,32 @@ namespace Yontech.Fat.Logging
             {
                 char ch = s[i];
                 if (ch == '\0')
+                {
                     builder.Append("\\0");
-                else if (ch < 32 && !char.IsWhiteSpace(ch)) // C0 control char
+                }
+                else if (ch < 32 && !char.IsWhiteSpace(ch))
+                {
+                    // C0 control char
                     builder.AppendFormat(@"\x{0}", (+ch).ToString("x2"));
+                }
                 else if (char.IsSurrogatePair(s, i))
                 {
                     // For valid surrogates, append like normal
                     builder.Append(ch);
                     builder.Append(s[++i]);
                 }
-                // Check for stray surrogates/other invalid chars
                 else if (char.IsSurrogate(ch) || ch == '\uFFFE' || ch == '\uFFFF')
                 {
+                    // Check for stray surrogates/other invalid chars
                     builder.AppendFormat(@"\x{0}", (+ch).ToString("x4"));
                 }
                 else
+                {
                     builder.Append(ch); // Append the char like normal
+                }
             }
-            return builder.ToString();
-        }
 
-        public IEnumerable<Log> GetLogs()
-        {
-            return _logs.AsReadOnly();
+            return builder.ToString();
         }
     }
 }

@@ -14,11 +14,12 @@ using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Runner
 {
-
     public class FatRunner
     {
-        private IWebBrowser _webBrowser;
+        private readonly IAssemblyDiscoverer _assemblyDiscoverer;
+        private readonly ILoggerFactory _loggerFactory;
 
+        private IWebBrowser _webBrowser;
         private InterceptDispatcher _interceptorDispatcher;
         private IocService _iocService;
         private FatDiscoverer _fatDiscoverer;
@@ -26,8 +27,6 @@ namespace Yontech.Fat.Runner
         private LogsSink _logsSink;
         private ILogger _logger;
         private RunResults _runResults;
-        private readonly IAssemblyDiscoverer _assemblyDiscoverer;
-        private readonly ILoggerFactory _loggerFactory;
 
         public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, Action<FatConfig> optionsCallback)
         {
@@ -56,25 +55,6 @@ namespace Yontech.Fat.Runner
             this._loggerFactory = loggerFactory;
             this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
             Init(options);
-        }
-
-        private void Init(FatConfig options)
-        {
-            this._logger = _loggerFactory.Create(this);
-            this._options = options;
-            this._options.Log(_loggerFactory);
-
-            this._logsSink = new LogsSink();
-
-            var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
-
-            this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_fatDiscoverer, _assemblyDiscoverer, _loggerFactory, _logsSink, () =>
-            {
-                return this._webBrowser;
-            });
-
-            this._logger.Info("Using Fat Framework version {0}", AssemblyVersionUtils.GetFatVersion());
         }
 
         public RunResults Run<TFatTest>() where TFatTest : FatTest
@@ -113,6 +93,25 @@ namespace Yontech.Fat.Runner
             return this.Run(testCollections);
         }
 
+        private void Init(FatConfig options)
+        {
+            this._logger = _loggerFactory.Create(this);
+            this._options = options;
+            this._options.Log(_loggerFactory);
+
+            this._logsSink = new LogsSink();
+
+            var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+
+            this._interceptorDispatcher = new InterceptDispatcher(interceptors);
+            this._iocService = new IocService(_fatDiscoverer, _assemblyDiscoverer, _loggerFactory, _logsSink, () =>
+            {
+                return this._webBrowser;
+            });
+
+            this._logger.Info("Using Fat Framework version {0}", AssemblyVersionUtils.GetFatVersion());
+        }
+
         private RunResults Run(IEnumerable<FatTestCollection> testCollections)
         {
             var browserStartOptions = new BrowserStartOptions()
@@ -148,6 +147,7 @@ namespace Yontech.Fat.Runner
                 {
                     this.ExecuteTestCollection(collection);
                 }
+
                 _logger.Info("Execution finished");
                 _interceptorDispatcher.OnExecutionFinished(new ExecutionFinishedParams());
             }
@@ -238,7 +238,6 @@ namespace Yontech.Fat.Runner
             try
             {
                 fatTest.AfterAllTestCases();
-
             }
             catch (Exception ex)
             {
@@ -283,6 +282,5 @@ namespace Yontech.Fat.Runner
             testClassInstance.AfterEachTestCase();
             _webBrowser.WaitForIdle();
         }
-
     }
 }

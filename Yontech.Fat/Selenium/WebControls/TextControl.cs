@@ -1,19 +1,16 @@
-﻿using Yontech.Fat.WebControls;
+﻿using System;
 using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
     internal class TextControl : BaseSeleniumControl, ITextControl
     {
-
         public TextControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
             : base(selectorNode, webElement, webBrowser)
         {
         }
+
         public string Text
         {
             get

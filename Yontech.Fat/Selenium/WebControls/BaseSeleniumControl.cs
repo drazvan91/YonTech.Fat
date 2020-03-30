@@ -1,8 +1,8 @@
-﻿using OpenQA.Selenium;
+﻿using System;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
-using System;
 using Yontech.Fat.Exceptions;
 using Yontech.Fat.Selenium.SeleniumExtensions;
 using Yontech.Fat.Waiters;
@@ -11,10 +11,9 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     internal class BaseSeleniumControl : IWebControl
     {
-        protected internal readonly SelectorNode SelectorNode;
-        protected internal readonly IWebElement WebElement;
-        protected internal readonly SeleniumWebBrowser WebBrowser;
-
+        protected internal SelectorNode SelectorNode { get; }
+        protected internal IWebElement WebElement { get; set; }
+        protected internal SeleniumWebBrowser WebBrowser { get; }
 
         public BaseSeleniumControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
         {
@@ -22,6 +21,7 @@ namespace Yontech.Fat.Selenium.WebControls
             this.WebElement = webElement;
             this.WebBrowser = webBrowser;
         }
+
         public bool IsVisible
         {
             get
@@ -89,45 +89,10 @@ namespace Yontech.Fat.Selenium.WebControls
             });
         }
 
-        private void EnsureClickAction(Action performClick)
-        {
-            EnsureElementExists();
-
-            this.WebBrowser.WaitForIdle();
-            this.WaitForClickable();
-            try
-            {
-                try
-                {
-                    performClick();
-                }
-                catch (Exception ex) when (ex.Message.Contains("Other element would receive"))
-                {
-                    this.ScrollTo();
-                    performClick();
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                string outerHtml = this.WebElement.GetAttribute("outerHTML");
-                throw new InvalidOperationException($"Target element: {outerHtml}", ex);
-            }
-
-            this.WebBrowser.WaitForIdle();
-        }
-
         public virtual void ScrollTo()
         {
             EnsureElementExists();
             WebBrowser.JavaScriptExecutor.ScrollToControl(this);
-        }
-
-        protected void EnsureElementExists()
-        {
-            if (WebElement == null)
-            {
-                throw new FatException($"Element with selector '{this.SelectorNode.GetFullPath()}' should exist but it doesn't.");
-            }
         }
 
         public void ShouldBeVisible()
@@ -176,6 +141,7 @@ namespace Yontech.Fat.Selenium.WebControls
                 return WebElement.GetAttribute("class");
             }
         }
+
         public bool IsClickable
         {
             get
@@ -213,16 +179,16 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             EnsureElementExists();
 
-            Actions SliderAction = new Actions(this.WebBrowser.WebDriver);
-            SliderAction.MoveToElement(this.WebElement).Build().Perform();
+            Actions sliderAction = new Actions(this.WebBrowser.WebDriver);
+            sliderAction.MoveToElement(this.WebElement).Build().Perform();
         }
 
         public void DragAndDrop(int pixelsHorizontal, int pixelsVertical)
         {
             EnsureElementExists();
 
-            Actions SliderAction = new Actions(this.WebBrowser.WebDriver);
-            SliderAction.DragAndDropToOffset(this.WebElement, pixelsHorizontal, pixelsVertical).Perform();
+            Actions sliderAction = new Actions(this.WebBrowser.WebDriver);
+            sliderAction.DragAndDropToOffset(this.WebElement, pixelsHorizontal, pixelsVertical).Perform();
         }
 
         public void WaitToDisappear()
@@ -258,14 +224,49 @@ namespace Yontech.Fat.Selenium.WebControls
         public void WaitForClickable()
         {
             Waiter.WaitForConditionToBeTrue(() =>
+            {
+                if (WebElement.IsClickable())
                 {
-                    if (WebElement.IsClickable())
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
-                    return false;
-                }, WebBrowser.Configuration.DefaultTimeout);
+                return false;
+            }, WebBrowser.Configuration.DefaultTimeout);
+        }
+
+        protected void EnsureElementExists()
+        {
+            if (WebElement == null)
+            {
+                throw new FatException($"Element with selector '{this.SelectorNode.GetFullPath()}' should exist but it doesn't.");
+            }
+        }
+
+        private void EnsureClickAction(Action performClick)
+        {
+            EnsureElementExists();
+
+            this.WebBrowser.WaitForIdle();
+            this.WaitForClickable();
+            try
+            {
+                try
+                {
+                    performClick();
+                }
+                catch (Exception ex) when (ex.Message.Contains("Other element would receive"))
+                {
+                    this.ScrollTo();
+                    performClick();
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                string outerHtml = this.WebElement.GetAttribute("outerHTML");
+                throw new InvalidOperationException($"Target element: {outerHtml}", ex);
+            }
+
+            this.WebBrowser.WaitForIdle();
         }
     }
 }

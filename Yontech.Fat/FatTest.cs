@@ -1,5 +1,4 @@
-﻿
-namespace Yontech.Fat
+﻿namespace Yontech.Fat
 {
     public class FatTest : BaseFatDiscoverable
     {

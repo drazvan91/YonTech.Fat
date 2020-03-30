@@ -7,12 +7,13 @@ namespace Yontech.Fat.Selenium.WebControls
 {
     public class IFrameControl : IIFrameControl
     {
-        internal readonly SeleniumWebBrowser WebBrowser;
+        internal SeleniumWebBrowser WebBrowser { get; }
 
         internal IFrameControl(SeleniumWebBrowser webBrowser)
         {
             WebBrowser = webBrowser;
         }
+
         public void SwitchToIFrame(string iframeId)
         {
             WebBrowser.SwitchToIframe(iframeId);

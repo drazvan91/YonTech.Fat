@@ -4,7 +4,8 @@ namespace Yontech.Fat.Logging
 {
     public class ConsoleLoggerFactory : BaseLoggerFactory
     {
-        public ConsoleLoggerFactory() : base()
+        public ConsoleLoggerFactory()
+            : base()
         {
         }
 

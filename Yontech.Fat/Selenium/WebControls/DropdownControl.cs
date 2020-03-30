@@ -10,7 +10,8 @@ namespace Yontech.Fat.Selenium.WebControls
     {
         private readonly SelectElement _dropdown;
 
-        public DropdownControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser) : base(selectorNode, webElement, webBrowser)
+        public DropdownControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
+            : base(selectorNode, webElement, webBrowser)
         {
             _dropdown = new SelectElement(webElement);
         }

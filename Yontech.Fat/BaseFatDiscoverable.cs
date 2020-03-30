@@ -7,10 +7,18 @@ namespace Yontech.Fat
 {
     public class BaseFatDiscoverable
     {
-        internal protected IWebBrowser WebBrowser { get; internal set; }
         internal LogsSink LogsSink { get; set; }
         internal ILogger Logger { get; set; }
         internal bool SinkableLogs { get; set; } = true;
+        protected internal IWebBrowser WebBrowser { get; internal set; }
+
+        internal void AddSinkLog(string logLevel, string format, params object[] args)
+        {
+            if (SinkableLogs)
+            {
+                LogsSink.Add(logLevel, format, args);
+            }
+        }
 
         protected void LogInfo(string format, params object[] args)
         {
@@ -36,14 +44,6 @@ namespace Yontech.Fat
             Logger.Debug(format, args);
         }
 
-        internal void AddSinkLog(string logLevel, string format, params object[] args)
-        {
-            if (SinkableLogs)
-            {
-                LogsSink.Add(logLevel, format, args);
-            }
-        }
-
         protected void Wait(int milliseconds)
         {
             Thread.Sleep(milliseconds);
@@ -53,6 +53,7 @@ namespace Yontech.Fat
         {
             throw new FatAssertException(messageFormat, args);
         }
+
         protected void FailIf(bool condition, string messageFormat, params object[] args)
         {
             if (condition)

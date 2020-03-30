@@ -17,6 +17,5 @@ namespace Yontech.Fat.Discoverer
             this.Name = this.Assembly.FullName;
             this.TestClasses = new List<FatTestClass>();
         }
-
     }
 }

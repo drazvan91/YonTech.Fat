@@ -48,6 +48,17 @@ namespace Yontech.Fat.Runner
             fatDiscoverable.Logger = this._loggerFactory.Create(fatDiscoverable);
         }
 
+        internal T GetService<T>(Type type) where T : class
+        {
+            var service = GetPropertyInjectedService(type, new HashSet<string>()) as T;
+            if (service == null)
+            {
+                throw new FatException("Type '{0}' cound not be found. Have you registered all assemblies?", type.FullName);
+            }
+
+            return service;
+        }
+
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
             var testClasses = _discoverer.FindTestClasses(assembly);
@@ -86,17 +97,6 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        internal T GetService<T>(Type type) where T : class
-        {
-            var service = GetPropertyInjectedService(type, new HashSet<string>()) as T;
-            if (service == null)
-            {
-                throw new FatException("Type '{0}' cound not be found. Have you registered all assemblies?", type.FullName);
-            }
-
-            return service;
-        }
-
         private object GetPropertyInjectedService(Type type, HashSet<string> injectionContext)
         {
             injectionContext.Add(type.FullName);
@@ -111,7 +111,6 @@ namespace Yontech.Fat.Runner
                     object fatPageProp = null;
                     if (injectionContext.Contains(prop.PropertyType.FullName))
                     {
-
                         fatPageProp = this._serviceProvider.GetService(prop.PropertyType);
                     }
                     else
@@ -134,12 +133,13 @@ namespace Yontech.Fat.Runner
             return instance;
         }
 
-        private readonly static Type[] BASE_FAT_TYPES = new Type[]{
+        private readonly static Type[] BASE_FAT_TYPES = new Type[]
+        {
             typeof(FatPage),
             typeof(FatPageSection),
             typeof(FatFlow),
             typeof(FatTest),
-            typeof(FatEnvData)
+            typeof(FatEnvData),
         };
 
         private bool IsInjectableProperty(PropertyInfo prop)

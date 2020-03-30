@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Waiters;
@@ -92,7 +91,6 @@ namespace Yontech.Fat
                 return condition();
             }, this.Configuration.DefaultTimeout);
         }
-
 
         public void WaitForElementToAppear(string cssSelector, int timeout)
         {

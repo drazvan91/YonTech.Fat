@@ -1,9 +1,11 @@
-﻿
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace Yontech.Fat
 {
     public abstract class FatPageSection : BaseFatDiscoverable
     {
-        internal protected IControlFinder _ => WebBrowser.ControlFinder;
-        internal protected IControlFinder ControlFinder => _;
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "This is an alias to improve readability")]
+        protected internal IControlFinder _ => WebBrowser.ControlFinder;
+        protected internal IControlFinder ControlFinder => _;
     }
 }

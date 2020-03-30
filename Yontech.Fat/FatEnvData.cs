@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using Yontech.Fat.Interceptors;
-using Yontech.Fat.Logging;
-using Yontech.Fat.Runner;
-
-namespace Yontech.Fat
+﻿namespace Yontech.Fat
 {
     public abstract class FatEnvData
     {
@@ -14,6 +8,5 @@ namespace Yontech.Fat
         {
             this.FilePath = filePath;
         }
-
     }
 }

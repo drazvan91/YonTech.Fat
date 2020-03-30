@@ -8,6 +8,5 @@ namespace Yontech.Fat.WebControls
         string Text { get; }
         IControlFinder ControlFinder { get; }
         IEnumerable<IGenericControl> Find(string cssSelector);
-
     }
 }

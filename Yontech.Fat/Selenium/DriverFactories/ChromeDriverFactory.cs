@@ -47,7 +47,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
         private static IWebDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
         {
-            // for some reason if we use ChromeDriver instead of RemoteWebDriver there is a performance issue on 
+            // for some reason if we use ChromeDriver instead of RemoteWebDriver there is a performance issue on
             // initial load, we believe that is because of dotnetcore
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
             service.Port = 5556; // Some port value.
@@ -59,11 +59,12 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // var webDriver = new ChromeDriver(driverPath, chromeOptions);
             // return webDriver;
         }
+
         private static ChromeOptions CreateRemoteOptions(BrowserStartOptions startOptions)
         {
             return new ChromeOptions()
             {
-                DebuggerAddress = startOptions.RemoteDebuggerAddress
+                DebuggerAddress = startOptions.RemoteDebuggerAddress,
             };
         }
 

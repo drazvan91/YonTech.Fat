@@ -6,7 +6,6 @@ namespace Yontech.Fat.Selenium.DriverFactories
 {
     internal class ChromeDriverDownloader : DriverDownloader
     {
-
         private const string CHROME_74_FOLDER = "http://chromedriver.storage.googleapis.com/74.0.3729.6/";
         private const string CHROME_79_FOLDER = "http://chromedriver.storage.googleapis.com/79.0.3945.16/";
         private const string CHROME_80_FOLDER = "http://chromedriver.storage.googleapis.com/80.0.3987.16/";

@@ -53,6 +53,7 @@ namespace Yontech.Fat.Logging
             Console.Write(format, args);
             Console.ResetColor();
         }
+
         public void PrintBackgroundGreen(string format, params object[] args)
         {
             Console.BackgroundColor = ConsoleColor.Green;

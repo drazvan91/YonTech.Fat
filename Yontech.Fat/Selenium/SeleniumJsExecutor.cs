@@ -1,7 +1,7 @@
-﻿using Yontech.Fat.Selenium.WebControls;
-using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Threading;
+using OpenQA.Selenium;
+using Yontech.Fat.Selenium.WebControls;
 
 namespace Yontech.Fat.Selenium
 {

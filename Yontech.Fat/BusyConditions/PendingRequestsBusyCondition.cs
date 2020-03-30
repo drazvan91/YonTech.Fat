@@ -4,7 +4,7 @@ namespace Yontech.Fat.BusyConditions
 {
     public class PendingRequestsBusyCondition : FatBusyCondition
     {
-        private string script = @"
+        private string _script = @"
             function initPendingRequestsBusy() {
                 if(window.fatData && window.fatData.pendingRequests!== undefined) return;
 
@@ -43,12 +43,12 @@ namespace Yontech.Fat.BusyConditions
             return window.fatData.pendingRequests;
             ";
 
-        private Int64 _lastPendingRequestsValue = 0;
+        private long _lastPendingRequestsValue = 0;
         protected internal override bool IsBusy()
         {
             try
             {
-                var pendingRequests = (Int64)WebBrowser.JavaScriptExecutor.ExecuteScript(this.script);
+                var pendingRequests = (long)WebBrowser.JavaScriptExecutor.ExecuteScript(this._script);
                 if (pendingRequests != _lastPendingRequestsValue)
                 {
                     LogDebug("Pending requests: {0}  (wait iteration number: {1})", pendingRequests, WaitSessionPollingNumber);

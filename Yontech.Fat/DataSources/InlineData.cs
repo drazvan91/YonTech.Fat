@@ -3,7 +3,6 @@ using System.Reflection;
 
 namespace Yontech.Fat.DataSources
 {
-
     public class InlineData : TestCaseDataSource
     {
         private object[] _data;

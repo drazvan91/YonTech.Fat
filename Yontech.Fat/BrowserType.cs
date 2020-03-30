@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Yontech.Fat
 {
@@ -11,14 +8,17 @@ namespace Yontech.Fat
         RemoteChrome,
         InternetExplorer,
         Firefox,
-        Opera
+        Opera,
     }
 
     public enum ChromeVersion : int
     {
         Latest = 0,
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "It describes the version")]
         v74 = 74,
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "It describes the version")]
         v79 = 79,
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "It describes the version")]
         v80 = 80,
     }
 }

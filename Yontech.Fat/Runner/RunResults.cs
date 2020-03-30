@@ -1,5 +1,4 @@
-﻿
-namespace Yontech.Fat.Runner
+﻿namespace Yontech.Fat.Runner
 {
     public class RunResults
     {

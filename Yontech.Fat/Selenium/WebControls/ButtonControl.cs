@@ -1,12 +1,11 @@
 ﻿using System;
-using Yontech.Fat.WebControls;
 using OpenQA.Selenium;
+using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
 {
     internal class ButtonControl : BaseSeleniumControl, IButtonControl
     {
-
         public ButtonControl(SelectorNode selectorNode, IWebElement webElement, SeleniumWebBrowser webBrowser)
           : base(selectorNode, webElement, webBrowser)
         {
@@ -16,7 +15,6 @@ namespace Yontech.Fat.Selenium.WebControls
         {
             get
             {
-
                 EnsureElementExists();
                 return WebElement.Text;
             }

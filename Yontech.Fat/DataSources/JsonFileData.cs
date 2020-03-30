@@ -7,7 +7,6 @@ using System.Text.Json;
 
 namespace Yontech.Fat.DataSources
 {
-
     public class JsonFileData : TestCaseDataSource
     {
         private readonly string _filename;
@@ -37,23 +36,25 @@ namespace Yontech.Fat.DataSources
                 var paramsValues = parameters.Select(param =>
                 {
                     var jsonItem = item.EnumerateObject().FirstOrDefault(i => string.Compare(i.Name, param.Name, true) == 0);
-                    return convertJsonToType(jsonItem.Value, param.ParameterType);
+                    return ConvertJsonToType(jsonItem.Value, param.ParameterType);
                 });
 
                 yield return paramsValues.ToArray();
             }
         }
 
-        private object convertJsonToType(JsonElement value, Type parameterType)
+        private object ConvertJsonToType(JsonElement value, Type parameterType)
         {
             if (parameterType == typeof(int))
             {
                 return value.GetInt32();
             }
+
             if (parameterType == typeof(string))
             {
                 return value.GetString();
             }
+
             if (parameterType == typeof(bool))
             {
                 return value.GetBoolean();
@@ -75,7 +76,6 @@ namespace Yontech.Fat.DataSources
             {
                 yield return new object[] { item };
             }
-
         }
     }
 }

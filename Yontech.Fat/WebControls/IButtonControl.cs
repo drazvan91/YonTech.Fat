@@ -8,6 +8,5 @@ namespace Yontech.Fat.WebControls
     public interface IButtonControl : IWebControl
     {
         string Text { get; }
-
     }
 }
