@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Yontech.Fat\Yontech.Fat.csproj" />
+        <ProjectReference Include="..\..\..\Yontech.Fat.ConsoleRunner\Yontech.Fat.ConsoleRunner.csproj" />
+        <ProjectReference Include="..\..\..\Yontech.Fat.TestAdapter\Yontech.Fat.TestAdapter.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="files\**\*" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+</Project>

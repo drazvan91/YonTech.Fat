@@ -207,6 +207,7 @@ namespace Yontech.Fat.Selenium
             IWebElement webElement = null;
             Waiter.WaitForConditionToBeTrueOrTimeout(() =>
             {
+                this._webBrowser.WaitForIdle();
                 var elements = this._elementScope.FindElements(selector);
                 if (elements.Count > 1)
                 {
