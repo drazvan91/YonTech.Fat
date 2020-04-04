@@ -5,7 +5,6 @@ addons:
 stages:
     - "Build Fat Framework"
     - "Test Templates"
-    - "Publish Nuget Artifacts"
 jobs:
     include:
         - stage: "Build Fat Framework"
@@ -15,13 +14,14 @@ jobs:
               - dotnet build Yontech.Fat/
               - dotnet build Yontech.Fat.TestAdapter/
               - dotnet build Yontech.Fat.ConsoleRunner/
+              - dotnet test tests/YonTech.Fat.Tests
         - stage: "Test Templates"
           dotnet: 3.1.102
           name: "Test template using dotnetcore 3.1"
-          script: dotnet test Yontech.Fat.Templates/templates/CreateFatProject/
+          script:
+              - dotnet test Yontech.Fat.Templates/templates/CreateFatProject/
+              - dotnet test Yontech.Fat.Templates/templates/CreateConsoleFatProject/
+              - dotnet run --project tests/RealWorldProjects/RealWorld.Angular.Tests/RealWorld.Angular.Tests.csproj
         - dotnet: 2.1.502
           name: "Test template using dotnetcore 2.1"
           script: dotnet test Yontech.Fat.Templates/templates/CreateFatProjectWithSamples/
-        - stage: "Publish Nuget Artifacts"
-          name: "yeeaah merge!"
-          script: echo MERGE!

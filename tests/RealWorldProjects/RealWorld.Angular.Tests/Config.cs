@@ -15,7 +15,7 @@ namespace RealWorld.Angular.Tests
             Browser = BrowserType.Chrome;
             AutomaticDriverDownloadChromeVersion = ChromeVersion.v80;
             RemoteDebuggerAddress = "localhost:9222";
-            RunInBackground = false;
+            RunInBackground = true;
             LogLevel = LogLevel.Debug;
             InitialSize = new Size(900, 900);
         }
