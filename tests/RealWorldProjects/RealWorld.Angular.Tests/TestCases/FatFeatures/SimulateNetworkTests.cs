@@ -22,6 +22,8 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
         [InlineData("test")]
         public void Test_simulate_slow_connetion(string tag)
         {
+            WebBrowser.Configuration.DefaultTimeout = 20000;
+            WebBrowser.Configuration.FinderTimeout = 20000;
             WebBrowser.SimulateSlowConnection(5000);
             var watch = Stopwatch.StartNew();
 

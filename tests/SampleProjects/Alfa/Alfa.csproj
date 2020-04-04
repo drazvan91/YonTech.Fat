@@ -9,4 +9,7 @@
         <ProjectReference Include="..\..\..\Yontech.Fat\Yontech.Fat.csproj" />
         <ProjectReference Include="..\..\..\Yontech.Fat.ConsoleRunner\Yontech.Fat.ConsoleRunner.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <Content Include="files\**\*" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 </Project>

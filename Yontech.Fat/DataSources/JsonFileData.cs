@@ -16,21 +16,24 @@ namespace Yontech.Fat.DataSources
             _filename = filename;
         }
 
-        public override IEnumerable<object[]> GetExecutionArguments(ParameterInfo[] parameters)
+        protected override IEnumerable<object[]> GetExecutionArguments(MethodInfo method)
         {
-            var text = File.ReadAllText(this._filename);
-
-            if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
+            using (var reader = StreamReaderProvider.GetStream(this._filename, method.ReflectedType.Assembly))
             {
-                return GetObjectLike(text, parameters[0]);
-            }
+                var parameters = method.GetParameters();
 
-            return GetInlineParamsLike(text, parameters);
+                if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
+                {
+                    return GetObjectLike(reader, parameters[0]);
+                }
+
+                return GetInlineParamsLike(reader, parameters);
+            }
         }
 
-        private IEnumerable<object[]> GetInlineParamsLike(string text, ParameterInfo[] parameters)
+        private IEnumerable<object[]> GetInlineParamsLike(Stream stream, ParameterInfo[] parameters)
         {
-            var document = JsonDocument.Parse(text);
+            var document = JsonDocument.Parse(stream);
             foreach (var item in document.RootElement.EnumerateArray())
             {
                 var paramsValues = parameters.Select(param =>
@@ -63,14 +66,16 @@ namespace Yontech.Fat.DataSources
             throw new Exception("Not supported");
         }
 
-        private IEnumerable<object[]> GetObjectLike(string text, ParameterInfo parameterInfo)
+        private IEnumerable<object[]> GetObjectLike(Stream stream, ParameterInfo parameterInfo)
         {
             var options = new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true,
             };
 
-            var array = JsonSerializer.Deserialize(text, parameterInfo.ParameterType.MakeArrayType(), options) as object[];
+            var type = parameterInfo.ParameterType.MakeArrayType();
+
+            var array = JsonSerializer.DeserializeAsync(stream, type, options).Result as object[];
 
             foreach (var item in array)
             {

@@ -1,4 +1,5 @@
 ﻿using Yontech.Fat;
+using Yontech.Fat.Logging;
 
 namespace Alfa
 {
@@ -9,6 +10,7 @@ namespace Alfa
             Browser = BrowserType.Chrome;
             RunInBackground = true;
             DriversFolder = "alfa1_drivers";
+            LogLevel = LogLevel.Debug;
         }
     }
 }

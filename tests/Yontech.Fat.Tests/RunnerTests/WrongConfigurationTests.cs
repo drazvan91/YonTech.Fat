@@ -3,6 +3,7 @@ using Xunit;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {
@@ -12,9 +13,10 @@ namespace Yontech.Fat.Tests.RunnerTests
         public void When_assembly_not_registered_Then_throws_exception()
         {
             MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
+            var streamProvider = new StreamProvider(mockedLoggerFactory);
             MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Delta.Config).Assembly);
 
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, new Alfa.Config1());
+            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
 
             var result = runner.Run<Alfa.TestCases.AlfaTest1>();
 

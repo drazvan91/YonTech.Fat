@@ -34,8 +34,9 @@ namespace Yontech.Fat.TestAdapter
 
             var assemblyDiscoverer = new AssemblyDiscoverer();
             var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
+            var streamProvider = new StreamProvider(loggerFactory);
 
-            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, (options) =>
+            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, (options) =>
             {
                 options.Filter = filter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
@@ -57,8 +58,9 @@ namespace Yontech.Fat.TestAdapter
 
             var assemblyDiscoverer = new AssemblyDiscoverer();
             var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
+            var streamProvider = new StreamProvider(loggerFactory);
 
-            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, (options) =>
+            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, (options) =>
             {
                 options.Filter = simpleFilter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();

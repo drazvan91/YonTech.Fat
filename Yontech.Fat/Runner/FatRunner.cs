@@ -19,6 +19,7 @@ namespace Yontech.Fat.Runner
     {
         private readonly IAssemblyDiscoverer _assemblyDiscoverer;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly IStreamProvider _streamReaderProvider;
 
         private IWebBrowser _webBrowser;
         private InterceptDispatcher _interceptorDispatcher;
@@ -29,10 +30,11 @@ namespace Yontech.Fat.Runner
         private ILogger _logger;
         private RunResults _runResults;
 
-        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, Action<FatConfig> optionsCallback)
+        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, IStreamProvider streamReaderProvider, Action<FatConfig> optionsCallback)
         {
             this._assemblyDiscoverer = assemblyDiscoverer;
             this._loggerFactory = loggerFactory;
+            this._streamReaderProvider = streamReaderProvider;
             this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
 
             var options = this._fatDiscoverer.DiscoverConfig();
@@ -50,10 +52,11 @@ namespace Yontech.Fat.Runner
             Init(options);
         }
 
-        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, FatConfig options)
+        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, IStreamProvider streamReaderProvider, FatConfig options)
         {
             this._assemblyDiscoverer = assemblyDiscoverer;
             this._loggerFactory = loggerFactory;
+            this._streamReaderProvider = streamReaderProvider;
             this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
             Init(options);
         }
@@ -284,8 +287,7 @@ namespace Yontech.Fat.Runner
                 foreach (System.Attribute attr in attrs.OfType<TestCaseDataSource>())
                 {
                     var dataSource = (TestCaseDataSource)attr;
-                    var executionArguments = dataSource.GetExecutionArguments(methodParameters);
-
+                    var executionArguments = dataSource.GetExecutionArguments(this._loggerFactory, this._streamReaderProvider, testCase.Method);
                     foreach (var arguments in executionArguments)
                     {
                         this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, arguments);

@@ -1,4 +1,4 @@
-namespace Yontech.Fat.Labels
+﻿namespace Yontech.Fat.Labels
 {
     public class SmokeTest : FatLabel
     {

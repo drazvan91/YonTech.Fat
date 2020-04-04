@@ -14,8 +14,9 @@ namespace Yontech.Fat.DataSources
             this._type = type;
         }
 
-        public override IEnumerable<object[]> GetExecutionArguments(ParameterInfo[] parameters)
+        protected override IEnumerable<object[]> GetExecutionArguments(MethodInfo method)
         {
+            var parameters = method.GetParameters();
             var instance = Activator.CreateInstance(_type);
             var items = _type.GetMethod("Generate").Invoke(instance, null) as IEnumerable<object>;
 

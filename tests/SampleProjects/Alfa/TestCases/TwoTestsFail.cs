@@ -20,7 +20,6 @@ namespace Alfa.TestCases
         public void Test_some_tests_fail_4()
         {
             Fail("Fail 1");
-
         }
 
         public void Test_some_tests_fail_5()

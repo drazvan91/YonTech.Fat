@@ -17,19 +17,21 @@ namespace Yontech.Fat.DataSources
             _filename = filename;
         }
 
-        public override IEnumerable<object[]> GetExecutionArguments(ParameterInfo[] parameters)
+        protected override IEnumerable<object[]> GetExecutionArguments(MethodInfo method)
         {
+            var parameters = method.GetParameters();
             if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
             {
-                return GetObjectLike(parameters[0]);
+                return GetObjectLike(method, parameters[0]);
             }
 
-            return GetInlineParamsLike(parameters);
+            return GetInlineParamsLike(method, parameters);
         }
 
-        private IEnumerable<object[]> GetInlineParamsLike(ParameterInfo[] parameters)
+        private IEnumerable<object[]> GetInlineParamsLike(MethodInfo method, ParameterInfo[] parameters)
         {
-            using (var reader = new StreamReader(this._filename))
+            this.Logger.Debug("ce masa");
+            using (var reader = StreamReaderProvider.GetTextReader(this._filename, method.ReflectedType.Assembly))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Configuration.PrepareHeaderForMatch = (string header, int index) =>
@@ -44,6 +46,7 @@ namespace Yontech.Fat.DataSources
                     {
                         return ConvertDynamicToType((string)recordProps[param.Name.ToLower()], param.ParameterType);
                     });
+
                     yield return paramsValues.ToArray();
                 }
             }
@@ -69,9 +72,9 @@ namespace Yontech.Fat.DataSources
             throw new Exception("Not supported");
         }
 
-        private IEnumerable<object[]> GetObjectLike(ParameterInfo parameterInfo)
+        private IEnumerable<object[]> GetObjectLike(MethodInfo method, ParameterInfo parameterInfo)
         {
-            using (var reader = new StreamReader(this._filename))
+            using (var reader = StreamReaderProvider.GetTextReader(this._filename, method.ReflectedType.Assembly))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Configuration.PrepareHeaderForMatch = (string header, int index) =>

@@ -57,12 +57,14 @@ namespace Yontech.Fat.ConsoleRunner
             if (this._options == null)
             {
                 var loggerFactory = new ConsoleLoggerFactory();
-                return new FatRunner(assemblyDiscoverer, loggerFactory, AddInterceptor);
+                var streamProvider = new StreamProvider(loggerFactory);
+                return new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, AddInterceptor);
             }
             else
             {
                 var loggerFactory = new ConsoleLoggerFactory(this._options.LogLevel, this._options.LogLevelConfig);
-                return new FatRunner(assemblyDiscoverer, loggerFactory, this._options);
+                var streamProvider = new StreamProvider(loggerFactory);
+                return new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, this._options);
             }
         }
     }

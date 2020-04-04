@@ -12,7 +12,7 @@ namespace Yontech.Fat.DataSources
             _data = arguments;
         }
 
-        public override IEnumerable<object[]> GetExecutionArguments(ParameterInfo[] parameters)
+        protected override IEnumerable<object[]> GetExecutionArguments(MethodInfo method)
         {
             yield return _data;
         }
