@@ -39,6 +39,14 @@ namespace Yontech.Fat.Tests
                     && log.Message.Contains(message);
             });
         }
+
+        public void PrintAllLogs()
+        {
+            foreach (var log in LogEntries)
+            {
+                Console.WriteLine("{0}: {1}", log.LogLevel, log.Message);
+            }
+        }
     }
 
     public class MockedLogger : ILogger

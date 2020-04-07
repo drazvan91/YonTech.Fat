@@ -30,7 +30,6 @@ namespace Yontech.Fat.DataSources
 
         private IEnumerable<object[]> GetInlineParamsLike(MethodInfo method, ParameterInfo[] parameters)
         {
-            this.Logger.Debug("ce masa");
             using (var reader = StreamReaderProvider.GetTextReader(this._filename, method.ReflectedType.Assembly))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {

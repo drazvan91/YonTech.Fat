@@ -14,7 +14,6 @@ jobs:
               - dotnet build Yontech.Fat/
               - dotnet build Yontech.Fat.TestAdapter/
               - dotnet build Yontech.Fat.ConsoleRunner/
-              - dotnet test tests/YonTech.Fat.Tests
         - stage: "Test Templates"
           dotnet: 3.1.102
           name: "Test template using dotnetcore 3.1"
