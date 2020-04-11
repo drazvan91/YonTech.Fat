@@ -16,7 +16,6 @@ namespace Alfa.TestCases
         [CsvFileData("files/file_not_found.csv")]
         public void Test_csv_does_not_exist(string noColumn)
         {
-            Fail("This line should not be called");
         }
     }
 }

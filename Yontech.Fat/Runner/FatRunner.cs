@@ -210,7 +210,7 @@ namespace Yontech.Fat.Runner
             {
                 if (this.ShouldSkipTestCase(testCase))
                 {
-                    _runResults.Skipped++;
+                    _runResults.AddSkipped(testCase);
                     _interceptorDispatcher.OnTestCaseSkipped(testCase);
                     continue;
                 }
@@ -227,16 +227,21 @@ namespace Yontech.Fat.Runner
 
                     _interceptorDispatcher.BeforeTestCase(testCase);
                     ExecuteTestCase(fatTest, testCase);
-                    _runResults.Passed++;
-                    _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, _logsSink.GetLogs().ToList());
+
+                    var logs = _logsSink.GetLogs().ToList();
+                    _runResults.AddPassed(testCase, watch.Elapsed, logs);
+                    _interceptorDispatcher.OnTestCasePassed(testCase, watch.Elapsed, logs);
                     _logger.Info("Passed");
                 }
                 catch (Exception ex)
                 {
-                    _runResults.Failed++;
                     var exception = ex.InnerException ?? ex;
                     _logger.Error(exception);
-                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, _logsSink.GetLogs().ToList());
+                    _logsSink.Add(Log.ERROR, exception.Message);
+
+                    var logs = _logsSink.GetLogs().ToList();
+                    _runResults.AddFailed(testCase, ex, watch.Elapsed, logs);
+                    _interceptorDispatcher.OnTestCaseFailed(testCase, watch.Elapsed, exception, logs);
                 }
                 finally
                 {
