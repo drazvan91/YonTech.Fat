@@ -4,7 +4,7 @@ using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
-using Yontech.Fat.Tests.Exceptions;
+using Yontech.Fat.Tests.Extensions;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {

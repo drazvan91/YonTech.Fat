@@ -8,13 +8,13 @@ namespace Alfa.InlineDataTestCases
         [InlineData("string value")]
         public void Test_one_string_inline_data(string stringValue)
         {
-            LogInfo("Test_one_string_inline_data: {0}", stringValue);
+            LogInfo("data: {0}", stringValue);
         }
 
         [InlineData(4)]
         public void Test_one_number_inline_data(int number)
         {
-            LogInfo("Test_one_number_inline_data: {0}", number);
+            LogInfo("data: {0}", number);
         }
 
         [InlineData("string 1")]
@@ -22,13 +22,13 @@ namespace Alfa.InlineDataTestCases
         [InlineData("string 3")]
         public void Test_multiple_inline_data_values(string value)
         {
-            LogInfo("Test_multiple_inline_data_values: {0}", value);
+            LogInfo("data: {0}", value);
         }
 
         [InlineData("string 1", 2, "string 3")]
         public void Test_multiple_params(string value1, int value2, string value3)
         {
-            LogInfo("Test_multiple_params: {0} {1} {2}", value1, value2, value3);
+            LogInfo("test: {0} {1} {2}", value1, value2, value3);
         }
     }
 }

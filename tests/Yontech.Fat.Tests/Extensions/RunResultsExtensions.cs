@@ -4,9 +4,9 @@ using Xunit;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 
-namespace Yontech.Fat.Tests.Exceptions
+namespace Yontech.Fat.Tests.Extensions
 {
-    public static class RunResultsExceptions
+    public static class RunResultsExtensions
     {
         public static void AssertTestHasLog(this RunResults runResults, string testName, string logMessage)
         {

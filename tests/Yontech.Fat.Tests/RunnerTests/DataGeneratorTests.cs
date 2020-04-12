@@ -3,6 +3,7 @@ using Xunit;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Tests.Extensions;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.RunnerTests
@@ -26,11 +27,11 @@ namespace Yontech.Fat.Tests.RunnerTests
         {
             var result = runner.Run<Alfa.GeneratedDataTestCases.HappFlowTests>();
 
-            mockedLoggerFactory.AssertContains(LogLevel.Info, "Person name: Razvan 1");
-            mockedLoggerFactory.AssertContains(LogLevel.Info, "Person name: Razvan 3");
+            result.AssertTestHasLog("Test_person_generator", LogLevel.Info, "Person name: Razvan 1");
+            result.AssertTestHasLog("Test_person_generator", LogLevel.Info, "Person name: Razvan 3");
 
-            mockedLoggerFactory.AssertContains(LogLevel.Info, "String value: string number 1");
-            mockedLoggerFactory.AssertContains(LogLevel.Info, "String value: string number 2");
+            result.AssertTestHasLog("Test_string_generator", LogLevel.Info, "String value: string number 1");
+            result.AssertTestHasLog("Test_string_generator", LogLevel.Info, "String value: string number 2");
 
             Assert.Equal(0, result.Failed);
         }
@@ -40,8 +41,7 @@ namespace Yontech.Fat.Tests.RunnerTests
         {
             var result = runner.Run<Alfa.GeneratedDataTestCases.PropertyNotFoundTests>();
 
-            mockedLoggerFactory.PrintAllLogs();
-            mockedLoggerFactory.AssertContains(LogLevel.Error, "Cannot find property 'age' on type 'Person'");
+            result.AssertTestHasLog("Test_person_generator", "Cannot find property 'age' on type 'Person'");
 
             Assert.Equal(1, result.Failed);
         }
