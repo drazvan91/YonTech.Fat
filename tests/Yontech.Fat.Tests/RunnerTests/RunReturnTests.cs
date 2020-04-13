@@ -9,11 +9,19 @@ namespace Yontech.Fat.Tests.RunnerTests
 {
     public class RunReturnTests
     {
+        MockedLoggerFactory mockedLoggerFactory;
+        StreamProvider streamProvider;
+
+        public RunReturnTests()
+        {
+            mockedLoggerFactory = new MockedLoggerFactory();
+            streamProvider = new StreamProvider(mockedLoggerFactory);
+        }
+
         [Fact]
         public void When_all_tests_pass_Then_run_returns_0_failed_And_all_passed()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
+
             MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
 
             var config = new Alfa.Config1();
@@ -29,8 +37,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_some_tests_fail_Then_run_returns_non_zero_failed_And_non_zero_passed()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
             MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
 
             var config = new Alfa.Config1();
@@ -46,8 +52,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_all_tests_fail_Then_run_returns_zero_passed_And_non_zero_failed()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
             MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
 
             var config = new Alfa.Config1();
