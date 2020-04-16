@@ -5,7 +5,7 @@ using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 
-namespace Yontech.Fat.Tests.RunnerTests
+namespace Yontech.Fat.Tests.FilterTests
 {
     public class LabelTests
     {

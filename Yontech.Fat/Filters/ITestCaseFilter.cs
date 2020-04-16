@@ -1,6 +1,6 @@
 ﻿using Yontech.Fat.Discoverer;
 
-namespace Yontech.Fat.Runner
+namespace Yontech.Fat.Filters
 {
     public interface ITestCaseFilter
     {

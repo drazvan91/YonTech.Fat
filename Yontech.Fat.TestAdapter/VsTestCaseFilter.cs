@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Yontech.Fat.Discoverer;
-using Yontech.Fat.Runner;
+using Yontech.Fat.Filters;
 using Yontech.Fat.TestAdapter.Factories;
 
 namespace Yontech.Fat.TestAdapter

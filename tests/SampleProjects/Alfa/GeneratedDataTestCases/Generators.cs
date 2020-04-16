@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Yontech.Fat.DataSources;
 
 namespace Alfa.GeneratedDataTestCases

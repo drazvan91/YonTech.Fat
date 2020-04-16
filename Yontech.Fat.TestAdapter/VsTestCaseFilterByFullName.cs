@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Yontech.Fat.Discoverer;
-using Yontech.Fat.Runner;
+using Yontech.Fat.Filters;
 
 namespace Yontech.Fat.TestAdapter
 {

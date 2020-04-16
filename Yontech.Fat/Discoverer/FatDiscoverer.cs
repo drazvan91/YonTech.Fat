@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Yontech.Fat.Filters;
 using Yontech.Fat.Logging;
-using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Discoverer

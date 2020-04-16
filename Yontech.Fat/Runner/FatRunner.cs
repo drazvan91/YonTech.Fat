@@ -264,13 +264,13 @@ namespace Yontech.Fat.Runner
         private bool ShouldSkipTestCase(FatTestCase testCase)
         {
             var labels = System.Attribute.GetCustomAttributes(testCase.Method).OfType<FatLabel>();
-            if (labels.Any(label => label.Name == IgnoreTest.SMOKE_TEST_LABEL))
+            if (labels.Any(label => label.Name == IgnoreTest.IGNORE_TEST_LABEL))
             {
                 return true;
             }
 
             var classLabels = System.Attribute.GetCustomAttributes(testCase.Method.ReflectedType).OfType<FatLabel>();
-            if (classLabels.Any(label => label.Name == IgnoreTest.SMOKE_TEST_LABEL))
+            if (classLabels.Any(label => label.Name == IgnoreTest.IGNORE_TEST_LABEL))
             {
                 return true;
             }
