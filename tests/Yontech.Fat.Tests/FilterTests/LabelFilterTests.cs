@@ -88,5 +88,21 @@ namespace Yontech.Fat.Tests.FilterTests
             Assert.Equal(0, result.Skipped);
             Assert.Equal(2, result.Passed);
         }
+
+        [Fact]
+        public void When_multiple_labels_assigned_but_no_test_fits_Then_none_executed()
+        {
+            var config = new Alfa.Config1()
+            {
+                Filter = new LabelTestCaseFilter("random_label")
+            };
+
+            var runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, config);
+            var result = runner.Run<Alfa.LabelTestCases.CombinedSmokeAndRegressionTest>();
+
+            Assert.Equal(0, result.Failed);
+            Assert.Equal(0, result.Skipped);
+            Assert.Equal(0, result.Passed);
+        }
     }
 }
