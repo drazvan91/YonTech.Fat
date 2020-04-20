@@ -7,12 +7,12 @@ using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.FilterTests
 {
-    public class LabelTests
+    public class SkipTests
     {
         private readonly MockedLoggerFactory mockedLoggerFactory;
         private readonly FatRunner runner;
 
-        public LabelTests()
+        public SkipTests()
         {
             this.mockedLoggerFactory = new MockedLoggerFactory();
             var streamProvider = new StreamProvider(mockedLoggerFactory);
@@ -27,7 +27,7 @@ namespace Yontech.Fat.Tests.FilterTests
         [Fact]
         public void WHEN_ignore_on_method_THEN_should_skip_test()
         {
-            var result = runner.Run<Alfa.TestCases.OneTestIgnored>();
+            var result = runner.Run<Alfa.TestCases.OneTestSkipped>();
 
             Assert.Equal(1, result.Passed);
             Assert.Equal(0, result.Failed);
@@ -37,7 +37,7 @@ namespace Yontech.Fat.Tests.FilterTests
         [Fact]
         public void WHEN_ignore_on_class_THEN_all_tests_should_be_skipped()
         {
-            var result = runner.Run<Alfa.TestCases.EntireClassIgnored>();
+            var result = runner.Run<Alfa.TestCases.EntireClassSkipped>();
 
             Assert.Equal(0, result.Passed);
             Assert.Equal(0, result.Failed);

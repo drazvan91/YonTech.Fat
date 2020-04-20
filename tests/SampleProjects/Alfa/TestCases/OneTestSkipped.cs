@@ -3,10 +3,9 @@ using Yontech.Fat.Labels;
 
 namespace Alfa.TestCases
 {
-    [IgnoreTest]
-    public class EntireClassIgnored : FatTest
+    public class OneTestSkipped : FatTest
     {
-        [IgnoreTest]
+        [SkipTest]
         public void Test_this_is_ignored()
         {
         }
