@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using OpenQA.Selenium;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Selenium.DriverFactories;
 
@@ -33,27 +34,12 @@ namespace Yontech.Fat.Selenium
         {
             this.ValidateStartOptions(browserType, startOptions);
 
-            IWebDriver webDriver = null;
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
             location = Path.GetDirectoryName(location);
             string driversPath = Path.Combine(location, startOptions.DriversFolder);
 
             _logger.Info("Looking for drivers at location {0}", location);
-
-            switch (browserType)
-            {
-                case BrowserType.Chrome:
-                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions, false);
-                    break;
-                case BrowserType.RemoteChrome:
-                    webDriver = ChromeDriverFactory.Create(_loggerFactory, driversPath, startOptions, true);
-                    break;
-                case BrowserType.InternetExplorer:
-                    webDriver = InternetExplorerDriverFactory.Create(driversPath, startOptions);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
+            IWebDriver webDriver = CreateWebDriver(browserType, driversPath, startOptions);
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
                 this._loggerFactory,
@@ -62,6 +48,23 @@ namespace Yontech.Fat.Selenium
                 busyConditions: busyConditions ?? new List<FatBusyCondition>());
 
             return browser;
+        }
+
+        private IWebDriver CreateWebDriver(BrowserType browserType, string driversPath, BrowserStartOptions startOptions)
+        {
+            switch (browserType)
+            {
+                case BrowserType.Chrome:
+                    return new ChromeDriverFactory(this._loggerFactory)
+                        .Create(driversPath, startOptions, false);
+                case BrowserType.RemoteChrome:
+                    return new ChromeDriverFactory(this._loggerFactory)
+                        .Create(driversPath, startOptions, true);
+                case BrowserType.InternetExplorer:
+                    return InternetExplorerDriverFactory.Create(driversPath, startOptions);
+                default:
+                    throw new FatException($"Browser type {browserType} not supported yet");
+            }
         }
 
         private void ValidateStartOptions(BrowserType browserType, BrowserStartOptions startOptions)

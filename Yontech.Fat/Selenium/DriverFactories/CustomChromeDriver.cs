@@ -15,7 +15,9 @@ namespace Yontech.Fat.Selenium.DriverFactories
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
-        public CustomChromeDriver(Uri remoteAddress, DriverOptions options)
+        private ChromeDriverService _driverService;
+
+        public CustomChromeDriver(Uri remoteAddress, DriverOptions options, ChromeDriverService driverService)
         : base(remoteAddress, options)
         {
             this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
@@ -23,6 +25,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+
+            this._driverService = driverService;
         }
 
         public ChromeNetworkConditions NetworkConditions
@@ -100,6 +104,17 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
 
             return dictionary;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (this._driverService != null)
+            {
+                this._driverService.Dispose();
+                this._driverService = null;
+            }
         }
 
         private void AddCustomChromeCommand(string commandName, string method, string resourcePath)

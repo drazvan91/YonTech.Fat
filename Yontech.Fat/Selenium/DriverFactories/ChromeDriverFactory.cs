@@ -5,19 +5,23 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
-    internal static class ChromeDriverFactory
+    internal class ChromeDriverFactory
     {
-        /// <summary>
-        /// Creates a web driver.
-        /// </summary>
-        /// <param name="driverPath">Path to the folder containg the web driver.</param>
-        /// <param name="startOptions">Null allowed. Providing null falls back to default BrowserStartOptions.</param>
-        /// <returns>An instance of Chrome Driver.</returns>
-        public static IWebDriver Create(ILoggerFactory loggerFactory, string driverPath, BrowserStartOptions startOptions, bool useRemote)
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
+
+        public ChromeDriverFactory(ILoggerFactory loggerFactory)
+        {
+            this._loggerFactory = loggerFactory;
+            this._logger = loggerFactory.Create(this);
+        }
+
+        public IWebDriver Create(string driverPath, BrowserStartOptions startOptions, bool useRemote)
         {
             var chromeOptions = useRemote ? CreateRemoteOptions(startOptions) : CreateOptions(startOptions);
 
@@ -28,7 +32,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
             catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
             {
-                new ChromeDriverDownloader(loggerFactory, startOptions.ChromeVersion).Download(driverPath).Wait();
+                new ChromeDriverDownloader(_loggerFactory, startOptions.ChromeVersion).Download(driverPath).Wait();
 
                 driver = CreateDriver(driverPath, chromeOptions);
             }
@@ -45,14 +49,43 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return driver;
         }
 
-        private static IWebDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
+        private IWebDriver CreateDriver(string driverPath, ChromeOptions chromeOptions)
         {
+            int servicePort = 5556;
+
+            while (servicePort < 6000)
+            {
+                try
+                {
+                    return CreateDriverForPort(servicePort, driverPath, chromeOptions);
+                }
+                catch (OpenQA.Selenium.WebDriverException ex) when (
+                    ex.Message.Contains("Cannot start the driver service") ||
+                    ex.Message.Contains("A exception with a null response was thrown sending an HTTP request"))
+                {
+                    servicePort++;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+
+            throw new FatException("No free port found for web driver to start");
+        }
+
+        private IWebDriver CreateDriverForPort(int servicePort, string driverPath, ChromeOptions chromeOptions)
+        {
+            _logger.Info($"Create and start ChromeDriverService with URI: http://127.0.0.1:{servicePort}");
             // for some reason if we use ChromeDriver instead of RemoteWebDriver there is a performance issue on
             // initial load, we believe that is because of dotnetcore
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(driverPath);
-            service.Port = 5556; // Some port value.
+            service.Port = servicePort;
             service.Start();
-            var webDriver = new CustomChromeDriver(new Uri("http://127.0.0.1:5556"), chromeOptions);
+            _logger.Debug("ChromeDriverService started");
+
+            var webDriver = new CustomChromeDriver(new Uri($"http://127.0.0.1:{servicePort}"), chromeOptions, service);
+            _logger.Debug("ChromeDriver connected to service");
             return webDriver;
 
             // this is how it should be done.
@@ -60,7 +93,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // return webDriver;
         }
 
-        private static ChromeOptions CreateRemoteOptions(BrowserStartOptions startOptions)
+        private ChromeOptions CreateRemoteOptions(BrowserStartOptions startOptions)
         {
             return new ChromeOptions()
             {
@@ -68,7 +101,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             };
         }
 
-        private static ChromeOptions CreateOptions(BrowserStartOptions startOptions)
+        private ChromeOptions CreateOptions(BrowserStartOptions startOptions)
         {
             startOptions = startOptions ?? new BrowserStartOptions();
 
