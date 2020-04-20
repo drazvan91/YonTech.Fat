@@ -1,5 +1,7 @@
 ﻿// inspiration: https://github.com/xunit/visualstudio.xunit/blob/master/src/xunit.runner.visualstudio/VsTestRunner.cs
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -11,7 +13,7 @@ using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.TestAdapter
 {
-    [DefaultExecutorUri(Constants.ExecutorUri)]
+    [DefaultExecutorUri(Constants.ExecutorUriString)]
     public class VsTestDiscoverer : ITestDiscoverer
     {
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
@@ -28,7 +30,7 @@ namespace Yontech.Fat.TestAdapter
             var assemblyDiscoverer = new AssemblyDiscoverer();
             var loggerFactory = new VsTestLoggerFactory(messageLogger);
 
-            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
+            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUriString);
             var fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
 
             foreach (var source in sources)

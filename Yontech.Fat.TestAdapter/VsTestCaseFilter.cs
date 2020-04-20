@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Filters;
@@ -11,6 +12,7 @@ namespace Yontech.Fat.TestAdapter
     internal class VsTestCaseFilter : ITestCaseFilter
     {
         private const string DISPLAY_NAME_STRING = "DisplayName";
+        private const string LABEL_STRING = "Label";
         private const string FULLY_QUALIFIED_NAME_STRING = "FullyQualifiedName";
         private readonly TestCaseFactory _testCaseFactory;
 
@@ -18,7 +20,7 @@ namespace Yontech.Fat.TestAdapter
 
         private List<string> _supportedPropertyNames = new List<string>()
         {
-            DISPLAY_NAME_STRING, FULLY_QUALIFIED_NAME_STRING,
+            DISPLAY_NAME_STRING, FULLY_QUALIFIED_NAME_STRING, LABEL_STRING
         };
 
         public VsTestCaseFilter(IRunContext runContext, TestCaseFactory testCaseFactory)
@@ -39,9 +41,23 @@ namespace Yontech.Fat.TestAdapter
         private object PropertyProvider(FatTestCase testCase, string name)
         {
             if (string.Equals(name, FULLY_QUALIFIED_NAME_STRING, StringComparison.OrdinalIgnoreCase))
+            {
                 return testCase.FullyQualifiedName;
+            }
+
             if (string.Equals(name, DISPLAY_NAME_STRING, StringComparison.OrdinalIgnoreCase))
+            {
                 return testCase.DisplayName;
+            }
+
+            if (string.Equals(name, LABEL_STRING, StringComparison.OrdinalIgnoreCase))
+            {
+                var labels = testCase.GetCascadedAttributes()
+                    .OfType<FatLabel>()
+                    .Select(label => label.Name);
+
+                return labels.ToArray();
+            }
 
             return null;
         }

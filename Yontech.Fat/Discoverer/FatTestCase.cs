@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Yontech.Fat.Utils;
@@ -28,6 +30,14 @@ namespace Yontech.Fat.Discoverer
                 this.CodeFilePath = navData.FileName;
                 this.CodeFileLineNumber = navData.MinLineNumber;
             }
+        }
+
+        public IEnumerable<Attribute> GetCascadedAttributes()
+        {
+            var methodAttributes = System.Attribute.GetCustomAttributes(Method);
+            var classAttributes = System.Attribute.GetCustomAttributes(Method.ReflectedType);
+
+            return classAttributes.Union(methodAttributes);
         }
     }
 }

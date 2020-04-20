@@ -16,7 +16,7 @@ using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.TestAdapter
 {
-    [ExtensionUri(Constants.ExecutorUri)]
+    [ExtensionUri(Constants.ExecutorUriString)]
     public class VsTestExecutor : ITestExecutor
     {
         public void Cancel()
@@ -28,7 +28,7 @@ namespace Yontech.Fat.TestAdapter
         {
             var assemblies = tests.Select(s => Assembly.LoadFile(s.Source)).ToList();
 
-            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
+            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUriString);
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
             var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
@@ -51,7 +51,7 @@ namespace Yontech.Fat.TestAdapter
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             var assemblies = sources.Select(s => Assembly.LoadFile(s)).ToList();
-            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUri);
+            var testCaseFactory = new TestCaseFactory(Constants.ExecutorUriString);
             var simpleFilter = new VsTestCaseFilter(runContext, testCaseFactory);
 
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
