@@ -75,8 +75,9 @@ namespace Yontech.Fat
             Waiters.Waiter.WaitForConditionToBeTrue(condition, WebBrowser.Configuration.DefaultTimeout);
         }
 
-        protected void WaitForInputKey()
+        protected void StopForKeyboardInput()
         {
+            Console.WriteLine("Stopped for keyboard input. Press any key to continue...");
             Console.ReadKey();
         }
     }
