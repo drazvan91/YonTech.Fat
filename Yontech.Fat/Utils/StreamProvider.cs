@@ -18,11 +18,7 @@ namespace Yontech.Fat.Utils
         public Stream GetStream(string filename, Assembly relativeToAssembly)
         {
             var location = GetFileLocation(filename, relativeToAssembly);
-            _logger.Debug("Reading inline parameters from file {0}", location);
-            if (!File.Exists(location))
-            {
-                throw new FatException("File '{0}' could not be found. Is the this file copied to the output folder? Make sure you added <Content Include=\"files\\**\\*\" CopyToOutputDirectory=\"Always\" /> in the .csproj file");
-            }
+            _logger.Debug("Reading file {0}", location);
 
             return new FileStream(location, FileMode.Open);
         }
@@ -30,12 +26,7 @@ namespace Yontech.Fat.Utils
         public TextReader GetTextReader(string filename, Assembly relativeToAssembly)
         {
             var location = GetFileLocation(filename, relativeToAssembly);
-            _logger.Debug("Reading inline parameters from file {0}", location);
-
-            if (!File.Exists(location))
-            {
-                throw new FatException("File '{0}' could not be found. Is the this file copied to the output folder? Make sure you added <Content Include=\"files\\**\\*\" CopyToOutputDirectory=\"Always\" /> in the .csproj file", filename);
-            }
+            _logger.Debug("Reading file {0}", location);
 
             return new StreamReader(location);
         }
@@ -44,6 +35,12 @@ namespace Yontech.Fat.Utils
         {
             var folderLocation = Path.GetDirectoryName(relativeToAssembly.Location);
             var location = Path.Combine(folderLocation, filename);
+
+            if (!File.Exists(location))
+            {
+                throw new FatException("File '{0}' could not be found. Is the this file copied to the output folder? Make sure you added <Content Include=\"files\\**\\*\" CopyToOutputDirectory=\"Always\" /> in the .csproj file", filename);
+            }
+
             return location;
         }
     }

@@ -18,31 +18,31 @@ namespace Yontech.Fat.DataSources
 
         protected override IEnumerable<object[]> GetExecutionArguments(MethodInfo method)
         {
-            using (var reader = StreamReaderProvider.GetStream(this._filename, method.ReflectedType.Assembly))
+            var parameters = method.GetParameters();
+
+            if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
             {
-                var parameters = method.GetParameters();
-
-                if (parameters.Length == 1 && !IsPrimitive(parameters[0].ParameterType))
-                {
-                    return GetObjectLike(reader, parameters[0]);
-                }
-
-                return GetInlineParamsLike(reader, parameters);
+                return GetObjectLike(parameters[0], method);
             }
+
+            return GetInlineParamsLike(parameters, method);
         }
 
-        private IEnumerable<object[]> GetInlineParamsLike(Stream stream, ParameterInfo[] parameters)
+        private IEnumerable<object[]> GetInlineParamsLike(ParameterInfo[] parameters, MethodInfo method)
         {
-            var document = JsonDocument.Parse(stream);
-            foreach (var item in document.RootElement.EnumerateArray())
+            using (var stream = StreamReaderProvider.GetStream(this._filename, method.ReflectedType.Assembly))
             {
-                var paramsValues = parameters.Select(param =>
+                var document = JsonDocument.Parse(stream);
+                foreach (var item in document.RootElement.EnumerateArray())
                 {
-                    var jsonItem = item.EnumerateObject().FirstOrDefault(i => string.Compare(i.Name, param.Name, true) == 0);
-                    return ConvertJsonToType(jsonItem.Value, param.ParameterType);
-                });
+                    var paramsValues = parameters.Select(param =>
+                    {
+                        var jsonItem = item.EnumerateObject().FirstOrDefault(i => string.Compare(i.Name, param.Name, true) == 0);
+                        return ConvertJsonToType(jsonItem.Value, param.ParameterType);
+                    });
 
-                yield return paramsValues.ToArray();
+                    yield return paramsValues.ToArray();
+                }
             }
         }
 
@@ -66,20 +66,23 @@ namespace Yontech.Fat.DataSources
             throw new Exception("Not supported");
         }
 
-        private IEnumerable<object[]> GetObjectLike(Stream stream, ParameterInfo parameterInfo)
+        private IEnumerable<object[]> GetObjectLike(ParameterInfo parameterInfo, MethodInfo method)
         {
-            var options = new JsonSerializerOptions()
+            using (var stream = StreamReaderProvider.GetStream(this._filename, method.ReflectedType.Assembly))
             {
-                PropertyNameCaseInsensitive = true,
-            };
+                var options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
 
-            var type = parameterInfo.ParameterType.MakeArrayType();
+                var type = parameterInfo.ParameterType.MakeArrayType();
 
-            var array = JsonSerializer.DeserializeAsync(stream, type, options).Result as object[];
+                var array = JsonSerializer.DeserializeAsync(stream, type, options).Result as object[];
 
-            foreach (var item in array)
-            {
-                yield return new object[] { item };
+                foreach (var item in array)
+                {
+                    yield return new object[] { item };
+                }
             }
         }
     }
