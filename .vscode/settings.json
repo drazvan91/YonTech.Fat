@@ -1,0 +1,4 @@
+{
+    "dotnet-test-explorer.testProjectPath": "./tests/Yontech.Fat.Tests/",
+    "dotnet-test-explorer.autoExpandTree": true
+}
