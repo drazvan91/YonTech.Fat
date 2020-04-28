@@ -6,6 +6,13 @@ namespace Alfa.TestCases
 {
     public class JsonFile : FatTest
     {
+        public class JsonFileModel
+        {
+            public string Column1 { get; set; }
+            public string Column2 { get; set; }
+            public string Column3 { get; set; }
+        }
+
         [JsonFileData("files/jsonFile.json")]
         public void Test_json_existing_properties(string column1, string column3)
         {
@@ -17,5 +24,13 @@ namespace Alfa.TestCases
         public void Test_json_does_not_exist(string noColumn)
         {
         }
+
+        [JsonFileData("files/jsonFile.json")]
+        public void Test_json_object(JsonFileModel model)
+        {
+            LogInfo("model.column1: {0}", model.Column1);
+        }
     }
+
+
 }

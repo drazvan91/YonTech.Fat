@@ -11,7 +11,7 @@ namespace Yontech.Fat.Tests.RunnerTests
     public class JsonFileTests
     {
         [Fact]
-        public void Inline_json_values()
+        public void Json_file_tests()
         {
             MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
             var streamProvider = new StreamProvider(mockedLoggerFactory);
@@ -23,13 +23,15 @@ namespace Yontech.Fat.Tests.RunnerTests
 
             mockedLoggerFactory.PrintAllLogs();
 
-            Assert.Equal(1, result.Passed);
+            Assert.Equal(2, result.Passed);
             Assert.Equal(1, result.Failed);
 
             result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column1: value1_1");
             result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column3: value3_1");
             result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column1: value1_2");
             result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column3: value3_2");
+
+            result.AssertTestHasLog("Test_json_object", LogLevel.Info, "model.column1: value1_1");
 
             result.AssertTestHasLog("Test_json_does_not_exist", LogLevel.Error, "could not be found. Is the this file copied to the output folder? Make sure you added <Content Include");
         }
