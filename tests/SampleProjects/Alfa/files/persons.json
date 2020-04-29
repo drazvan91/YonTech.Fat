@@ -1,0 +1,14 @@
+[
+    {
+        "firstName": "Razvan",
+        "lastName": "Dragomir",
+        "age": 20,
+        "isActive": true
+    },
+    {
+        "firstName": "John",
+        "lastName": "Snow",
+        "age": 18,
+        "isActive": false
+    }
+]

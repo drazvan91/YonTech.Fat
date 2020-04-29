@@ -13,8 +13,10 @@ namespace Yontech.Fat.Tests.Extensions
             var key = runResults.TestResults.Keys.FirstOrDefault(k => k.Contains(testName));
             Assert.False(key == null, $"No test has name {testName}");
 
+            var allLogs = string.Join(Environment.NewLine, runResults.TestResults[key].Logs.Select(l => l.Message));
+
             var hasLog = runResults.TestResults[key].Logs.Any(l => l.Message.Contains(logMessage));
-            Assert.True(hasLog, $"Test should have log '{logMessage}'");
+            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it head: {allLogs}");
         }
 
         public static void AssertTestHasLog(this RunResults runResults, string testName, LogLevel logLevel, string logMessage)
@@ -22,8 +24,10 @@ namespace Yontech.Fat.Tests.Extensions
             var key = runResults.TestResults.Keys.FirstOrDefault(k => k.Contains(testName));
             Assert.False(key == null, $"No test has name {testName}");
 
+            var allLogs = string.Join(Environment.NewLine, runResults.TestResults[key].Logs.Select(l => l.Message));
+
             var hasLog = runResults.TestResults[key].Logs.Any(l => l.Message.Contains(logMessage));
-            Assert.True(hasLog, $"Test should have log '{logMessage}'");
+            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it head: {allLogs}");
         }
 
         public static void AssertTestHasPassed(this RunResults runResults, string testName)

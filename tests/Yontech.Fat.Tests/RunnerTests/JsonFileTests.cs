@@ -11,7 +11,7 @@ namespace Yontech.Fat.Tests.RunnerTests
     public class JsonFileTests
     {
         [Fact]
-        public void Json_file_tests()
+        public void Happy_flow()
         {
             MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
             var streamProvider = new StreamProvider(mockedLoggerFactory);
@@ -19,21 +19,50 @@ namespace Yontech.Fat.Tests.RunnerTests
 
             FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
 
-            var result = runner.Run<Alfa.TestCases.JsonFile>();
+            var result = runner.Run<Alfa.JsonFileDataTestCases.HappyFlowTests>();
 
-            mockedLoggerFactory.PrintAllLogs();
+            Assert.Equal(0, result.Failed);
 
-            Assert.Equal(2, result.Passed);
+            result.AssertTestHasLog("Test_one_inline_param", LogLevel.Info, "firstName: Razvan");
+
+            result.AssertTestHasLog("Test_multiple_inline_values", LogLevel.Info, "lastName: Dragomir");
+
+            result.AssertTestHasLog("Test_different_inline_types", LogLevel.Info, "age: 20");
+            result.AssertTestHasLog("Test_different_inline_types", LogLevel.Info, "isActive: True");
+
+            result.AssertTestHasLog("Test_json_object", LogLevel.Info, "firstName: Razvan");
+        }
+
+        [Fact]
+        public void When_file_not_exists_Then_displays_error_message()
+        {
+            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
+            var streamProvider = new StreamProvider(mockedLoggerFactory);
+            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
+
+            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
+
+            var result = runner.Run<Alfa.JsonFileDataTestCases.FileDoesNotExistTests>();
+
+            Assert.Equal(0, result.Passed);
+
+            result.AssertTestHasLog("Test_file_not_found", LogLevel.Error, "could not be found. Is the this file copied to the output folder? Make sure you added <Content Include");
+        }
+
+        [Fact]
+        public void When_type_not_supported_Then_displays_error_message()
+        {
+            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
+            var streamProvider = new StreamProvider(mockedLoggerFactory);
+            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
+
+            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
+
+            var result = runner.Run<Alfa.JsonFileDataTestCases.TypeNotSupportedTests>();
+
             Assert.Equal(1, result.Failed);
 
-            result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column1: value1_1");
-            result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column3: value3_1");
-            result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column1: value1_2");
-            result.AssertTestHasLog("Test_json_existing_properties", LogLevel.Info, "Value from column3: value3_2");
-
-            result.AssertTestHasLog("Test_json_object", LogLevel.Info, "model.column1: value1_1");
-
-            result.AssertTestHasLog("Test_json_does_not_exist", LogLevel.Error, "could not be found. Is the this file copied to the output folder? Make sure you added <Content Include");
+            result.AssertTestHasLog("Test_type_not_supported", LogLevel.Error, "bau");
         }
     }
 }
