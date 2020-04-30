@@ -38,7 +38,7 @@ namespace Yontech.Fat.DataSources
                     var paramsValues = parameters.Select(param =>
                     {
                         var jsonItem = item.EnumerateObject().FirstOrDefault(i => string.Compare(i.Name, param.Name, true) == 0);
-                        return ConvertJsonToType(jsonItem.Value, param.ParameterType);
+                        return ConvertJsonToType(jsonItem.Value, param);
                     });
 
                     yield return paramsValues.ToArray();
@@ -46,8 +46,10 @@ namespace Yontech.Fat.DataSources
             }
         }
 
-        private object ConvertJsonToType(JsonElement value, Type parameterType)
+        private object ConvertJsonToType(JsonElement value, ParameterInfo paramInfo)
         {
+            var parameterType = paramInfo.ParameterType;
+
             if (parameterType == typeof(int))
             {
                 return value.GetInt32();
@@ -63,7 +65,7 @@ namespace Yontech.Fat.DataSources
                 return value.GetBoolean();
             }
 
-            throw new Exception("Not supported");
+            throw new Exception($"Not supported type for parameter '{paramInfo.Name}'");
         }
 
         private IEnumerable<object[]> GetObjectLike(ParameterInfo parameterInfo, MethodInfo method)

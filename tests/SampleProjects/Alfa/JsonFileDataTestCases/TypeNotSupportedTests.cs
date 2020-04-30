@@ -8,7 +8,7 @@ namespace Alfa.JsonFileDataTestCases
         public class SomeModel { }
 
         [JsonFileData("files/persons.json")]
-        public void Test_type_not_supported(int intValue, SomeModel someModel)
+        public void Test_type_not_supported(int age, SomeModel someModel)
         {
         }
     }

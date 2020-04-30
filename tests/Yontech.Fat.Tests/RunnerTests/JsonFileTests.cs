@@ -62,7 +62,7 @@ namespace Yontech.Fat.Tests.RunnerTests
 
             Assert.Equal(1, result.Failed);
 
-            result.AssertTestHasLog("Test_type_not_supported", LogLevel.Error, "bau");
+            result.AssertTestHasLog("Test_type_not_supported", LogLevel.Error, "Not supported type for parameter 'someModel'");
         }
     }
 }
