@@ -3,12 +3,18 @@
         "firstName": "Razvan",
         "lastName": "Dragomir",
         "age": 20,
-        "isActive": true
+        "isActive": true,
+        "address": {
+            "city": "London"
+        }
     },
     {
         "firstName": "John",
         "lastName": "Snow",
         "age": 18,
-        "isActive": false
+        "isActive": false,
+        "address": {
+            "city": "Madrid"
+        }
     }
 ]

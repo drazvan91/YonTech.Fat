@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using Yontech.Fat.Exceptions;
 
 namespace Yontech.Fat.DataSources
 {
@@ -49,23 +50,42 @@ namespace Yontech.Fat.DataSources
         private object ConvertJsonToType(JsonElement value, ParameterInfo paramInfo)
         {
             var parameterType = paramInfo.ParameterType;
+            var valueKind = value.ValueKind;
 
-            if (parameterType == typeof(int))
+            if (valueKind == JsonValueKind.Undefined)
             {
-                return value.GetInt32();
+                throw new FatException($"Property '{paramInfo.Name}' does not exist in file '{this._filename}'");
             }
 
-            if (parameterType == typeof(string))
+            try
             {
-                return value.GetString();
-            }
+                if (parameterType == typeof(int))
+                {
+                    return value.GetInt32();
+                }
 
-            if (parameterType == typeof(bool))
+                if (parameterType == typeof(string))
+                {
+                    return value.GetString();
+                }
+
+                if (parameterType == typeof(bool))
+                {
+                    return value.GetBoolean();
+                }
+
+                if (parameterType == typeof(DateTime))
+                {
+                    return value.GetDateTime();
+                }
+
+                throw new FatException($"Not supported type for parameter '{paramInfo.Name}' in file '{this._filename}'");
+            }
+            catch (Exception ex) when (ex.Message.Contains("The requested operation requires an element of type"))
             {
-                return value.GetBoolean();
+                // eg: The requested operation requires an element of type 'String', but the target element has type 'Number'
+                throw new FatException($"Type mismatch for parameter '{paramInfo.Name}' in file '{this._filename}'");
             }
-
-            throw new Exception($"Not supported type for parameter '{paramInfo.Name}'");
         }
 
         private IEnumerable<object[]> GetObjectLike(ParameterInfo parameterInfo, MethodInfo method)

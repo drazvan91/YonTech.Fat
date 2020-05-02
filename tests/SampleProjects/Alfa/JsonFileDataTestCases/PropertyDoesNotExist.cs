@@ -3,12 +3,11 @@ using Yontech.Fat.DataSources;
 
 namespace Alfa.JsonFileDataTestCases
 {
-    public class TypeNotSupportedTests : FatTest
+    public class PropertyDoesNotExist : FatTest
     {
-        public class AddressModel { }
 
         [JsonFileData("files/persons.json")]
-        public void Test_type_not_supported(int age, AddressModel address)
+        public void Test_property_does_not_exist(int age, string city)
         {
         }
     }
