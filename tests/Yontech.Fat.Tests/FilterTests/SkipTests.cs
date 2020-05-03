@@ -3,25 +3,23 @@ using Xunit;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Tests.Mocks;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.FilterTests
 {
     public class SkipTests
     {
-        private readonly MockedLoggerFactory mockedLoggerFactory;
+        private readonly MockedExecutionContext context;
         private readonly FatRunner runner;
 
         public SkipTests()
         {
-            this.mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
             var config = new Alfa.Config1();
             config.LogLevel = LogLevel.Debug;
 
-            this.runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, config);
+            this.context = new MockedExecutionContext(config, typeof(Alfa.Config1).Assembly);
+            this.runner = new FatRunner(this.context);
         }
 
         [Fact]

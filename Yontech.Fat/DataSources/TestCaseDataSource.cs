@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.DataSources
@@ -12,10 +13,10 @@ namespace Yontech.Fat.DataSources
         protected ILogger Logger { get; private set; }
         protected IStreamProvider StreamReaderProvider { get; private set; }
 
-        internal IEnumerable<object[]> GetExecutionArguments(ILoggerFactory loggerFactory, IStreamProvider readerProvider, MethodInfo method)
+        internal IEnumerable<object[]> GetExecutionArguments(FatExecutionContext execContext, MethodInfo method)
         {
-            this.Logger = loggerFactory.Create(this);
-            this.StreamReaderProvider = readerProvider;
+            this.Logger = execContext.LoggerFactory.Create(this);
+            this.StreamReaderProvider = execContext.StreamReaderProvider;
 
             return GetExecutionArguments(method);
         }

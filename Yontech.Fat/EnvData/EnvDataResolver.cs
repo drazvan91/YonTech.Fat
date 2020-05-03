@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 
 namespace Yontech.Fat.EnvData
 {
     internal class EnvDataResolver
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly FatExecutionContext _execContext;
         private readonly ILogger _logger;
 
-        public EnvDataResolver(ILoggerFactory loggerFactory)
+        public EnvDataResolver(FatExecutionContext execContext)
         {
-            this._loggerFactory = loggerFactory;
-            this._logger = loggerFactory.Create(this);
+            this._execContext = execContext;
+            this._logger = this._execContext.LoggerFactory.Create(this);
         }
 
         public object Resolve(Type envDataType)
@@ -24,12 +20,12 @@ namespace Yontech.Fat.EnvData
             var instance = Activator.CreateInstance(envDataType) as FatEnvData;
             if (instance.FilePath.EndsWith(".json"))
             {
-                EnvDataJsonResolver r = new EnvDataJsonResolver(this._loggerFactory);
+                EnvDataJsonResolver r = new EnvDataJsonResolver(this._execContext);
                 r.Resolve(instance);
             }
             else if (instance.FilePath.EndsWith(".txt"))
             {
-                EnvDataTextResolver r = new EnvDataTextResolver(this._loggerFactory);
+                EnvDataTextResolver r = new EnvDataTextResolver(this._execContext);
                 r.Resolve(instance);
             }
             else

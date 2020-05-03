@@ -5,6 +5,7 @@ using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 using Yontech.Fat.Tests.Extensions;
+using Yontech.Fat.Tests.Mocks;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {
@@ -13,11 +14,8 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void Inline_csv_values()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
+            var context = new MockedExecutionContext(typeof(Alfa.Config1).Assembly);
+            var runner = new FatRunner(context);
 
             var result = runner.Run<Alfa.TestCases.CsvFile>();
 

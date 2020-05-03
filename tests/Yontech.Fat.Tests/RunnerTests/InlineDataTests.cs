@@ -4,22 +4,21 @@ using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Tests.Extensions;
+using Yontech.Fat.Tests.Mocks;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {
     public class InlineDataTests
     {
-        private readonly MockedLoggerFactory mockedLoggerFactory;
+        private readonly MockedExecutionContext context;
         private readonly FatRunner runner;
 
         public InlineDataTests()
         {
-            this.mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            this.runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
+            var config = new Alfa.Config1();
+            this.context = new MockedExecutionContext(typeof(Alfa.Config1).Assembly);
+            this.runner = new FatRunner(context);
         }
 
         [Fact]

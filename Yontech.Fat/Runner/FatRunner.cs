@@ -17,54 +17,42 @@ namespace Yontech.Fat.Runner
 {
     public class FatRunner
     {
-        private readonly IAssemblyDiscoverer _assemblyDiscoverer;
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly IStreamProvider _streamReaderProvider;
+        private readonly FatExecutionContext _execContext;
 
         private IWebBrowser _webBrowser;
         private InterceptDispatcher _interceptorDispatcher;
         private IocService _iocService;
         private FatDiscoverer _fatDiscoverer;
-        private FatConfig _options;
         private LogsSink _logsSink;
         private ILogger _logger;
         private RunResults _runResults;
 
-        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, IStreamProvider streamReaderProvider, Action<FatConfig> optionsCallback)
+        public FatRunner(FatExecutionContext execContext, Action<FatConfig> configCallback = null)
         {
-            this._assemblyDiscoverer = assemblyDiscoverer;
-            this._loggerFactory = loggerFactory;
-            this._streamReaderProvider = streamReaderProvider;
-            this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
+            this._execContext = execContext;
+            this._fatDiscoverer = new FatDiscoverer(this._execContext);
 
-            var options = this._fatDiscoverer.DiscoverConfig();
-            if (options == null)
+            if (execContext.Config == null)
             {
-                options = new DefaultFatConfig();
-            }
-            else
-            {
-                _loggerFactory.LogLevel = options.LogLevel;
-                _loggerFactory.LogLevelConfig = options.LogLevelConfig;
+                execContext.Config = this._fatDiscoverer.DiscoverConfig();
+                if (execContext.Config == null)
+                {
+                    execContext.Config = new DefaultFatConfig();
+                }
             }
 
-            optionsCallback(options);
-            Init(options);
-        }
+            if (configCallback != null)
+            {
+                configCallback(execContext.Config);
+            }
 
-        public FatRunner(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, IStreamProvider streamReaderProvider, FatConfig options)
-        {
-            this._assemblyDiscoverer = assemblyDiscoverer;
-            this._loggerFactory = loggerFactory;
-            this._streamReaderProvider = streamReaderProvider;
-            this._fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
-            Init(options);
+            Init();
         }
 
         public RunResults Run<TFatTest>() where TFatTest : FatTest
         {
             var testCollections = new List<FatTestCollection>();
-            var testCollection = _fatDiscoverer.DiscoverTestCollection<TFatTest>(_options.Filter);
+            var testCollection = _fatDiscoverer.DiscoverTestCollection<TFatTest>(this._execContext.Config.Filter);
             if (testCollection != null)
             {
                 testCollections.Add(testCollection);
@@ -75,20 +63,20 @@ namespace Yontech.Fat.Runner
 
         public RunResults Run()
         {
-            var testCollections = _fatDiscoverer.DiscoverTestCollections(_options.Filter);
+            var testCollections = _fatDiscoverer.DiscoverTestCollections(this._execContext.Config.Filter);
             return this.Run(testCollections);
         }
 
         public RunResults Run(IEnumerable<Assembly> assemblies)
         {
-            var testCollections = _fatDiscoverer.DiscoverTestCollections(assemblies, _options.Filter);
+            var testCollections = _fatDiscoverer.DiscoverTestCollections(assemblies, this._execContext.Config.Filter);
             return this.Run(testCollections);
         }
 
         public RunResults Run(Assembly assembly)
         {
             var testCollections = new List<FatTestCollection>();
-            var testCollection = _fatDiscoverer.DiscoverTestCollection(assembly, _options.Filter);
+            var testCollection = _fatDiscoverer.DiscoverTestCollection(assembly, this._execContext.Config.Filter);
             if (testCollection != null)
             {
                 testCollections.Add(testCollection);
@@ -97,18 +85,17 @@ namespace Yontech.Fat.Runner
             return this.Run(testCollections);
         }
 
-        private void Init(FatConfig options)
+        private void Init()
         {
-            this._logger = _loggerFactory.Create(this);
-            this._options = options;
-            this._options.Log(_loggerFactory);
+            this._logger = this._execContext.LoggerFactory.Create(this);
+            this._execContext.Config.Log(this._execContext.LoggerFactory);
 
             this._logsSink = new LogsSink();
 
-            var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
+            var interceptors = this._execContext.Config.Interceptors?.ToList() ?? new List<FatInterceptor>();
 
             this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_fatDiscoverer, _assemblyDiscoverer, _loggerFactory, _logsSink, () =>
+            this._iocService = new IocService(_execContext, _fatDiscoverer, _logsSink, () =>
             {
                 return this._webBrowser;
             });
@@ -118,21 +105,8 @@ namespace Yontech.Fat.Runner
 
         private RunResults Run(IEnumerable<FatTestCollection> testCollections)
         {
-            var browserStartOptions = new BrowserStartOptions()
-            {
-                RunHeadless = this._options.RunInBackground,
-                StartMaximized = this._options.StartMaximized,
-                InitialSize = this._options.InitialSize,
-                DriversFolder = this._options.DriversFolder ?? "drivers",
-                AutomaticDriverDownload = this._options.AutomaticDriverDownload,
-                RemoteDebuggerAddress = this._options.RemoteDebuggerAddress,
-            };
-
-            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._loggerFactory);
-            this._webBrowser = factory.Create(this._options.Browser, browserStartOptions);
-
-            this._webBrowser.Configuration.DefaultTimeout = this._options.Timeouts.DefaultTimeout;
-            this._webBrowser.Configuration.FinderTimeout = this._options.Timeouts.FinderTimeout;
+            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
+            this._webBrowser = factory.Create();
 
             this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
             foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
@@ -174,8 +148,8 @@ namespace Yontech.Fat.Runner
         {
             yield return new DocumentReadyBusyCondition();
             yield return new PendingRequestsBusyCondition();
-            yield return new InstructionDelayTimeBusyCondition(this._options.DelayBetweenSteps);
-            foreach (var condition in this._options.BusyConditions)
+            yield return new InstructionDelayTimeBusyCondition(this._execContext.Config.DelayBetweenSteps);
+            foreach (var condition in this._execContext.Config.BusyConditions)
             {
                 yield return condition;
             }
@@ -248,7 +222,7 @@ namespace Yontech.Fat.Runner
                     watch.Stop();
                 }
 
-                Thread.Sleep(_options.DelayBetweenTestCases);
+                Thread.Sleep(this._execContext.Config.DelayBetweenTestCases);
             }
 
             try
@@ -292,7 +266,7 @@ namespace Yontech.Fat.Runner
                 foreach (System.Attribute attr in attrs.OfType<TestCaseDataSource>())
                 {
                     var dataSource = (TestCaseDataSource)attr;
-                    var executionArguments = dataSource.GetExecutionArguments(this._loggerFactory, this._streamReaderProvider, testCase.Method);
+                    var executionArguments = dataSource.GetExecutionArguments(this._execContext, testCase.Method);
                     foreach (var arguments in executionArguments)
                     {
                         this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, arguments);

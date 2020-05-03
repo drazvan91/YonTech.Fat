@@ -32,11 +32,12 @@ namespace Yontech.Fat.TestAdapter
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
             var filter = new VsTestCaseFilterByFullName(tests.Select(t => t.FullyQualifiedName));
 
-            var assemblyDiscoverer = new AssemblyDiscoverer();
-            var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
-            var streamProvider = new StreamProvider(loggerFactory);
+            var execContext = new FatExecutionContext();
+            execContext.AssemblyDiscoverer = new AssemblyDiscoverer();
+            execContext.LoggerFactory = new VsTestLoggerFactory(frameworkHandle);
+            execContext.StreamReaderProvider = new StreamProvider(execContext.LoggerFactory);
 
-            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, (options) =>
+            var fatRunner = new FatRunner(execContext, (options) =>
             {
                 options.Filter = filter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();
@@ -56,11 +57,12 @@ namespace Yontech.Fat.TestAdapter
 
             var interceptor = new VsTestInterceptor(frameworkHandle, testCaseFactory);
 
-            var assemblyDiscoverer = new AssemblyDiscoverer();
-            var loggerFactory = new VsTestLoggerFactory(frameworkHandle);
-            var streamProvider = new StreamProvider(loggerFactory);
+            var execContext = new FatExecutionContext();
+            execContext.AssemblyDiscoverer = new AssemblyDiscoverer();
+            execContext.LoggerFactory = new VsTestLoggerFactory(frameworkHandle);
+            execContext.StreamReaderProvider = new StreamProvider(execContext.LoggerFactory);
 
-            var fatRunner = new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, (options) =>
+            var fatRunner = new FatRunner(execContext, (options) =>
             {
                 options.Filter = simpleFilter;
                 var interceptors = options.Interceptors?.ToList() ?? new List<FatInterceptor>();

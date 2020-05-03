@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.Runner;
 using Yontech.Fat.TestAdapter.Factories;
 using Yontech.Fat.TestAdapter.Logging;
 using Yontech.Fat.Utils;
@@ -27,11 +28,12 @@ namespace Yontech.Fat.TestAdapter
 
         private IEnumerable<TestCase> DiscoverTestCases(IEnumerable<string> sources, IMessageLogger messageLogger)
         {
-            var assemblyDiscoverer = new AssemblyDiscoverer();
-            var loggerFactory = new VsTestLoggerFactory(messageLogger);
+            var execContext = new FatExecutionContext();
+            execContext.AssemblyDiscoverer = new AssemblyDiscoverer();
+            execContext.LoggerFactory = new VsTestLoggerFactory(messageLogger);
 
             var testCaseFactory = new TestCaseFactory(Constants.ExecutorUriString);
-            var fatDiscoverer = new FatDiscoverer(assemblyDiscoverer, loggerFactory);
+            var fatDiscoverer = new FatDiscoverer(execContext);
 
             foreach (var source in sources)
             {

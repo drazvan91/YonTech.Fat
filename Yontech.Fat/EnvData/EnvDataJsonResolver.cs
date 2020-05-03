@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Dynamic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 
 namespace Yontech.Fat.EnvData
 {
@@ -12,9 +10,9 @@ namespace Yontech.Fat.EnvData
     {
         private readonly ILogger _logger;
 
-        public EnvDataJsonResolver(ILoggerFactory loggerFactory)
+        public EnvDataJsonResolver(FatExecutionContext execContext)
         {
-            this._logger = loggerFactory.Create(this);
+            this._logger = execContext.LoggerFactory.Create(this);
         }
 
         public void Resolve(FatEnvData instance)

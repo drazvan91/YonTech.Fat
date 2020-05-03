@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 
 namespace Yontech.Fat.EnvData
 {
@@ -9,9 +10,9 @@ namespace Yontech.Fat.EnvData
     {
         private readonly ILogger _logger;
 
-        public EnvDataTextResolver(ILoggerFactory loggerFactory)
+        public EnvDataTextResolver(FatExecutionContext execContext)
         {
-            this._logger = loggerFactory.Create(this);
+            this._logger = execContext.LoggerFactory.Create(this);
         }
 
         public void Resolve(FatEnvData instance)

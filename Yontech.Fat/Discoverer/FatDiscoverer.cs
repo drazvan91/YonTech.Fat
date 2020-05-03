@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Yontech.Fat.Filters;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Discoverer
@@ -13,10 +14,10 @@ namespace Yontech.Fat.Discoverer
         private readonly IAssemblyDiscoverer _assemblyDiscoverer;
         private readonly ILogger _logger;
 
-        public FatDiscoverer(IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory)
+        public FatDiscoverer(FatExecutionContext executionContext)
         {
-            this._assemblyDiscoverer = assemblyDiscoverer;
-            this._logger = loggerFactory.Create(this);
+            this._assemblyDiscoverer = executionContext.AssemblyDiscoverer;
+            this._logger = executionContext.LoggerFactory.Create(this);
         }
 
         public IEnumerable<FatTestCollection> DiscoverTestCollections(ITestCaseFilter filter = null)

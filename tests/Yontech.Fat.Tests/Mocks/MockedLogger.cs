@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Xunit;
 using Yontech.Fat.Logging;
 
-namespace Yontech.Fat.Tests
+namespace Yontech.Fat.Tests.Mocks
 {
     public class LogEntry
     {

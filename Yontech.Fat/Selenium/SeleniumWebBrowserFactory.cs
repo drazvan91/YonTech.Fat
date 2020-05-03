@@ -5,33 +5,36 @@ using OpenQA.Selenium;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 using Yontech.Fat.Selenium.DriverFactories;
 
 namespace Yontech.Fat.Selenium
 {
     internal class SeleniumWebBrowserFactory : IWebBrowserFactory
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly FatExecutionContext _execContext;
         private readonly ILogger _logger;
 
-        public SeleniumWebBrowserFactory(ILoggerFactory loggerFactory)
+        public SeleniumWebBrowserFactory(FatExecutionContext execContext)
         {
-            this._loggerFactory = loggerFactory;
-            this._logger = loggerFactory.Create(this);
+            this._execContext = execContext;
+            this._logger = _execContext.LoggerFactory.Create(this);
         }
 
-        public IWebBrowser Create(BrowserType browserType)
+        public IWebBrowser Create()
         {
-            return this.Create(browserType, null, null);
-        }
+            var config = this._execContext.Config;
+            var startOptions = new BrowserStartOptions()
+            {
+                RunHeadless = config.RunInBackground,
+                StartMaximized = config.StartMaximized,
+                InitialSize = config.InitialSize,
+                DriversFolder = config.DriversFolder ?? "drivers",
+                AutomaticDriverDownload = config.AutomaticDriverDownload,
+                RemoteDebuggerAddress = config.RemoteDebuggerAddress,
+            };
 
-        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions)
-        {
-            return this.Create(browserType, startOptions, null);
-        }
-
-        public IWebBrowser Create(BrowserType browserType, BrowserStartOptions startOptions, IEnumerable<FatBusyCondition> busyConditions)
-        {
+            var browserType = config.Browser;
             this.ValidateStartOptions(browserType, startOptions);
 
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
@@ -42,10 +45,13 @@ namespace Yontech.Fat.Selenium
             IWebDriver webDriver = CreateWebDriver(browserType, driversPath, startOptions);
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
-                this._loggerFactory,
+                this._execContext.LoggerFactory,
                 webDriver: webDriver,
                 browserType: browserType,
-                busyConditions: busyConditions ?? new List<FatBusyCondition>());
+                busyConditions: new List<FatBusyCondition>());
+
+            browser.Configuration.DefaultTimeout = config.Timeouts.DefaultTimeout;
+            browser.Configuration.FinderTimeout = config.Timeouts.FinderTimeout;
 
             return browser;
         }
@@ -55,10 +61,10 @@ namespace Yontech.Fat.Selenium
             switch (browserType)
             {
                 case BrowserType.Chrome:
-                    return new ChromeDriverFactory(this._loggerFactory)
+                    return new ChromeDriverFactory(this._execContext.LoggerFactory)
                         .Create(driversPath, startOptions, false);
                 case BrowserType.RemoteChrome:
-                    return new ChromeDriverFactory(this._loggerFactory)
+                    return new ChromeDriverFactory(this._execContext.LoggerFactory)
                         .Create(driversPath, startOptions, true);
                 case BrowserType.InternetExplorer:
                     return InternetExplorerDriverFactory.Create(driversPath, startOptions);

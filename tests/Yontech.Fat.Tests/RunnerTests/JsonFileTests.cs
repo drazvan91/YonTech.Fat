@@ -5,20 +5,25 @@ using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 using Yontech.Fat.Tests.Extensions;
+using Yontech.Fat.Tests.Mocks;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {
     public class JsonFileTests
     {
+        private readonly MockedExecutionContext context;
+        private readonly FatRunner runner;
+
+        public JsonFileTests()
+        {
+            var config = new Alfa.Config1();
+            this.context = new MockedExecutionContext(typeof(Alfa.Config1).Assembly);
+            this.runner = new FatRunner(context);
+        }
+
         [Fact]
         public void Happy_flow()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
-
             var result = runner.Run<Alfa.JsonFileDataTestCases.HappyFlowTests>();
 
             Assert.Equal(0, result.Failed);
@@ -36,12 +41,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_file_not_exists_Then_displays_error_message()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
-
             var result = runner.Run<Alfa.JsonFileDataTestCases.FileDoesNotExistTests>();
 
             Assert.Equal(0, result.Passed);
@@ -52,12 +51,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_type_not_supported_Then_displays_error_message()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
-
             var result = runner.Run<Alfa.JsonFileDataTestCases.TypeNotSupportedTests>();
 
             Assert.Equal(1, result.Failed);
@@ -68,12 +61,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_type_mismatched_Then_displays_error_message()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
-
             var result = runner.Run<Alfa.JsonFileDataTestCases.TypeMismatchTests>();
 
             Assert.Equal(1, result.Failed);
@@ -84,12 +71,6 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void When_property_doesnt_exist_Then_error_is_thrown()
         {
-            MockedLoggerFactory mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            FatRunner runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
-
             var result = runner.Run<Alfa.JsonFileDataTestCases.PropertyDoesNotExist>();
 
             Assert.Equal(1, result.Failed);

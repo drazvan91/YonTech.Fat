@@ -3,22 +3,21 @@ using Xunit;
 using Yontech.Fat.Discoverer;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Tests.Mocks;
 using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Tests.RunnerTests
 {
     public class EnvDataTests
     {
-        private readonly MockedLoggerFactory mockedLoggerFactory;
+        private readonly MockedExecutionContext context;
         private readonly FatRunner runner;
 
         public EnvDataTests()
         {
-            this.mockedLoggerFactory = new MockedLoggerFactory();
-            var streamProvider = new StreamProvider(mockedLoggerFactory);
-            MockedAssemblyDiscoverer assemblyDiscoverer = new MockedAssemblyDiscoverer(typeof(Alfa.Config1).Assembly);
-
-            this.runner = new FatRunner(assemblyDiscoverer, mockedLoggerFactory, streamProvider, new Alfa.Config1());
+            var config = new Alfa.Config1();
+            this.context = new MockedExecutionContext(typeof(Alfa.Config1).Assembly);
+            this.runner = new FatRunner(context);
         }
 
         [Fact]
@@ -29,7 +28,7 @@ namespace Yontech.Fat.Tests.RunnerTests
             Assert.Equal(0, result.Failed);
             Assert.Equal(2, result.Passed);
 
-            mockedLoggerFactory.AssertContains(LogLevel.Info, "Alfa.SimpleEnvData loaded from file 'files/simple-env-data.json'");
+            context.MockedLoggerFactory.AssertContains(LogLevel.Info, "Alfa.SimpleEnvData loaded from file 'files/simple-env-data.json'");
         }
 
         [Fact]
@@ -37,7 +36,7 @@ namespace Yontech.Fat.Tests.RunnerTests
         {
             var result = runner.Run<Alfa.EnvDataTestCases.FileNotFoundTests>();
 
-            mockedLoggerFactory.AssertContains(LogLevel.Error, "File 'files/no-file.json' could not be found. Empty Alfa.FileNotFoundEnvData object will be provided");
+            context.MockedLoggerFactory.AssertContains(LogLevel.Error, "File 'files/no-file.json' could not be found. Empty Alfa.FileNotFoundEnvData object will be provided");
 
             Assert.Equal(0, result.Failed);
             Assert.Equal(1, result.Passed);

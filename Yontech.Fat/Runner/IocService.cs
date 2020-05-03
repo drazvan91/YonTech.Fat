@@ -14,23 +14,23 @@ namespace Yontech.Fat.Runner
     internal class IocService
     {
         private readonly ServiceProvider _serviceProvider;
+        private readonly FatExecutionContext _executionContext;
         private readonly FatDiscoverer _discoverer;
         private readonly LogsSink _logsSink;
-        private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
         private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(FatDiscoverer discoverer, IAssemblyDiscoverer assemblyDiscoverer, ILoggerFactory loggerFactory, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
+        public IocService(FatExecutionContext executionContext, FatDiscoverer discoverer, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
         {
+            this._executionContext = executionContext;
             this._discoverer = discoverer;
-            this._loggerFactory = loggerFactory;
-            this._logger = loggerFactory.Create(this);
+            this._logger = executionContext.LoggerFactory.Create(this);
             this._logsSink = logsSink;
             this._webBrowserProvider = webBrowserProvider;
 
             var serviceCollection = new ServiceCollection();
 
-            var assemblies = assemblyDiscoverer.DiscoverAssemblies();
+            var assemblies = executionContext.AssemblyDiscoverer.DiscoverAssemblies();
             foreach (var assembly in assemblies)
             {
                 this.RegisterAssembly(serviceCollection, assembly);
@@ -45,7 +45,7 @@ namespace Yontech.Fat.Runner
 
             fatDiscoverable.WebBrowser = browser;
             fatDiscoverable.LogsSink = this._logsSink;
-            fatDiscoverable.Logger = this._loggerFactory.Create(fatDiscoverable);
+            fatDiscoverable.Logger = this._executionContext.LoggerFactory.Create(fatDiscoverable);
         }
 
         internal T GetService<T>(Type type) where T : class
@@ -91,7 +91,7 @@ namespace Yontech.Fat.Runner
             {
                 serviceCollection.AddSingleton(fatEnvData, (s) =>
                 {
-                    var envDataResolver = new EnvDataResolver(this._loggerFactory);
+                    var envDataResolver = new EnvDataResolver(this._executionContext);
                     return envDataResolver.Resolve(fatEnvData);
                 });
             }

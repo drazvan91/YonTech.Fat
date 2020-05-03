@@ -16,12 +16,7 @@ namespace Yontech.Fat.ConsoleRunner
         public FatConsoleRunner(FatConfig options = null)
         {
             this._interceptor = new ConsoleRunnerInterceptor();
-
-            if (options != null)
-            {
-                this._options = options;
-                AddInterceptor(this._options);
-            }
+            this._options = options;
         }
 
         public RunResults Run()
@@ -44,28 +39,21 @@ namespace Yontech.Fat.ConsoleRunner
             return CreateRunner().Run(assembly);
         }
 
-        private void AddInterceptor(FatConfig config)
-        {
-            var interceptors = config.Interceptors?.ToList() ?? new List<FatInterceptor>();
-            interceptors.Add(_interceptor);
-            config.Interceptors = interceptors;
-        }
-
         private FatRunner CreateRunner()
         {
-            var assemblyDiscoverer = new AssemblyDiscoverer();
-            if (this._options == null)
+            var execContext = new FatExecutionContext();
+            execContext.AssemblyDiscoverer = new AssemblyDiscoverer();
+            execContext.LoggerFactory = new ConsoleLoggerFactory();
+            execContext.StreamReaderProvider = new StreamProvider(execContext.LoggerFactory);
+            return new FatRunner(execContext, (config) =>
             {
-                var loggerFactory = new ConsoleLoggerFactory();
-                var streamProvider = new StreamProvider(loggerFactory);
-                return new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, AddInterceptor);
-            }
-            else
-            {
-                var loggerFactory = new ConsoleLoggerFactory(this._options.LogLevel, this._options.LogLevelConfig);
-                var streamProvider = new StreamProvider(loggerFactory);
-                return new FatRunner(assemblyDiscoverer, loggerFactory, streamProvider, this._options);
-            }
+                var interceptors = config.Interceptors?.ToList() ?? new List<FatInterceptor>();
+                interceptors.Add(_interceptor);
+                config.Interceptors = interceptors;
+
+                execContext.LoggerFactory.LogLevel = config.LogLevel;
+                execContext.LoggerFactory.LogLevelConfig = config.LogLevelConfig;
+            });
         }
     }
 }
