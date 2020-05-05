@@ -1,0 +1,113 @@
+---
+name: Fat Label
+route: /fat-label
+---
+
+# Fat Label
+
+## Defining labels on a method
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.Labels;
+
+// ...
+
+public class MyTestCases : FatTest
+{
+    [FatLabel("my-label")]
+    public void Test_this_has_a_label()
+    {
+    }
+
+    public void Test_this_does_not_have_a_label()
+    {
+    }
+}
+
+```
+
+## Defining labels on all tests within a FatTest class 
+
+Defining FatLabel on the class is like defining for all tests within that class
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.Labels;
+
+// ...
+
+[FatLabel("my-label")]
+public class MyTestCases : FatTest
+{
+    public void Test_this_is_smoke_test()
+    {
+    }
+
+    public void Test_another_test()
+    {
+    }
+}
+
+```
+
+## Filter tests
+
+### Using dotnet test
+```shell
+dotnet test --filter "Label=my-label"
+
+# to filter using OR statement use |
+dotnet test --filter "Label=my-label1|Label=my-label2"
+
+# to filter using AND statement use &
+dotnet test --filter "Label=my-label1&Label=my-label2"
+```
+
+### Using FatConfig
+```typescript
+using Yontech.Fat.Filters;
+
+public class MyConfig : FatConfig
+{
+    public MyConfig()
+    {
+        Browser = BrowserType.Chrome;
+        
+        // filter tests with one label
+        Filter = new LabelTestCaseFilter("my-label";
+
+        // or filter tests with at least one of these labels
+        Filter = new LabelTestCaseFilter("my-label1", "my-label2", "my-label3")
+    }
+}
+
+```
+
+## Predefined Labels
+There are two predefined labels that could be handy:
+* `SmokeTest` which is the same as `FatLabel("smoke-test")`
+* `RegressionTest` which is the same as `FatLabel("regression-test")`
+
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.Labels;
+
+// ...
+
+public class MyTestCases : FatTest
+{
+    [SmokeTest]
+    [RegressionTest]
+    public void Test_this_is_both()
+    {
+    }
+
+    [SmokeTest]
+    public void Test_this_is_only_smoke_test()
+    {
+    }
+}
+
+```
