@@ -51,9 +51,8 @@ public class MyTestCases : FatTest
 
 ```
 
-## Filter tests
+## Filter using dotnet test
 
-### Using dotnet test
 ```shell
 dotnet test --filter "Label=my-label"
 
@@ -64,7 +63,7 @@ dotnet test --filter "Label=my-label1|Label=my-label2"
 dotnet test --filter "Label=my-label1&Label=my-label2"
 ```
 
-### Using FatConfig
+## Filter using FatConfig
 ```typescript
 using Yontech.Fat.Filters;
 

@@ -7,6 +7,7 @@ export default {
     'Run configuration',
     'Concepts',
     'Fat Label',
+    'Skip Test',
     'API',
     'Samples'
   ],

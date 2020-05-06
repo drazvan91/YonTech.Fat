@@ -1,0 +1,49 @@
+---
+name: Skip Test
+route: /skip-test
+---
+
+# Skip Test
+
+## Skip test cases
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.Labels;
+
+// ...
+
+public class MyTestCases : FatTest
+{
+    [SkipTest]
+    public void Test_this_is_skipped()
+    {
+    }
+
+    public void Test_this_will_run()
+    {
+    }
+}
+
+```
+
+## Skip all tests from FatTest
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.Labels;
+
+// ...
+
+[SkipTest]
+public class MyTestCases : FatTest
+{
+    public void Test_this_will_be_skipped()
+    {
+    }
+
+    public void Test_this_will_also_be_skipped()
+    {
+    }
+}
+```
