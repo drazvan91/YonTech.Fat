@@ -11,12 +11,12 @@ namespace Yontech.Fat.ConsoleRunner
     public class FatConsoleRunner
     {
         private readonly ConsoleRunnerInterceptor _interceptor;
-        private readonly FatConfig _options;
+        private readonly FatConfig _config;
 
-        public FatConsoleRunner(FatConfig options = null)
+        public FatConsoleRunner(FatConfig config = null)
         {
             this._interceptor = new ConsoleRunnerInterceptor();
-            this._options = options;
+            this._config = config;
         }
 
         public RunResults Run()

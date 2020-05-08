@@ -156,7 +156,7 @@ namespace Yontech.Fat.Discoverer
         public IEnumerable<Type> FindFatConfigs(Assembly assembly)
         {
             var allTypes = assembly.GetTypes();
-            return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)) && type != typeof(DefaultFatConfig));
+            return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)));
         }
 
         private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass, ITestCaseFilter filter = null)

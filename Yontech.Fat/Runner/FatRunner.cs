@@ -37,7 +37,7 @@ namespace Yontech.Fat.Runner
                 execContext.Config = this._fatDiscoverer.DiscoverConfig();
                 if (execContext.Config == null)
                 {
-                    execContext.Config = new DefaultFatConfig();
+                    execContext.Config = new FatConfig();
                 }
             }
 

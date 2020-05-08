@@ -14,11 +14,7 @@ namespace Yontech.Fat
         public int FinderTimeout { get; set; } = 1000;
     }
 
-    public class DefaultFatConfig : FatConfig
-    {
-    }
-
-    public abstract class FatConfig
+    public class FatConfig
     {
         public ITestCaseFilter Filter { get; set; }
         public BrowserType Browser { get; set; } = BrowserType.Chrome;
