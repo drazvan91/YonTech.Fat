@@ -6,6 +6,7 @@ export default {
     'Getting Started',
     'Run configuration',
     'Concepts',
+    'Fat Config',
     'Fat Label',
     'Skip Test',
     'API',

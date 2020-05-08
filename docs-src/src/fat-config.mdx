@@ -1,0 +1,130 @@
+---
+name: Fat Config
+route: /fat-config
+---
+
+# Fat Config
+
+## Usage 
+
+```typescript
+using Yontech.Fat;
+using Yontech.Fat.ConsoleRunner;
+
+/// ...
+
+static int Main(string[] args)
+{
+    var config = new FatConfig()
+    {
+        Browser = BrowserType.Chrome;
+        RunInBackground = true;
+        LogLevel = LogLevel.Debug;
+        InitialSize = new Size(900, 900);
+        // ... other configuration
+    };
+    
+    FatConsoleRunner runner = new FatConsoleRunner(config);
+    runner.Run();
+}
+```
+
+
+## Automatic pick up
+
+In case the tests are being executed with `dotnet test` you have to create a class which inherits from FatConfig. 
+It will be picked up automatically by the Fat framework.
+
+
+```typescript
+using Yontech.Fat.Filters;
+
+/// ...
+
+public class MyConfig : FatConfig
+{
+    public MyConfig()
+    {
+        Browser = BrowserType.Chrome;
+        RunInBackground = true;
+        LogLevel = LogLevel.Debug;
+        InitialSize = new Size(900, 900);
+        // ... other configuration
+    }
+}
+```
+
+> In case there are multiple Config classes the one with the shortest name will be picked up 
+and a warning will be logged.
+
+## Browser configurations
+
+Specify the browser that will be used and the folder where driver is located
+``` typescript
+config.Browser = BrowserType.Chrome;
+config.DriversFolder = "drivers";
+````
+
+Enable Automatic Driver download and in case that is Chrome specify the version that you want
+``` typescript
+config.AutomaticDriverDownload = true;
+ChromeVersion AutomaticDriverDownloadChromeVersion = ChromeVersion.Latest;
+```
+
+## Remote debugging with Chrome 
+
+Chrome supports remote debugging which means that Fat Framework will connect to an existing 
+running instance of Chrome. First open Chrome with remote-debugging
+``` shell
+# on MacOs
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/FatProfile"
+
+# on Windows
+Chrome.exe --remote-debugging-port=9222 --user-data-dir="FatProfile"
+```
+
+Then configure RemoteDebuggerAddress
+
+``` typescript
+config.RemoteDebuggerAddress = "localhost:9222"
+```
+
+## Browser start options
+
+``` typescript
+config.RunInBackground = true;
+config.StartMaximized = false;
+config.InitialSize = new Size(1200, 800);
+```
+
+## Browser behaviour
+
+``` typescript
+config.Timeouts.DefaultTimeout = 4000;
+config.Timeouts.FinderTimeout = 2000;
+
+config.DisablePopupBlocking = true;
+```
+
+## Logging
+``` typescript
+config.LogLevel = LogLevel.Warning;
+config.LogLevelConfig.Add("YonTech.Fat.Runner.FatRunner", LogLevel.Info);
+config.LogLevelConfig.Add("MyClass", LogLevel.Debug);
+```
+
+## Run test settings
+``` typescript
+config.DelayBetweenSteps = 1000;
+config.DelayBetweenTestCases = 2000;
+```
+
+## Extra properties not documented yet
+
+``` typescript
+List<FatBusyCondition> BusyConditions { get; set; } = new List<FatBusyCondition>();
+
+ITestCaseFilter Filter { get; set; }
+List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
+
+```
