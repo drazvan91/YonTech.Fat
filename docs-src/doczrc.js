@@ -9,6 +9,7 @@ export default {
     'Fat Config',
     'Fat Label',
     'Skip Test',
+    'Fat Interceptor',
     'API',
     'Samples'
   ],

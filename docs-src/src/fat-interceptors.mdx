@@ -1,0 +1,68 @@
+---
+name: Fat Interceptor
+route: /fat-interceptor
+---
+
+# Fat Interceptor
+
+## Create a Fat Interceptor
+
+Create a class which inherits from FatInterceptor
+
+``` typescript
+using Yontech.Fat.Interceptors;
+
+// ...
+
+public class MyLoggerInterceptor : FatInterceptor
+{
+    protected override void OnExecutionStarts(ExecutionStartsParams startsParams)
+    {
+        Console.WriteLine("The execution is going to start");
+    }
+
+    protected override void OnTestCasePassed(FatTestCase testCase, FatTestCasePassed passed)
+    {
+        Console.WriteLine("PASS!! {0}", testCase.FullyQualifiedName);
+    }
+}
+```
+
+## Use interceptors in config file
+
+``` typescript
+using Yontech.Fat.Filters;
+
+public class MyConfig : FatConfig
+{
+    public MyConfig()
+    {
+        Browser = BrowserType.Chrome;
+        
+        var myInterceptor = new MyLoggerInterceptor();
+        Interceptors.Add(myInterceptor);
+    }
+}
+
+```
+
+## Intercepting methods
+
+You can override any of these methods
+``` typescript
+public class MyLoggerInterceptor : FatInterceptor
+{
+    protected override void OnExecutionStarts(ExecutionStartsParams startsParams) { }
+    protected override void OnExecutionFinished(ExecutionFinishedParams finishedParams) { }
+
+    protected override void BeforeTestCase(FatTestCase testCase) { }
+    protected override void BeforeTestClass(TestClassParams testClass) { }
+
+    protected override void AfterTestClass(TestClassParams testClass) { }
+    
+    protected override void OnTestCasePassed(FatTestCase testCase, FatTestCasePassed passed) { }
+    protected override void OnTestCaseFailed(FatTestCase testCase, FatTestCaseFailed failed) { }
+    protected override void OnTestCaseSkipped(FatTestCase testCase) { }
+
+}
+```
