@@ -8,6 +8,7 @@ using Yontech.Fat.BusyConditions;
 using Yontech.Fat.Configuration;
 using Yontech.Fat.DataSources;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Labels;
 using Yontech.Fat.Logging;
@@ -105,25 +106,35 @@ namespace Yontech.Fat.Runner
 
         private RunResults Run(IEnumerable<FatTestCollection> testCollections)
         {
-            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
-            this._webBrowser = factory.Create();
-
-            this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
-            foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
+            FatException initializationError = null;
+            try
             {
-                _iocService.InjectFatDiscoverableProps(busyCondition);
-            }
+                var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
+                this._webBrowser = factory.Create();
 
-            _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
+                this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
+                foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
+                {
+                    _iocService.InjectFatDiscoverableProps(busyCondition);
+                }
+
+                _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
+                _logger.Info("Execution started");
+            }
+            catch (FatException fatException)
+            {
+                _logger.Error("Execution failed to start");
+                _logger.Error(fatException, true);
+                initializationError = fatException;
+            }
 
             try
             {
                 _runResults = new RunResults();
-                _logger.Info("Execution started");
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
                 foreach (var collection in testCollections)
                 {
-                    this.ExecuteTestCollection(collection);
+                    this.ExecuteTestCollection(collection, initializationError);
                 }
 
                 _logger.Info("Execution finished");
@@ -137,8 +148,12 @@ namespace Yontech.Fat.Runner
             }
             finally
             {
-                this._webBrowser.Close();
-                this._webBrowser = null;
+                // the webBrowser can be null in case that it failed to initialize
+                if (this._webBrowser != null)
+                {
+                    this._webBrowser.Close();
+                    this._webBrowser = null;
+                }
             }
 
             return _runResults;
@@ -155,25 +170,28 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private void ExecuteTestCollection(FatTestCollection collection)
+        private void ExecuteTestCollection(FatTestCollection collection, FatException initializationError)
         {
             foreach (var testClass in collection.TestClasses)
             {
                 _interceptorDispatcher.BeforeTestClass(testClass.Class);
-                ExecuteTestClass(testClass);
+                ExecuteTestClass(testClass, initializationError);
                 _interceptorDispatcher.AfterTestClass(testClass.Class);
             }
         }
 
-        private void ExecuteTestClass(FatTestClass testClass)
+        private void ExecuteTestClass(FatTestClass testClass, FatException initializationError)
         {
             FatTest fatTest = null;
 
-            Exception beforeAllTestCasesException = null;
+            Exception beforeAllTestCasesException = initializationError;
             try
             {
-                fatTest = _iocService.GetService<FatTest>(testClass.Class);
-                fatTest.BeforeAllTestCases();
+                if (initializationError != null)
+                {
+                    fatTest = _iocService.GetService<FatTest>(testClass.Class);
+                    fatTest.BeforeAllTestCases();
+                }
             }
             catch (Exception ex)
             {

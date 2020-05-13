@@ -30,8 +30,13 @@ namespace Yontech.Fat.Selenium.DriverFactories
             {
                 driver = CreateDriver(driverPath, chromeOptions);
             }
-            catch (DriverServiceNotFoundException) when (startOptions.AutomaticDriverDownload)
+            catch (DriverServiceNotFoundException)
             {
+                if (!startOptions.AutomaticDriverDownload)
+                {
+                    throw new FatException($"The driver could not be found at location '{driverPath}'. Use AutomaticDriverDownload = false in config file to let FatFramework download it.");
+                }
+
                 new ChromeDriverDownloader(_loggerFactory, startOptions.ChromeVersion).Download(driverPath).Wait();
 
                 driver = CreateDriver(driverPath, chromeOptions);
