@@ -21,4 +21,11 @@ namespace Yontech.Fat
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "It describes the version")]
         v80 = 80,
     }
+
+    public enum FirefoxVersion : int
+    {
+        Latest = 0,
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "It describes the version")]
+        v026 = 26,
+    }
 }

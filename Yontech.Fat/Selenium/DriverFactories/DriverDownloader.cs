@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Utils;
 
 namespace Yontech.Fat.Selenium.DriverFactories
 {
@@ -24,6 +25,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
 
         protected abstract string GetDownloadUrl();
 
+        protected abstract string GetUnzipFilename();
+
         private async Task DownloadAndUnzip(string url, string destination)
         {
             if (!Directory.Exists(destination))
@@ -31,7 +34,10 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 Directory.CreateDirectory(destination);
             }
 
-            string tempFilename = Path.Combine(destination, $"download_{DateTime.Now.Ticks}.zip");
+            string downloadFile = $"download_{DateTime.Now.Ticks}.";
+            downloadFile += url.EndsWith("tar.gz") ? "tar.gz" : "zip";
+
+            string tempFilename = Path.Combine(destination, downloadFile);
 
             var httpClient = new HttpClient();
             using (var downloadStream = await httpClient.GetStreamAsync(url))
@@ -62,10 +68,22 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 }
             }
 
-            ZipFile.ExtractToDirectory(tempFilename, destination.TrimEnd('/') + "/");
-            File.Delete(tempFilename);
+            if (url.EndsWith(".zip"))
+            {
+                ZipFile.ExtractToDirectory(tempFilename, destination.TrimEnd('/') + "/");
+            }
+            else
+            {
+                TarGzUnzip.ExtractFileFromTaz(tempFilename, destination.TrimEnd('/') + "/");
+            }
 
-            string unzippedFile = Path.Combine(destination, $"chromedriver");
+            if (File.Exists(tempFilename))
+            {
+                // the file might be already deleted by the unzipper
+                File.Delete(tempFilename);
+            }
+
+            string unzippedFile = Path.Combine(destination, this.GetUnzipFilename());
             FileSecurityUtil.SetExecutionRight(unzippedFile);
         }
     }

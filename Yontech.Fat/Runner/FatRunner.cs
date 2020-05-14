@@ -187,7 +187,7 @@ namespace Yontech.Fat.Runner
             Exception beforeAllTestCasesException = initializationError;
             try
             {
-                if (initializationError != null)
+                if (initializationError == null)
                 {
                     fatTest = _iocService.GetService<FatTest>(testClass.Class);
                     fatTest.BeforeAllTestCases();

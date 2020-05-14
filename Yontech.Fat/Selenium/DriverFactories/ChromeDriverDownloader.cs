@@ -25,6 +25,11 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return GetFolderName() + GetOsZipName();
         }
 
+        protected override string GetUnzipFilename()
+        {
+            return "chromedriver";
+        }
+
         private string GetFolderName()
         {
             switch (this._chromeVersion)

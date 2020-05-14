@@ -66,6 +66,9 @@ namespace Yontech.Fat.Selenium
                 case BrowserType.RemoteChrome:
                     return new ChromeDriverFactory(this._execContext.LoggerFactory)
                         .Create(driversPath, startOptions, true);
+                case BrowserType.Firefox:
+                    return new FirefoxDriverFactory(this._execContext.LoggerFactory)
+                        .Create(driversPath, startOptions);
                 case BrowserType.InternetExplorer:
                     return InternetExplorerDriverFactory.Create(driversPath, startOptions);
                 default:
