@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 
 namespace Yontech.Fat.Utils
 {
@@ -20,8 +19,6 @@ namespace Yontech.Fat.Utils
             };
 
             process.Start();
-
-            // string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
         }
     }
