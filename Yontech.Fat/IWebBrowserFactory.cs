@@ -2,6 +2,6 @@
 {
     internal interface IWebBrowserFactory
     {
-        IWebBrowser Create(BrowserType browserType);
+        IWebBrowser Create(BrowserFatConfig browserConfig);
     }
 }

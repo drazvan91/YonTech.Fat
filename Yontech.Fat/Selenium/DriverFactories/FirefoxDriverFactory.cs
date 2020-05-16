@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -22,9 +23,22 @@ namespace Yontech.Fat.Selenium.DriverFactories
             this._logger = loggerFactory.Create(this);
         }
 
-        public IWebDriver Create(string driverPath, BrowserStartOptions startOptions)
+        public IWebDriver Create(FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
         {
-            var firefoxOptions = CreateOptions(startOptions);
+            var chromeOptions = CreateOptions(config, defaultConfig);
+
+            var driver = DownloadAndCreateDriver(chromeOptions, config, defaultConfig);
+
+            return driver;
+        }
+
+        private IWebDriver DownloadAndCreateDriver(FirefoxOptions firefoxOptions, FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        {
+            var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
+            location = Path.GetDirectoryName(location);
+            string driverPath = Path.Combine(location, config.DriversFolder ?? defaultConfig.DriversFolder);
+
+            _logger.Info("Looking for drivers at location {0}", location);
 
             IWebDriver driver = null;
             try
@@ -33,23 +47,14 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
             catch (DriverServiceNotFoundException)
             {
-                if (!startOptions.AutomaticDriverDownload)
+                if (!(config.AutomaticDriverDownload ?? defaultConfig.AutomaticDriverDownload))
                 {
                     throw new FatException($"The driver could not be found at location '{driverPath}'. Use AutomaticDriverDownload = false in config file to let FatFramework download it.");
                 }
 
-                new FirefoxDriverDownloader(_loggerFactory, FirefoxVersion.Latest).Download(driverPath).Wait();
+                new FirefoxDriverDownloader(_loggerFactory, config.Version).Download(driverPath).Wait();
 
                 driver = CreateDriver(driverPath, firefoxOptions);
-            }
-
-            if (driver != null)
-            {
-                // this is a hotfix because selenium --start-maximized doesn't work (see below)
-                if (startOptions.StartMaximized)
-                {
-                    driver.Manage().Window.Maximize();
-                }
             }
 
             return driver;
@@ -89,35 +94,9 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return webDriver;
         }
 
-        private FirefoxOptions CreateOptions(BrowserStartOptions startOptions)
+        private FirefoxOptions CreateOptions(FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
         {
-            startOptions = startOptions ?? new BrowserStartOptions();
-
             var firefoxOptions = new FirefoxOptions();
-
-            if (startOptions.RunHeadless)
-            {
-                firefoxOptions.AddArguments("--headless");
-            }
-
-            if (startOptions.StartMaximized)
-            {
-                // this looks like it is not working, might be deprecated by selenium
-                firefoxOptions.AddArgument("--start-maximized");
-            }
-
-            var height = startOptions.InitialSize.Height;
-            var width = startOptions.InitialSize.Width;
-            if (height > 0 && height > 0)
-            {
-                firefoxOptions.AddArgument($"--window-size={height},{width}");
-            }
-
-            if (startOptions.DisablePopupBlocking)
-            {
-                firefoxOptions.AddArgument("--disable-popup-blocking");
-            }
-
             return firefoxOptions;
         }
     }

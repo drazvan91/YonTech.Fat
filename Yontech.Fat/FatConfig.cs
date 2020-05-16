@@ -8,6 +8,51 @@ using Yontech.Fat.Logging;
 
 namespace Yontech.Fat
 {
+    public abstract class BrowserFatConfig
+    {
+        internal abstract BrowserType BrowserType { get; }
+    }
+
+    public class DefaultBrowserFatConfig
+    {
+        public bool RunInBackground { get; set; }
+        public bool DisablePopupBlocking { get; set; }
+        public string DriversFolder { get; set; } = "drivers";
+        public Size InitialSize { get; set; }
+        public bool StartMaximized { get; set; } = false;
+        public bool AutomaticDriverDownload { get; set; } = true;
+    }
+
+    public class FirefoxFatConfig : BrowserFatConfig
+    {
+        public bool? RunInBackground { get; set; }
+        public string DriversFolder { get; set; }
+        public bool? AutomaticDriverDownload { get; set; }
+        public FirefoxVersion Version { get; set; } = FirefoxVersion.Latest;
+        internal override BrowserType BrowserType { get => BrowserType.Firefox; }
+    }
+
+    public class BaseChromeFatConfig : BrowserFatConfig
+    {
+        public bool? RunInBackground { get; set; }
+        public string DriversFolder { get; set; }
+        public bool? AutomaticDriverDownload { get; set; }
+        public bool? DisablePopupBlocking { get; set; }
+        public ChromeVersion Version { get; set; } = ChromeVersion.Latest;
+        internal override BrowserType BrowserType { get => BrowserType.Chrome; }
+    }
+
+    public class ChromeFatConfig : BaseChromeFatConfig
+    {
+        public Size? InitialSize { get; set; }
+        public bool? StartMaximized { get; set; }
+    }
+
+    public class RemoteChromeFatConfig : BaseChromeFatConfig
+    {
+        public string RemoteDebuggerAddress { get; set; }
+    }
+
     public class FatConfigTimeouts
     {
         public int DefaultTimeout { get; set; } = 5000;
@@ -34,6 +79,20 @@ namespace Yontech.Fat
         public List<FatBusyCondition> BusyConditions { get; set; } = new List<FatBusyCondition>();
 
         public FatConfigTimeouts Timeouts { get; set; } = new FatConfigTimeouts();
+
+        public DefaultBrowserFatConfig DefaultBrowserConfig { get; } = new DefaultBrowserFatConfig();
+
+        public void AddBrowser(ChromeFatConfig chromeConfig)
+        {
+            this.Browsers.Add(chromeConfig);
+        }
+
+        public void AddBrowser(FirefoxFatConfig firefoxConfig)
+        {
+            this.Browsers.Add(firefoxConfig);
+        }
+
+        internal List<BrowserFatConfig> Browsers { get; } = new List<BrowserFatConfig>();
 
         internal void Log(ILoggerFactory loggerFactory)
         {

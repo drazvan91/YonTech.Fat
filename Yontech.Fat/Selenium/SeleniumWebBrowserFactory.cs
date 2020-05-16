@@ -13,40 +13,29 @@ namespace Yontech.Fat.Selenium
     internal class SeleniumWebBrowserFactory : IWebBrowserFactory
     {
         private readonly FatExecutionContext _execContext;
+        private readonly ChromeDriverFactory _chromeDriverFactory;
+        private readonly FirefoxDriverFactory _firefoxDriverFactory;
         private readonly ILogger _logger;
 
         public SeleniumWebBrowserFactory(FatExecutionContext execContext)
         {
             this._execContext = execContext;
+            this._chromeDriverFactory = new ChromeDriverFactory(this._execContext.LoggerFactory);
+            this._firefoxDriverFactory = new FirefoxDriverFactory(this._execContext.LoggerFactory);
+
             this._logger = _execContext.LoggerFactory.Create(this);
         }
 
-        public IWebBrowser Create(BrowserType browserType)
+        public IWebBrowser Create(BrowserFatConfig browserConfig)
         {
             var config = this._execContext.Config;
-            var startOptions = new BrowserStartOptions()
-            {
-                RunHeadless = config.RunInBackground,
-                StartMaximized = config.StartMaximized,
-                InitialSize = config.InitialSize,
-                DriversFolder = config.DriversFolder ?? "drivers",
-                AutomaticDriverDownload = config.AutomaticDriverDownload,
-                RemoteDebuggerAddress = config.RemoteDebuggerAddress,
-            };
 
-            this.ValidateStartOptions(browserType, startOptions);
-
-            var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
-            location = Path.GetDirectoryName(location);
-            string driversPath = Path.Combine(location, startOptions.DriversFolder);
-
-            _logger.Info("Looking for drivers at location {0}", location);
-            IWebDriver webDriver = CreateWebDriver(browserType, driversPath, startOptions);
+            IWebDriver webDriver = CreateWebDriver(browserConfig);
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
                 this._execContext.LoggerFactory,
                 webDriver: webDriver,
-                browserType: browserType,
+                browserType: browserConfig.BrowserType,
                 busyConditions: new List<FatBusyCondition>());
 
             browser.Configuration.DefaultTimeout = config.Timeouts.DefaultTimeout;
@@ -55,42 +44,27 @@ namespace Yontech.Fat.Selenium
             return browser;
         }
 
-        private IWebDriver CreateWebDriver(BrowserType browserType, string driversPath, BrowserStartOptions startOptions)
+        private IWebDriver CreateWebDriver(BrowserFatConfig browserConfig)
         {
-            switch (browserType)
+            var chromeConfig = browserConfig as ChromeFatConfig;
+            if (chromeConfig != null)
             {
-                case BrowserType.Chrome:
-                    return new ChromeDriverFactory(this._execContext.LoggerFactory)
-                        .Create(driversPath, startOptions, false);
-                case BrowserType.RemoteChrome:
-                    return new ChromeDriverFactory(this._execContext.LoggerFactory)
-                        .Create(driversPath, startOptions, true);
-                case BrowserType.Firefox:
-                    return new FirefoxDriverFactory(this._execContext.LoggerFactory)
-                        .Create(driversPath, startOptions);
-                case BrowserType.InternetExplorer:
-                    return InternetExplorerDriverFactory.Create(driversPath, startOptions);
-                default:
-                    throw new FatException($"Browser type {browserType} not supported yet");
-            }
-        }
-
-        private void ValidateStartOptions(BrowserType browserType, BrowserStartOptions startOptions)
-        {
-            if (browserType == BrowserType.RemoteChrome)
-            {
-                if (startOptions.RemoteDebuggerAddress == null)
-                {
-                    var error = "When using RemoteChrome browser you need to specify DebuggerAddress. Run chrome.exe (in your program files) with --remote-debugging-port=9222 and then set DebuggerAddress=\"localhost:9222\" in FatConfig";
-                    _logger.Error(error);
-                    throw new Exception(error);
-                }
+                return _chromeDriverFactory.Create(chromeConfig, this._execContext.Config.DefaultBrowserConfig);
             }
 
-            if (startOptions.InitialSize.IsEmpty == false && startOptions.StartMaximized)
+            var remoteChromeConfig = browserConfig as RemoteChromeFatConfig;
+            if (remoteChromeConfig != null)
             {
-                _logger.Warning("Both StartMaximized and InitialSize have been set and they cannot work together. Only StartMaximized will be taken into consideration");
+                return _chromeDriverFactory.Create(remoteChromeConfig, this._execContext.Config.DefaultBrowserConfig);
             }
+
+            var firefoxConfig = browserConfig as FirefoxFatConfig;
+            if (firefoxConfig != null)
+            {
+                return _firefoxDriverFactory.Create(firefoxConfig, this._execContext.Config.DefaultBrowserConfig);
+            }
+
+            throw new FatException($"Browser type unknown");
         }
     }
 }

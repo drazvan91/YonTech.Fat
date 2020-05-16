@@ -156,11 +156,10 @@ namespace Yontech.Fat.Runner
         private IWebBrowser[] CreateWebBrowsers()
         {
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
-            var browserTypes = new BrowserType[] { this._execContext.Config.Browser };
 
-            return browserTypes.Select(browserType =>
+            return this._execContext.Config.Browsers.Select(browserConfig =>
             {
-                var webBrowser = factory.Create(browserType);
+                var webBrowser = factory.Create(browserConfig);
 
                 webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
 
@@ -262,15 +261,18 @@ namespace Yontech.Fat.Runner
                 Thread.Sleep(this._execContext.Config.DelayBetweenTestCases);
             }
 
-            foreach (var testInstance in fatTests)
+            if (fatTests != null)
             {
-                try
+                foreach (var testInstance in fatTests)
                 {
-                    testInstance.AfterAllTestCases();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex);
+                    try
+                    {
+                        testInstance.AfterAllTestCases();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex);
+                    }
                 }
             }
         }

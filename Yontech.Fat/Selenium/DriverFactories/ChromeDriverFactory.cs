@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -21,9 +22,40 @@ namespace Yontech.Fat.Selenium.DriverFactories
             this._logger = loggerFactory.Create(this);
         }
 
-        public IWebDriver Create(string driverPath, BrowserStartOptions startOptions, bool useRemote)
+        public IWebDriver Create(ChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
         {
-            var chromeOptions = useRemote ? CreateRemoteOptions(startOptions) : CreateOptions(startOptions);
+            var chromeOptions = CreateOptions(config, defaultConfig);
+
+            var driver = DownloadAndCreateDriver(chromeOptions, config, defaultConfig);
+
+            if (driver != null)
+            {
+                // this is a hotfix because selenium --start-maximized doesn't work (see below)
+                if (config.StartMaximized ?? defaultConfig.StartMaximized)
+                {
+                    driver.Manage().Window.Maximize();
+                }
+            }
+
+            return driver;
+        }
+
+        public IWebDriver Create(RemoteChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        {
+            var chromeOptions = CreateRemoteOptions(config, defaultConfig);
+
+            var driver = DownloadAndCreateDriver(chromeOptions, config, defaultConfig);
+
+            return driver;
+        }
+
+        private IWebDriver DownloadAndCreateDriver(ChromeOptions chromeOptions, BaseChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        {
+            var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
+            location = Path.GetDirectoryName(location);
+            string driverPath = Path.Combine(location, config.DriversFolder ?? defaultConfig.DriversFolder);
+
+            _logger.Info("Looking for drivers at location {0}", location);
 
             IWebDriver driver = null;
             try
@@ -32,23 +64,17 @@ namespace Yontech.Fat.Selenium.DriverFactories
             }
             catch (DriverServiceNotFoundException)
             {
-                if (!startOptions.AutomaticDriverDownload)
+                if (!(config.AutomaticDriverDownload ?? defaultConfig.AutomaticDriverDownload))
                 {
                     throw new FatException($"The driver could not be found at location '{driverPath}'. Use AutomaticDriverDownload = false in config file to let FatFramework download it.");
                 }
 
-                new ChromeDriverDownloader(_loggerFactory, startOptions.ChromeVersion).Download(driverPath).Wait();
+                var downloader = new ChromeDriverDownloader(_loggerFactory, config.Version);
+                downloader
+                    .Download(driverPath)
+                    .Wait();
 
                 driver = CreateDriver(driverPath, chromeOptions);
-            }
-
-            if (driver != null && useRemote == false)
-            {
-                // this is a hotfix because selenium --start-maximized doesn't work (see below)
-                if (startOptions.StartMaximized)
-                {
-                    driver.Manage().Window.Maximize();
-                }
             }
 
             return driver;
@@ -98,39 +124,37 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // return webDriver;
         }
 
-        private ChromeOptions CreateRemoteOptions(BrowserStartOptions startOptions)
+        private ChromeOptions CreateRemoteOptions(RemoteChromeFatConfig remoteConfig, DefaultBrowserFatConfig defaultConfig)
         {
             return new ChromeOptions()
             {
-                DebuggerAddress = startOptions.RemoteDebuggerAddress,
+                DebuggerAddress = remoteConfig.RemoteDebuggerAddress,
             };
         }
 
-        private ChromeOptions CreateOptions(BrowserStartOptions startOptions)
+        private ChromeOptions CreateOptions(ChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
         {
-            startOptions = startOptions ?? new BrowserStartOptions();
-
             var chromeOptions = new ChromeOptions();
 
-            if (startOptions.RunHeadless)
+            if (config.RunInBackground ?? defaultConfig.RunInBackground)
             {
                 chromeOptions.AddArguments("--headless");
             }
 
-            if (startOptions.StartMaximized)
+            if (config.StartMaximized ?? defaultConfig.StartMaximized)
             {
                 // this looks like it is not working, might be deprecated by selenium
                 chromeOptions.AddArgument("--start-maximized");
             }
 
-            var height = startOptions.InitialSize.Height;
-            var width = startOptions.InitialSize.Width;
+            var height = config.InitialSize?.Height ?? defaultConfig.InitialSize.Height;
+            var width = config.InitialSize?.Width ?? defaultConfig.InitialSize.Width;
             if (height > 0 && height > 0)
             {
                 chromeOptions.AddArgument($"--window-size={height},{width}");
             }
 
-            if (startOptions.DisablePopupBlocking)
+            if (config.DisablePopupBlocking ?? defaultConfig.DisablePopupBlocking)
             {
                 chromeOptions.AddArgument("--disable-popup-blocking");
             }
