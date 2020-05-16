@@ -96,10 +96,7 @@ namespace Yontech.Fat.Runner
             var interceptors = this._execContext.Config.Interceptors?.ToList() ?? new List<FatInterceptor>();
 
             this._interceptorDispatcher = new InterceptDispatcher(interceptors);
-            this._iocService = new IocService(_execContext, _fatDiscoverer, _logsSink, () =>
-            {
-                return this._webBrowser;
-            });
+            this._iocService = new IocService(_execContext, _fatDiscoverer, _logsSink);
 
             this._logger.Info("Using Fat Framework version {0}", AssemblyVersionUtils.GetFatVersion());
         }
@@ -111,11 +108,12 @@ namespace Yontech.Fat.Runner
             {
                 var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
                 this._webBrowser = factory.Create();
+                var secondBrowser = factory.Create();
 
                 this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
                 foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
                 {
-                    _iocService.InjectFatDiscoverableProps(busyCondition);
+                    _iocService.InjectFatDiscoverableProps(busyCondition, this._webBrowser);
                 }
 
                 _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
@@ -189,7 +187,7 @@ namespace Yontech.Fat.Runner
             {
                 if (initializationError == null)
                 {
-                    fatTest = _iocService.GetService<FatTest>(testClass.Class);
+                    fatTest = _iocService.GetService<FatTest>(testClass.Class, this._webBrowser);
                     fatTest.BeforeAllTestCases();
                 }
             }
@@ -301,6 +299,7 @@ namespace Yontech.Fat.Runner
             _webBrowser.WaitForIdle();
 
             testCase.Method.Invoke(testClassInstance, executionArguments);
+
             _webBrowser.WaitForIdle();
 
             testClassInstance.AfterEachTestCase();

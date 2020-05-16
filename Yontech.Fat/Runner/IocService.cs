@@ -18,15 +18,13 @@ namespace Yontech.Fat.Runner
         private readonly FatDiscoverer _discoverer;
         private readonly LogsSink _logsSink;
         private readonly ILogger _logger;
-        private readonly Func<IWebBrowser> _webBrowserProvider;
 
-        public IocService(FatExecutionContext executionContext, FatDiscoverer discoverer, LogsSink logsSink, Func<IWebBrowser> webBrowserProvider)
+        public IocService(FatExecutionContext executionContext, FatDiscoverer discoverer, LogsSink logsSink)
         {
             this._executionContext = executionContext;
             this._discoverer = discoverer;
             this._logger = executionContext.LoggerFactory.Create(this);
             this._logsSink = logsSink;
-            this._webBrowserProvider = webBrowserProvider;
 
             var serviceCollection = new ServiceCollection();
 
@@ -39,18 +37,16 @@ namespace Yontech.Fat.Runner
             this._serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
-        public void InjectFatDiscoverableProps(BaseFatDiscoverable fatDiscoverable)
+        public void InjectFatDiscoverableProps(BaseFatDiscoverable fatDiscoverable, IWebBrowser browser)
         {
-            var browser = this._webBrowserProvider();
-
             fatDiscoverable.WebBrowser = browser;
             fatDiscoverable.LogsSink = this._logsSink;
             fatDiscoverable.Logger = this._executionContext.LoggerFactory.Create(fatDiscoverable);
         }
 
-        internal T GetService<T>(Type type) where T : class
+        internal T GetService<T>(Type type, IWebBrowser browser) where T : class
         {
-            var service = GetPropertyInjectedService(type, new HashSet<string>()) as T;
+            var service = GetPropertyInjectedService(type, browser, new HashSet<string>()) as T;
             if (service == null)
             {
                 throw new FatException("Type '{0}' cound not be found. Have you registered all assemblies?", type.FullName);
@@ -97,7 +93,7 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private object GetPropertyInjectedService(Type type, HashSet<string> injectionContext)
+        private object GetPropertyInjectedService(Type type, IWebBrowser browser, HashSet<string> injectionContext)
         {
             injectionContext.Add(type.FullName);
 
@@ -115,7 +111,7 @@ namespace Yontech.Fat.Runner
                     }
                     else
                     {
-                        fatPageProp = GetPropertyInjectedService(prop.PropertyType, injectionContext);
+                        fatPageProp = GetPropertyInjectedService(prop.PropertyType, browser, injectionContext);
                     }
 
                     prop.SetValue(instance, fatPageProp);
@@ -127,7 +123,7 @@ namespace Yontech.Fat.Runner
             var fatDiscoverable = instance as BaseFatDiscoverable;
             if (fatDiscoverable != null)
             {
-                InjectFatDiscoverableProps(fatDiscoverable);
+                InjectFatDiscoverableProps(fatDiscoverable, browser);
             }
 
             return instance;
