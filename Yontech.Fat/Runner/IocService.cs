@@ -46,7 +46,8 @@ namespace Yontech.Fat.Runner
 
         internal T GetService<T>(Type type, IWebBrowser browser) where T : class
         {
-            var service = GetPropertyInjectedService(type, browser, new HashSet<string>()) as T;
+            var scopedService = _serviceProvider.CreateScope();
+            var service = GetPropertyInjectedService(scopedService, type, browser, new HashSet<string>()) as T;
             if (service == null)
             {
                 throw new FatException("Type '{0}' cound not be found. Have you registered all assemblies?", type.FullName);
@@ -61,31 +62,31 @@ namespace Yontech.Fat.Runner
 
             foreach (var testClass in testClasses)
             {
-                serviceCollection.AddTransient(testClass, testClass);
+                serviceCollection.AddScoped(testClass, testClass);
             }
 
             var fatPages = _discoverer.FindPages(assembly);
             foreach (var page in fatPages)
             {
-                serviceCollection.AddSingleton(page);
+                serviceCollection.AddScoped(page);
             }
 
             var fatPageSections = _discoverer.FindPageSections(assembly);
             foreach (var pageSections in fatPageSections)
             {
-                serviceCollection.AddSingleton(pageSections);
+                serviceCollection.AddScoped(pageSections);
             }
 
             var fatFlows = _discoverer.FindFatFlows(assembly);
             foreach (var flow in fatFlows)
             {
-                serviceCollection.AddSingleton(flow);
+                serviceCollection.AddScoped(flow);
             }
 
             var fatEnvDatas = _discoverer.FindFatEnvDatas(assembly);
             foreach (var fatEnvData in fatEnvDatas)
             {
-                serviceCollection.AddSingleton(fatEnvData, (s) =>
+                serviceCollection.AddScoped(fatEnvData, (s) =>
                 {
                     var envDataResolver = new EnvDataResolver(this._executionContext);
                     return envDataResolver.Resolve(fatEnvData);
@@ -93,11 +94,11 @@ namespace Yontech.Fat.Runner
             }
         }
 
-        private object GetPropertyInjectedService(Type type, IWebBrowser browser, HashSet<string> injectionContext)
+        private object GetPropertyInjectedService(IServiceScope serviceScope, Type type, IWebBrowser browser, HashSet<string> injectionContext)
         {
             injectionContext.Add(type.FullName);
 
-            var instance = this._serviceProvider.GetService(type);
+            var instance = serviceScope.ServiceProvider.GetService(type);
             var injectableProperties = this.GetInjectableProperties(type);
 
             foreach (var prop in injectableProperties)
@@ -107,11 +108,11 @@ namespace Yontech.Fat.Runner
                     object fatPageProp = null;
                     if (injectionContext.Contains(prop.PropertyType.FullName))
                     {
-                        fatPageProp = this._serviceProvider.GetService(prop.PropertyType);
+                        fatPageProp = serviceScope.ServiceProvider.GetService(prop.PropertyType);
                     }
                     else
                     {
-                        fatPageProp = GetPropertyInjectedService(prop.PropertyType, browser, injectionContext);
+                        fatPageProp = GetPropertyInjectedService(serviceScope, prop.PropertyType, browser, injectionContext);
                     }
 
                     prop.SetValue(instance, fatPageProp);

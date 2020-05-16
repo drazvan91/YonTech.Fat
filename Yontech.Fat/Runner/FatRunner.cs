@@ -20,7 +20,7 @@ namespace Yontech.Fat.Runner
     {
         private readonly FatExecutionContext _execContext;
 
-        private IWebBrowser _webBrowser;
+        private IWebBrowser[] _webBrowsers;
         private InterceptDispatcher _interceptorDispatcher;
         private IocService _iocService;
         private FatDiscoverer _fatDiscoverer;
@@ -106,17 +106,9 @@ namespace Yontech.Fat.Runner
             FatException initializationError = null;
             try
             {
-                var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
-                this._webBrowser = factory.Create();
-                var secondBrowser = factory.Create();
+                this._webBrowsers = this.CreateWebBrowsers();
 
-                this._webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
-                foreach (var busyCondition in this._webBrowser.Configuration.BusyConditions)
-                {
-                    _iocService.InjectFatDiscoverableProps(busyCondition, this._webBrowser);
-                }
-
-                _logger.Info("Number of Busy conditions configured {0}", this._webBrowser.Configuration.BusyConditions.Count);
+                _logger.Info("Number of Busy conditions configured {0}", this._webBrowsers[0].Configuration.BusyConditions.Count);
                 _logger.Info("Execution started");
             }
             catch (FatException fatException)
@@ -147,14 +139,39 @@ namespace Yontech.Fat.Runner
             finally
             {
                 // the webBrowser can be null in case that it failed to initialize
-                if (this._webBrowser != null)
+                if (this._webBrowsers != null)
                 {
-                    this._webBrowser.Close();
-                    this._webBrowser = null;
+                    foreach (var webBrowser in this._webBrowsers)
+                    {
+                        webBrowser.Close();
+                    }
+
+                    this._webBrowsers = null;
                 }
             }
 
             return _runResults;
+        }
+
+        private IWebBrowser[] CreateWebBrowsers()
+        {
+            var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
+            var browserTypes = new BrowserType[] { this._execContext.Config.Browser };
+
+            return browserTypes.Select(browserType =>
+            {
+                var webBrowser = factory.Create(browserType);
+
+                webBrowser.Configuration.BusyConditions.AddRange(this.GetBusyConditions());
+
+                foreach (var busyCondition in webBrowser.Configuration.BusyConditions)
+                {
+                    // TODO: make sure that busyConditions are different instances
+                    _iocService.InjectFatDiscoverableProps(busyCondition, webBrowser);
+                }
+
+                return webBrowser;
+            }).ToArray();
         }
 
         private IEnumerable<FatBusyCondition> GetBusyConditions()
@@ -180,15 +197,19 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestClass(FatTestClass testClass, FatException initializationError)
         {
-            FatTest fatTest = null;
+            FatTest[] fatTests = null;
 
             Exception beforeAllTestCasesException = initializationError;
             try
             {
                 if (initializationError == null)
                 {
-                    fatTest = _iocService.GetService<FatTest>(testClass.Class, this._webBrowser);
-                    fatTest.BeforeAllTestCases();
+                    fatTests = this._webBrowsers.Select(webBrowser =>
+                    {
+                        var fatTest = _iocService.GetService<FatTest>(testClass.Class, webBrowser);
+                        fatTest.BeforeAllTestCases();
+                        return fatTest;
+                    }).ToArray();
                 }
             }
             catch (Exception ex)
@@ -216,7 +237,7 @@ namespace Yontech.Fat.Runner
                     }
 
                     _interceptorDispatcher.BeforeTestCase(testCase);
-                    ExecuteTestCase(fatTest, testCase);
+                    ExecuteTestCase(fatTests, testCase);
 
                     var logs = _logsSink.GetLogs().ToList();
                     _runResults.AddPassed(testCase, watch.Elapsed, logs);
@@ -241,13 +262,16 @@ namespace Yontech.Fat.Runner
                 Thread.Sleep(this._execContext.Config.DelayBetweenTestCases);
             }
 
-            try
+            foreach (var testInstance in fatTests)
             {
-                fatTest.AfterAllTestCases();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
+                try
+                {
+                    testInstance.AfterAllTestCases();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
             }
         }
 
@@ -268,12 +292,12 @@ namespace Yontech.Fat.Runner
             return false;
         }
 
-        private void ExecuteTestCase(FatTest testClassInstance, FatTestCase testCase)
+        private void ExecuteTestCase(FatTest[] testInstances, FatTestCase testCase)
         {
             var methodParameters = testCase.Method.GetParameters();
             if (methodParameters.Length == 0)
             {
-                this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, new object[0]);
+                this.ExecuteTestCaseWithDataSourceArguments(testInstances, testCase, new object[0]);
             }
             else
             {
@@ -285,25 +309,32 @@ namespace Yontech.Fat.Runner
                     var executionArguments = dataSource.GetExecutionArguments(this._execContext, testCase.Method);
                     foreach (var arguments in executionArguments)
                     {
-                        this.ExecuteTestCaseWithDataSourceArguments(testClassInstance, testCase, arguments);
+                        this.ExecuteTestCaseWithDataSourceArguments(testInstances, testCase, arguments);
                     }
                 }
             }
         }
 
-        private void ExecuteTestCaseWithDataSourceArguments(FatTest testClassInstance, FatTestCase testCase, object[] executionArguments)
+        private void ExecuteTestCaseWithDataSourceArguments(FatTest[] testInstances, FatTestCase testCase, object[] executionArguments)
         {
-            _webBrowser.SimulateFastConnection();
+            foreach (var testInstance in testInstances)
+            {
+                testInstance.WebBrowser.SimulateFastConnection();
+                testInstance.BeforeEachTestCase();
+                testInstance.WebBrowser.WaitForIdle();
+            }
 
-            testClassInstance.BeforeEachTestCase();
-            _webBrowser.WaitForIdle();
+            foreach (var testInstance in testInstances)
+            {
+                testCase.Method.Invoke(testInstance, executionArguments);
+            }
 
-            testCase.Method.Invoke(testClassInstance, executionArguments);
-
-            _webBrowser.WaitForIdle();
-
-            testClassInstance.AfterEachTestCase();
-            _webBrowser.WaitForIdle();
+            foreach (var testInstance in testInstances)
+            {
+                testInstance.WebBrowser.WaitForIdle();
+                testInstance.AfterEachTestCase();
+                testInstance.WebBrowser.WaitForIdle();
+            }
         }
     }
 }

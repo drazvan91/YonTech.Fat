@@ -21,7 +21,7 @@ namespace Yontech.Fat.Selenium
             this._logger = _execContext.LoggerFactory.Create(this);
         }
 
-        public IWebBrowser Create()
+        public IWebBrowser Create(BrowserType browserType)
         {
             var config = this._execContext.Config;
             var startOptions = new BrowserStartOptions()
@@ -34,7 +34,6 @@ namespace Yontech.Fat.Selenium
                 RemoteDebuggerAddress = config.RemoteDebuggerAddress,
             };
 
-            var browserType = config.Browser;
             this.ValidateStartOptions(browserType, startOptions);
 
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
