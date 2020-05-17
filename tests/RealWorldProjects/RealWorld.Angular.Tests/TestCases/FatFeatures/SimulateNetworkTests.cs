@@ -5,6 +5,7 @@ using System;
 using Yontech.Fat.DataSources;
 using RealWorld.Angular.Tests.Data;
 using System.Diagnostics;
+using Yontech.Fat.Labels;
 
 namespace RealWorld.Angular.Tests.TestCases.FatFeatures
 {
@@ -20,6 +21,7 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
         }
 
         [InlineData("test")]
+        [SkipFirefox]
         public void Test_simulate_slow_connetion(string tag)
         {
             WebBrowser.Configuration.DefaultTimeout = 20000;

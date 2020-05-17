@@ -302,7 +302,12 @@ namespace Yontech.Fat.Runner
                 return true;
             }
 
-            return false;
+            var anyBrowserWillExecute = this._webBrowsers.Any(webBrowser =>
+            {
+                return !this.ShouldSkipTestCaseForBrowser(webBrowser.BrowserType, testCase);
+            });
+
+            return !anyBrowserWillExecute;
         }
 
         private void ExecuteTestCase(FatTest[] testInstances, FatTestCase testCase)
@@ -330,23 +335,62 @@ namespace Yontech.Fat.Runner
 
         private void ExecuteTestCaseWithDataSourceArguments(FatTest[] testInstances, FatTestCase testCase, object[] executionArguments)
         {
-            foreach (var testInstance in testInstances)
+            var notSkippedTests = this.FilterSkippedTests(testInstances, testCase);
+
+            foreach (var testInstance in notSkippedTests)
             {
                 testInstance.WebBrowser.SimulateFastConnection();
                 testInstance.BeforeEachTestCase();
                 testInstance.WebBrowser.WaitForIdle();
             }
 
-            foreach (var testInstance in testInstances)
+            foreach (var testInstance in notSkippedTests)
             {
                 testCase.Method.Invoke(testInstance, executionArguments);
             }
 
-            foreach (var testInstance in testInstances)
+            foreach (var testInstance in notSkippedTests)
             {
                 testInstance.WebBrowser.WaitForIdle();
                 testInstance.AfterEachTestCase();
                 testInstance.WebBrowser.WaitForIdle();
+            }
+        }
+
+        private FatTest[] FilterSkippedTests(FatTest[] testInstances, FatTestCase testCase)
+        {
+            return testInstances.Where(testInstance =>
+            {
+                return !ShouldSkipTestCaseForBrowser(testInstance.WebBrowser.BrowserType, testCase);
+            }).ToArray();
+        }
+
+        private bool ShouldSkipTestCaseForBrowser(BrowserType browser, FatTestCase testCase)
+        {
+            Type skipType = GetSkipTypeByBrowser(browser);
+            var labels = System.Attribute.GetCustomAttributes(testCase.Method).Where(attr => attr.GetType() == skipType);
+            if (labels.Any())
+            {
+                return true;
+            }
+
+            var classLabels = System.Attribute.GetCustomAttributes(testCase.Method.ReflectedType).Where(attr => attr.GetType() == skipType);
+            if (classLabels.Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private Type GetSkipTypeByBrowser(BrowserType browser)
+        {
+            switch (browser)
+            {
+                case BrowserType.Chrome: return typeof(SkipChrome);
+                case BrowserType.Firefox: return typeof(SkipFirefox);
+                default:
+                    throw new FatException("Skip mechanism for browser {0} is not implemented yet", browser);
             }
         }
     }
