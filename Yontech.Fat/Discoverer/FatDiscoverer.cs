@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Filters;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;

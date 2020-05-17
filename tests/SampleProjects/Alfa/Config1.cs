@@ -1,4 +1,4 @@
-﻿using Yontech.Fat;
+﻿using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 
 namespace Alfa

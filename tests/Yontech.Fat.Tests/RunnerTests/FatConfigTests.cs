@@ -1,4 +1,5 @@
 ﻿using Xunit;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Tests.Mocks;

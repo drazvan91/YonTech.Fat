@@ -1,9 +1,9 @@
 ﻿using System;
 using Xunit;
 using Yontech.Fat.Selenium.DriverFactories;
-using Yontech.Fat.Logging;
 using Yontech.Fat.Tests.Mocks;
 using Yontech.Fat.Exceptions;
+using Yontech.Fat.Configuration;
 
 namespace Yontech.Fat.Tests.DriverFactories
 {

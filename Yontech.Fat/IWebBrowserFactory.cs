@@ -1,4 +1,6 @@
-﻿namespace Yontech.Fat
+﻿using Yontech.Fat.Configuration;
+
+namespace Yontech.Fat
 {
     internal interface IWebBrowserFactory
     {

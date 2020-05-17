@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Utils;
 

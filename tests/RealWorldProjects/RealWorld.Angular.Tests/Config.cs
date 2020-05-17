@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using RealWorld.Angular.Tests.Interceptors;
-using Yontech.Fat;
 using Yontech.Fat.Logging;
-using Yontech.Fat.Interceptors;
+using Yontech.Fat.Configuration;
 
 namespace RealWorld.Angular.Tests
 {
