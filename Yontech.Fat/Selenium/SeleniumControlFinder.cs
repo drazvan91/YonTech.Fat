@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
 using Yontech.Fat.Exceptions;
+using Yontech.Fat.Logging;
 using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.Waiters;
 using Yontech.Fat.WebControls;
@@ -11,17 +12,21 @@ namespace Yontech.Fat.Selenium
 {
     internal class SeleniumControlFinder : IControlFinder
     {
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
         private readonly SelectorNode _selectorNode;
         private readonly ISearchContext _elementScope;
         private readonly SeleniumWebBrowser _webBrowser;
 
-        public SeleniumControlFinder(SeleniumWebBrowser webBrowser)
-            : this(null, webBrowser.WebDriver, webBrowser)
+        public SeleniumControlFinder(ILoggerFactory loggerFactory, SeleniumWebBrowser webBrowser)
+            : this(loggerFactory, null, webBrowser.WebDriver, webBrowser)
         {
         }
 
-        public SeleniumControlFinder(SelectorNode selectorNode, ISearchContext elementScope, SeleniumWebBrowser webBrowser)
+        public SeleniumControlFinder(ILoggerFactory loggerFactory, SelectorNode selectorNode, ISearchContext elementScope, SeleniumWebBrowser webBrowser)
         {
+            this._loggerFactory = loggerFactory;
+            this._logger = loggerFactory.Create(this);
             this._selectorNode = selectorNode;
             this._elementScope = elementScope;
             this._webBrowser = webBrowser;
@@ -80,7 +85,7 @@ namespace Yontech.Fat.Selenium
         {
             var element = FindElement(By.CssSelector(cssSelector));
             var newNode = new SelectorNode(cssSelector, null, this._selectorNode);
-            return new GenericControl(newNode, element, _webBrowser);
+            return new GenericControl(this._loggerFactory, newNode, element, _webBrowser);
         }
 
         public IEnumerable<ITextControl> TextList(string cssSelector)
@@ -146,7 +151,7 @@ namespace Yontech.Fat.Selenium
 
             var custom = new TComponent();
             custom.WebBrowser = this._webBrowser;
-            custom.Container = new GenericControl(newNode, element, this._webBrowser);
+            custom.Container = new GenericControl(this._loggerFactory, newNode, element, this._webBrowser);
             return custom;
         }
 
@@ -160,7 +165,7 @@ namespace Yontech.Fat.Selenium
 
                 var custom = new TComponent();
                 custom.WebBrowser = this._webBrowser;
-                custom.Container = new GenericControl(newNode, element, this._webBrowser);
+                custom.Container = new GenericControl(this._loggerFactory, newNode, element, this._webBrowser);
                 yield return custom;
 
                 index++;
@@ -193,7 +198,7 @@ namespace Yontech.Fat.Selenium
         {
             var element = FindElement(By.XPath(xPathSelector));
             var newNode = new SelectorNode(xPathSelector, null, this._selectorNode);
-            return new GenericControl(newNode, element, _webBrowser);
+            return new GenericControl(this._loggerFactory, newNode, element, _webBrowser);
         }
 
         public bool Exists(string cssSelector)
@@ -205,8 +210,11 @@ namespace Yontech.Fat.Selenium
         private IWebElement FindElement(By selector)
         {
             IWebElement webElement = null;
+            int findTry = 0;
+
             Waiter.WaitForConditionToBeTrueOrTimeout(() =>
             {
+                findTry++;
                 this._webBrowser.WaitForIdle();
                 var elements = this._elementScope.FindElements(selector);
                 if (elements.Count > 1)
@@ -219,6 +227,11 @@ namespace Yontech.Fat.Selenium
 
                 if (webElement == null)
                 {
+                    if (findTry % 10 == 0)
+                    {
+                        this._logger.Debug("Tring #{0} to find element with selector '{1}'", findTry, selector.ToString());
+                    }
+
                     return false;
                 }
 
@@ -231,6 +244,19 @@ namespace Yontech.Fat.Selenium
                     return false;
                 }
             }, _webBrowser.Configuration.FinderTimeout);
+
+            if (findTry > 10)
+            {
+                if (webElement == null)
+                {
+                    this._logger.Debug("Found at try #{0}", findTry);
+                }
+                else
+                {
+                    this._logger.Debug("Nod found. Current FinderTimeout is {0}", _webBrowser.Configuration.FinderTimeout);
+                }
+            }
+
             return webElement;
         }
     }

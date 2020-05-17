@@ -4,7 +4,7 @@ namespace Yontech.Fat.Configuration
 {
     public class FatConfigTimeouts
     {
-        public int DefaultTimeout { get; set; } = 5000;
-        public int FinderTimeout { get; set; } = 1000;
+        public int DefaultTimeout { get; set; } = 10000;
+        public int FinderTimeout { get; set; } = 5000;
     }
 }

@@ -3,6 +3,8 @@ using RealWorld.Angular.Tests.Flows;
 using RealWorld.Angular.Tests.Pages;
 using RealWorld.Angular.Tests.PageSections;
 using RealWorld.Angular.Tests.Data;
+using Yontech.Fat.Labels;
+using Yontech.Fat.DataSources;
 
 namespace RealWorld.Angular.Tests.TestCases
 {
@@ -33,8 +35,11 @@ namespace RealWorld.Angular.Tests.TestCases
 
         public void Test_signin_successful()
         {
-            headerSection.SignInLink.Click();
-            signInFlows.Login(Users.Drazvan91);
+            if (headerSection.SignInLink.Exists)
+            {
+                headerSection.SignInLink.Click();
+                signInFlows.Login(Users.Drazvan91);
+            }
 
             headerSection.UserNameLink.ShouldHaveText(Users.Drazvan91.UserName);
 

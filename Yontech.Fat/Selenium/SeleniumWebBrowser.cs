@@ -37,7 +37,7 @@ namespace Yontech.Fat.Selenium
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
-            this._seleniumControlFinderLazy = new Lazy<SeleniumControlFinder>(() => new SeleniumControlFinder(this));
+            this._seleniumControlFinderLazy = new Lazy<SeleniumControlFinder>(() => new SeleniumControlFinder(loggerFactory, this));
             this._frameControlLazy = new Lazy<IFrameControl>(() => new IFrameControl(this));
 
             if (busyConditions != null)
