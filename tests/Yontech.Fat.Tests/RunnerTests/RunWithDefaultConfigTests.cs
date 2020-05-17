@@ -16,7 +16,7 @@ namespace Yontech.Fat.Tests.RunnerTests
         public RunWithDefaultConfigTests()
         {
             var config = new Alfa.Config1();
-            this.context = new MockedExecutionContext(typeof(Beta.Class1).Assembly);
+            this.context = new MockedExecutionContext(config, typeof(Beta.Class1).Assembly);
             this.runner = new FatRunner(context);
         }
 

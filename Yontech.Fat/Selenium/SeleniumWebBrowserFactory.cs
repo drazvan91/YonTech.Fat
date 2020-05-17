@@ -26,7 +26,7 @@ namespace Yontech.Fat.Selenium
             this._logger = _execContext.LoggerFactory.Create(this);
         }
 
-        public IWebBrowser Create(BrowserFatConfig browserConfig)
+        public IWebBrowser Create(BaseBrowserFatConfig browserConfig)
         {
             var config = this._execContext.Config;
 
@@ -44,24 +44,24 @@ namespace Yontech.Fat.Selenium
             return browser;
         }
 
-        private IWebDriver CreateWebDriver(BrowserFatConfig browserConfig)
+        private IWebDriver CreateWebDriver(BaseBrowserFatConfig browserConfig)
         {
             var chromeConfig = browserConfig as ChromeFatConfig;
             if (chromeConfig != null)
             {
-                return _chromeDriverFactory.Create(chromeConfig, this._execContext.Config.DefaultBrowserConfig);
+                return _chromeDriverFactory.Create(chromeConfig, this._execContext.Config.BrowserConfig);
             }
 
             var remoteChromeConfig = browserConfig as RemoteChromeFatConfig;
             if (remoteChromeConfig != null)
             {
-                return _chromeDriverFactory.Create(remoteChromeConfig, this._execContext.Config.DefaultBrowserConfig);
+                return _chromeDriverFactory.Create(remoteChromeConfig, this._execContext.Config.BrowserConfig);
             }
 
             var firefoxConfig = browserConfig as FirefoxFatConfig;
             if (firefoxConfig != null)
             {
-                return _firefoxDriverFactory.Create(firefoxConfig, this._execContext.Config.DefaultBrowserConfig);
+                return _firefoxDriverFactory.Create(firefoxConfig, this._execContext.Config.BrowserConfig);
             }
 
             throw new FatException($"Browser type unknown");

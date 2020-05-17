@@ -23,7 +23,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             this._logger = loggerFactory.Create(this);
         }
 
-        public IWebDriver Create(FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        public IWebDriver Create(FirefoxFatConfig config, BrowserFatConfig defaultConfig)
         {
             var chromeOptions = CreateOptions(config, defaultConfig);
 
@@ -32,7 +32,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return driver;
         }
 
-        private IWebDriver DownloadAndCreateDriver(FirefoxOptions firefoxOptions, FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        private IWebDriver DownloadAndCreateDriver(FirefoxOptions firefoxOptions, FirefoxFatConfig config, BrowserFatConfig defaultConfig)
         {
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
             location = Path.GetDirectoryName(location);
@@ -94,7 +94,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return webDriver;
         }
 
-        private FirefoxOptions CreateOptions(FirefoxFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        private FirefoxOptions CreateOptions(FirefoxFatConfig config, BrowserFatConfig defaultConfig)
         {
             var firefoxOptions = new FirefoxOptions();
             return firefoxOptions;

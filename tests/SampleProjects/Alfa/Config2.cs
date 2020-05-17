@@ -6,7 +6,7 @@ namespace Alfa
     {
         public Config2()
         {
-            Browser = BrowserType.Chrome;
+            AddChrome(new ChromeFatConfig());
         }
     }
 }

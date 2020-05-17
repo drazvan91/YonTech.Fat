@@ -157,7 +157,18 @@ namespace Yontech.Fat.Runner
         {
             var factory = new Yontech.Fat.Selenium.SeleniumWebBrowserFactory(this._execContext);
 
-            return this._execContext.Config.Browsers.Select(browserConfig =>
+            var browsers = this._execContext.Config.Browsers;
+            if (browsers.Count == 0)
+            {
+                _logger.Warning("No browser configuration was provided. Using ChromeFatConfig by default");
+
+                browsers = new List<BaseBrowserFatConfig>()
+                {
+                    new ChromeFatConfig(),
+                };
+            }
+
+            return browsers.Select(browserConfig =>
             {
                 var webBrowser = factory.Create(browserConfig);
 

@@ -6,8 +6,9 @@ namespace Delta
     {
         public Config()
         {
-            Browser = BrowserType.Chrome;
-            DriversFolder = "delta_drivers";
+            AddChrome();
+
+            BrowserConfig.DriversFolder = "delta_drivers";
         }
     }
 }

@@ -8,12 +8,12 @@ using Yontech.Fat.Logging;
 
 namespace Yontech.Fat
 {
-    public abstract class BrowserFatConfig
+    public abstract class BaseBrowserFatConfig
     {
         internal abstract BrowserType BrowserType { get; }
     }
 
-    public class DefaultBrowserFatConfig
+    public class BrowserFatConfig
     {
         public bool RunInBackground { get; set; }
         public bool DisablePopupBlocking { get; set; }
@@ -23,7 +23,7 @@ namespace Yontech.Fat
         public bool AutomaticDriverDownload { get; set; } = true;
     }
 
-    public class FirefoxFatConfig : BrowserFatConfig
+    public class FirefoxFatConfig : BaseBrowserFatConfig
     {
         public bool? RunInBackground { get; set; }
         public string DriversFolder { get; set; }
@@ -32,7 +32,7 @@ namespace Yontech.Fat
         internal override BrowserType BrowserType { get => BrowserType.Firefox; }
     }
 
-    public class BaseChromeFatConfig : BrowserFatConfig
+    public class BaseChromeFatConfig : BaseBrowserFatConfig
     {
         public bool? RunInBackground { get; set; }
         public string DriversFolder { get; set; }
@@ -62,17 +62,8 @@ namespace Yontech.Fat
     public class FatConfig
     {
         public ITestCaseFilter Filter { get; set; }
-        public BrowserType Browser { get; set; } = BrowserType.Chrome;
         public int DelayBetweenTestCases { get; set; }
         public int DelayBetweenSteps { get; set; }
-        public bool RunInBackground { get; set; }
-        public bool DisablePopupBlocking { get; set; }
-        public string DriversFolder { get; set; } = "drivers";
-        public string RemoteDebuggerAddress { get; set; }
-        public bool AutomaticDriverDownload { get; set; } = true;
-        public ChromeVersion AutomaticDriverDownloadChromeVersion { get; set; } = ChromeVersion.Latest;
-        public Size InitialSize { get; set; }
-        public bool StartMaximized { get; set; } = false;
         public LogLevel LogLevel { get; set; } = LogLevel.Info;
         public Dictionary<string, LogLevel> LogLevelConfig { get; set; } = new Dictionary<string, LogLevel>();
         public List<FatInterceptor> Interceptors { get; set; } = new List<FatInterceptor>();
@@ -80,19 +71,29 @@ namespace Yontech.Fat
 
         public FatConfigTimeouts Timeouts { get; set; } = new FatConfigTimeouts();
 
-        public DefaultBrowserFatConfig DefaultBrowserConfig { get; } = new DefaultBrowserFatConfig();
+        public BrowserFatConfig BrowserConfig { get; } = new BrowserFatConfig();
 
-        public void AddBrowser(ChromeFatConfig chromeConfig)
+        public void AddChrome()
+        {
+            this.AddChrome(new ChromeFatConfig());
+        }
+
+        public void AddChrome(ChromeFatConfig chromeConfig)
         {
             this.Browsers.Add(chromeConfig);
         }
 
-        public void AddBrowser(FirefoxFatConfig firefoxConfig)
+        public void AddFirefox()
+        {
+            this.AddFirefox(new FirefoxFatConfig());
+        }
+
+        public void AddFirefox(FirefoxFatConfig firefoxConfig)
         {
             this.Browsers.Add(firefoxConfig);
         }
 
-        internal List<BrowserFatConfig> Browsers { get; } = new List<BrowserFatConfig>();
+        internal List<BaseBrowserFatConfig> Browsers { get; } = new List<BaseBrowserFatConfig>();
 
         internal void Log(ILoggerFactory loggerFactory)
         {
@@ -101,10 +102,7 @@ namespace Yontech.Fat
             logger.Info("Log level: {0}", logger.LogLevel);
 
             logger.Debug($@"
-    Browser: {Browser}, 
-    RemoteDebuggerAddress: {RemoteDebuggerAddress}
-    DriversFolder: {DriversFolder}
-    AutomaticDriverDownload: {AutomaticDriverDownload}
+    Browsers: {Browsers.Count}, 
     DelayBetweenTestCases: {DelayBetweenTestCases}
     DelayBetweenSteps: {DelayBetweenSteps}
             ");

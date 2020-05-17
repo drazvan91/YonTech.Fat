@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xunit;
 using Yontech.Fat.Selenium.DriverFactories;
 using Yontech.Fat.Logging;
@@ -12,32 +12,35 @@ namespace Yontech.Fat.Tests.DriverFactories
         [Fact]
         public void When_driver_does_not_exist_Then_error_is_thrown()
         {
-            var downloadFolder = "firefox-" + Guid.NewGuid().ToString();
-
             var mockFactory = new MockedLoggerFactory();
             var factory = new FirefoxDriverFactory(mockFactory);
 
+            var config = new FirefoxFatConfig()
+            {
+                DriversFolder = "firefox-" + Guid.NewGuid().ToString(),
+                AutomaticDriverDownload = false
+            };
+
             Assert.Throws<FatException>(() =>
             {
-                var driver = factory.Create(downloadFolder, new Configuration.BrowserStartOptions()
-                {
-                    AutomaticDriverDownload = false
-                });
+                var driver = factory.Create(config, new BrowserFatConfig());
             });
         }
 
         [Fact]
         public void Test_automatic_download()
         {
-            var downloadFolder = "firefox-" + Guid.NewGuid().ToString();
 
             var mockFactory = new MockedLoggerFactory();
             var factory = new FirefoxDriverFactory(mockFactory);
 
-            var driver = factory.Create(downloadFolder, new Configuration.BrowserStartOptions()
+            var config = new FirefoxFatConfig()
             {
+                DriversFolder = "firefox-" + Guid.NewGuid().ToString(),
                 AutomaticDriverDownload = true
-            });
+            };
+
+            var driver = factory.Create(config, new BrowserFatConfig());
 
             driver.Quit();
 

@@ -7,9 +7,13 @@ namespace Alfa
     {
         public Config1()
         {
-            Browser = BrowserType.Chrome;
-            RunInBackground = true;
-            DriversFolder = "alfa1_drivers";
+            AddChrome(new ChromeFatConfig()
+            {
+                RunInBackground = true,
+            });
+
+            BrowserConfig.DriversFolder = "alfa1_drivers";
+
             LogLevel = LogLevel.Debug;
         }
     }

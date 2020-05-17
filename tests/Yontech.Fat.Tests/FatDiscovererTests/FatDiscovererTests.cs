@@ -15,7 +15,7 @@ namespace Yontech.Fat.Tests.FatDiscovererTests
             FatDiscoverer discoverer = new FatDiscoverer(context);
             var config = discoverer.DiscoverConfig();
 
-            Assert.Equal("delta_drivers", config.DriversFolder);
+            Assert.Equal("delta_drivers", config.BrowserConfig.DriversFolder);
             context.MockedLoggerFactory.AssertNoErrorOrWarning();
         }
 
@@ -27,7 +27,7 @@ namespace Yontech.Fat.Tests.FatDiscovererTests
             FatDiscoverer discoverer = new FatDiscoverer(context);
             var config = discoverer.DiscoverConfig();
 
-            Assert.Equal("alfa1_drivers", config.DriversFolder);
+            Assert.Equal("alfa1_drivers", config.BrowserConfig.DriversFolder);
             context.MockedLoggerFactory.AssertContains(LogLevel.Warning, "Multiple FatConfig files have been found. The one with the shortest name has been chosen:");
         }
 

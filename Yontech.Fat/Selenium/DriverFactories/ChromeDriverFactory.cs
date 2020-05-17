@@ -22,7 +22,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             this._logger = loggerFactory.Create(this);
         }
 
-        public IWebDriver Create(ChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        public IWebDriver Create(ChromeFatConfig config, BrowserFatConfig defaultConfig)
         {
             var chromeOptions = CreateOptions(config, defaultConfig);
 
@@ -40,7 +40,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return driver;
         }
 
-        public IWebDriver Create(RemoteChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        public IWebDriver Create(RemoteChromeFatConfig config, BrowserFatConfig defaultConfig)
         {
             var chromeOptions = CreateRemoteOptions(config, defaultConfig);
 
@@ -49,7 +49,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             return driver;
         }
 
-        private IWebDriver DownloadAndCreateDriver(ChromeOptions chromeOptions, BaseChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        private IWebDriver DownloadAndCreateDriver(ChromeOptions chromeOptions, BaseChromeFatConfig config, BrowserFatConfig defaultConfig)
         {
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
             location = Path.GetDirectoryName(location);
@@ -124,7 +124,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             // return webDriver;
         }
 
-        private ChromeOptions CreateRemoteOptions(RemoteChromeFatConfig remoteConfig, DefaultBrowserFatConfig defaultConfig)
+        private ChromeOptions CreateRemoteOptions(RemoteChromeFatConfig remoteConfig, BrowserFatConfig defaultConfig)
         {
             return new ChromeOptions()
             {
@@ -132,7 +132,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             };
         }
 
-        private ChromeOptions CreateOptions(ChromeFatConfig config, DefaultBrowserFatConfig defaultConfig)
+        private ChromeOptions CreateOptions(ChromeFatConfig config, BrowserFatConfig defaultConfig)
         {
             var chromeOptions = new ChromeOptions();
 

@@ -10,11 +10,9 @@ namespace Yontech.Fat.Tests.RunnerTests
         [Fact]
         public void If_driver_does_not_exist_Then_error_will_be_thrown()
         {
-            var config = new FatConfig()
-            {
-                AutomaticDriverDownload = false,
-                DriversFolder = "some_random_folder"
-            };
+            var config = new FatConfig();
+            config.BrowserConfig.AutomaticDriverDownload = false;
+            config.BrowserConfig.DriversFolder = "some_random_folder";
 
             var context = new MockedExecutionContext(config, typeof(Alfa.Config1).Assembly);
             var runner = new FatRunner(context);

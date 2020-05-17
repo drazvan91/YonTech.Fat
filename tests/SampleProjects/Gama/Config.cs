@@ -6,7 +6,7 @@ namespace Gama
     {
         public Config()
         {
-            Browser = BrowserType.Chrome;
+            AddChrome();
         }
     }
 }

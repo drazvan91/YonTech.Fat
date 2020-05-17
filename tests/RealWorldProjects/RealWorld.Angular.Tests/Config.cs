@@ -12,12 +12,20 @@ namespace RealWorld.Angular.Tests
     {
         public Config()
         {
-            Browser = BrowserType.Chrome;
-            AutomaticDriverDownloadChromeVersion = ChromeVersion.v80;
-            RemoteDebuggerAddress = "localhost:9222";
-            RunInBackground = true;
+            AddChrome(new ChromeFatConfig()
+            {
+                DriversFolder = "chrome_driver",
+            });
+
+            AddFirefox(new FirefoxFatConfig()
+            {
+                DriversFolder = "firefox_driver",
+            });
+
+            BrowserConfig.RunInBackground = false;
+            BrowserConfig.AutomaticDriverDownload = true;
+
             LogLevel = LogLevel.Debug;
-            InitialSize = new Size(900, 900);
         }
     }
 }
