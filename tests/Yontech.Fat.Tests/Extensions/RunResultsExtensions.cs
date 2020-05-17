@@ -15,7 +15,6 @@ namespace Yontech.Fat.Tests.Extensions
                 var allLogs = GetLogs(runResults);
                 Assert.True(false, $"The TestClass should have {passedTests} tests passed and {failedTests} failed " +
                     $"but instead it had {runResults.Passed} and {runResults.Failed}. Logs: {allLogs}");
-
             }
         }
 

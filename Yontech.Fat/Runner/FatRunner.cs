@@ -162,10 +162,7 @@ namespace Yontech.Fat.Runner
             {
                 _logger.Warning("No browser configuration was provided. Using ChromeFatConfig by default");
 
-                browsers = new List<BaseBrowserFatConfig>()
-                {
-                    new ChromeFatConfig(),
-                };
+                browsers.Add(new ChromeFatConfig());
             }
 
             return browsers.Select(browserConfig =>
@@ -302,7 +299,7 @@ namespace Yontech.Fat.Runner
                 return true;
             }
 
-            var anyBrowserWillExecute = this._webBrowsers.Any(webBrowser =>
+            var anyBrowserWillExecute = this._execContext.Config.Browsers.Any(webBrowser =>
             {
                 return !this.ShouldSkipTestCaseForBrowser(webBrowser.BrowserType, testCase);
             });

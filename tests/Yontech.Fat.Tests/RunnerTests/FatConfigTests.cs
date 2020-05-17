@@ -2,6 +2,7 @@
 using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
+using Yontech.Fat.Tests.Extensions;
 using Yontech.Fat.Tests.Mocks;
 
 namespace Yontech.Fat.Tests.RunnerTests
@@ -20,7 +21,7 @@ namespace Yontech.Fat.Tests.RunnerTests
 
             var result = runner.Run<Alfa.TestCases.CsvFile>();
 
-            Assert.Equal(2, result.Failed);
+            result.AssertResult(0, 2);
             context.MockedLoggerFactory.AssertContains(LogLevel.Error, "The driver could not be found at location");
         }
     }
