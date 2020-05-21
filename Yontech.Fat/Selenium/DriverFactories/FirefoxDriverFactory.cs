@@ -76,6 +76,11 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 {
                     servicePort++;
                 }
+                catch (System.InvalidOperationException ex) when (
+                    ex.Message.Contains("Expected browser binary location, but unable to find binary in default location"))
+                {
+                    throw new FatException("The driver was found but the Browser itself was not. Have you installed it?", ex);
+                }
                 catch
                 {
                     throw;
