@@ -46,5 +46,25 @@ namespace Yontech.Fat.Tests.DriverFactories
 
             mockFactory.AssertNoErrorOrWarning();
         }
+
+        [Fact]
+        public void Test_run_in_the_background()
+        {
+
+            var mockFactory = new MockedLoggerFactory();
+            var factory = new FirefoxDriverFactory(mockFactory);
+
+            var config = new FirefoxFatConfig()
+            {
+                AutomaticDriverDownload = true,
+                RunInBackground = true
+            };
+
+            var driver = factory.Create(config, new BrowserFatConfig());
+
+            driver.Quit();
+
+            mockFactory.AssertNoErrorOrWarning();
+        }
     }
 }

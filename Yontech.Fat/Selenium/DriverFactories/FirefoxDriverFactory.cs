@@ -102,6 +102,11 @@ namespace Yontech.Fat.Selenium.DriverFactories
         private FirefoxOptions CreateOptions(FirefoxFatConfig config, BrowserFatConfig defaultConfig)
         {
             var firefoxOptions = new FirefoxOptions();
+            if (config.RunInBackground ?? defaultConfig.RunInBackground)
+            {
+                firefoxOptions.AddArgument("--headless");
+            }
+
             return firefoxOptions;
         }
     }
