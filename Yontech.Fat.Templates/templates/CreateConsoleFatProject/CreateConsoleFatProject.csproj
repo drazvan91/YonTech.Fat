@@ -5,7 +5,7 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Yontech.Fat" Version="0.6.0" />
-        <PackageReference Include="Yontech.Fat.ConsoleRunner" Version="0.6.0" />
+        <PackageReference Include="Yontech.Fat" Version="0.7.0" />
+        <PackageReference Include="Yontech.Fat.ConsoleRunner" Version="0.7.0" />
     </ItemGroup>
 </Project>
