@@ -17,12 +17,20 @@ static int Main(string[] args)
 {
     var config = new FatConfig()
     {
-        Browser = BrowserType.Chrome;
-        RunInBackground = true;
         LogLevel = LogLevel.Debug;
-        InitialSize = new Size(900, 900);
+        
         // ... other configuration
     };
+
+    config.AddChrome(new ChromeFatConfig()
+    {
+        InitialSize = new Size(1200, 800)
+    });
+
+    config.AddFirefox(new FirefoxFatConfig()
+    {
+        RunInBackground = true,
+    });
     
     FatConsoleRunner runner = new FatConsoleRunner(config);
     runner.Run();
@@ -45,10 +53,11 @@ public class MyConfig : FatConfig
 {
     public MyConfig()
     {
-        Browser = BrowserType.Chrome;
-        RunInBackground = true;
         LogLevel = LogLevel.Debug;
-        InitialSize = new Size(900, 900);
+
+        AddChrome();
+        AddFirefox();
+        
         // ... other configuration
     }
 }
@@ -57,18 +66,25 @@ public class MyConfig : FatConfig
 > In case there are multiple Config classes the one with the shortest name will be picked up 
 and a warning will be logged.
 
-## Browser configurations
+## Add Browser configurations
 
-Specify the browser that will be used and the folder where driver is located
+Specify the folder where driver is located. The default value is `drivers`.
 ``` typescript
-config.Browser = BrowserType.Chrome;
-config.DriversFolder = "drivers";
+config.AddFirefox(new FirefoxFatConfig()
+{
+    DriversFolder = "firefox_driver",
+    RunInBackground = true,
+});
 ````
 
-Enable Automatic Driver download and in case that is Chrome specify the version that you want
+Enable Automatic Driver download. Optionally you can and specify the version you want to download.
 ``` typescript
-config.AutomaticDriverDownload = true;
-ChromeVersion AutomaticDriverDownloadChromeVersion = ChromeVersion.Latest;
+config.AddChrome(new ChromeFatConfig()
+{
+    AutomaticDriverDownload = true,
+    Version = ChromeVersion.v80,
+    DriversFolder = "chrome_driver",
+});
 ```
 
 ## Remote debugging with Chrome 
@@ -92,9 +108,13 @@ config.RemoteDebuggerAddress = "localhost:9222"
 ## Browser start options
 
 ``` typescript
-config.RunInBackground = true;
-config.StartMaximized = false;
-config.InitialSize = new Size(1200, 800);
+config.AddChrome(new ChromeFatConfig()
+{
+    RunInBackground = true,
+    StartMaximized = false,
+    InitialSize = new Size(1200, 800),
+    DisablePopupBlocking = true
+});
 ```
 
 ## Browser behaviour
@@ -102,8 +122,6 @@ config.InitialSize = new Size(1200, 800);
 ``` typescript
 config.Timeouts.DefaultTimeout = 4000;
 config.Timeouts.FinderTimeout = 2000;
-
-config.DisablePopupBlocking = true;
 ```
 
 ## Logging
