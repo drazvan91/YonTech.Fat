@@ -43,7 +43,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 case ChromeVersion.v81: return CHROME_81_FOLDER;
                 case ChromeVersion.v83: return CHROME_83_FOLDER;
                 case ChromeVersion.v84: return CHROME_84_FOLDER;
-                default: return CHROME_84_FOLDER;
+                default: return CHROME_83_FOLDER;
             }
         }
 

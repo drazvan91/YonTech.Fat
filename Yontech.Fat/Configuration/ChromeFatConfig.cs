@@ -14,7 +14,7 @@ namespace Yontech.Fat.Configuration
         public string DriversFolder { get; set; }
         public bool? AutomaticDriverDownload { get; set; }
         public bool? DisablePopupBlocking { get; set; }
-        public ChromeVersion Version { get; set; } = ChromeVersion.Latest;
+        public ChromeVersion Version { get; set; } = ChromeVersion.v83;
         internal override BrowserType BrowserType { get => BrowserType.Chrome; }
     }
 

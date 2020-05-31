@@ -54,6 +54,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
             var location = typeof(SeleniumWebBrowserFactory).Assembly.Location;
             location = Path.GetDirectoryName(location);
             string driverPath = Path.Combine(location, config.DriversFolder ?? defaultConfig.DriversFolder);
+            driverPath = Path.Combine(driverPath, config.Version.ToString());
 
             _logger.Info("Looking for drivers at location {0}", location);
 
@@ -91,7 +92,7 @@ namespace Yontech.Fat.Selenium.DriverFactories
                     return CreateDriverForPort(servicePort, driverPath, chromeOptions);
                 }
                 catch (OpenQA.Selenium.WebDriverException ex) when (
-                    ex.Message.Contains("Cannot start the driver service") ||
+                ex.Message.Contains("Cannot start the driver service") ||
                     ex.Message.Contains("A exception with a null response was thrown sending an HTTP request"))
                 {
                     servicePort++;
