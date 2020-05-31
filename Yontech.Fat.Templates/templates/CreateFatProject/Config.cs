@@ -1,4 +1,5 @@
 ﻿using Yontech.Fat;
+using Yontech.Fat.Configuration;
 
 namespace CreateFatProject
 {
@@ -6,8 +7,7 @@ namespace CreateFatProject
     {
         public Config()
         {
-            Browser = BrowserType.Chrome;
-            RunInBackground = true;
+            AddChrome();
         }
     }
 }

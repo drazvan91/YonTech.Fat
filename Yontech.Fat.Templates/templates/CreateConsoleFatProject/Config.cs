@@ -1,4 +1,5 @@
 ﻿using Yontech.Fat;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
 
 namespace CreateConsoleFatProject
@@ -7,9 +8,13 @@ namespace CreateConsoleFatProject
     {
         public Config()
         {
-            Browser = BrowserType.Chrome;
             LogLevel = LogLevel.Debug;
-            RunInBackground = true;
+            AddChrome(new ChromeFatConfig()
+            {
+                RunInBackground = true,
+                DriversFolder = "drivers-folder1",
+                Version = ChromeVersion.Latest
+            });
         }
     }
 }

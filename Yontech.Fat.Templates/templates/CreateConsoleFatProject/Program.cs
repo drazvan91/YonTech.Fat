@@ -1,12 +1,4 @@
-﻿using System;
-using Yontech.Fat.Runner;
-
-using System.Collections.Generic;
-using System.Reflection;
-using Yontech.Fat;
-using Yontech.Fat.Interceptors;
-using Yontech.Fat.ConsoleRunner;
-using CreateConsoleFatProject.TestCases;
+﻿using Yontech.Fat.ConsoleRunner;
 
 namespace CreateConsoleFatProject
 {
