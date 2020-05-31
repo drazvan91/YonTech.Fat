@@ -33,6 +33,8 @@ namespace Yontech.Fat
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
 
+        internal bool IsRemoteBrowser { get; set; }
+
         protected BaseWebBrowser(ILoggerFactory loggerFactory, BrowserType type)
         {
             this.LoggerFactory = loggerFactory;

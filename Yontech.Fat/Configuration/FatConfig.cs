@@ -32,6 +32,16 @@ namespace Yontech.Fat.Configuration
             this.AddChrome(new ChromeFatConfig());
         }
 
+        public void AddChromeRemote(int port)
+        {
+            this.Browsers.Add(new RemoteChromeFatConfig("localhost", port));
+        }
+
+        public void AddChromeRemote(string host, int port)
+        {
+            this.Browsers.Add(new RemoteChromeFatConfig(host, port));
+        }
+
         public void AddChrome(ChromeFatConfig chromeConfig)
         {
             this.Browsers.Add(chromeConfig);

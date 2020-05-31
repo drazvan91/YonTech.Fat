@@ -66,7 +66,7 @@ namespace Yontech.Fat.Selenium
 
         public override void Close()
         {
-            if (this.BrowserType == BrowserType.RemoteChrome)
+            if (this.IsRemoteBrowser)
             {
                 return;
             }
@@ -249,7 +249,7 @@ namespace Yontech.Fat.Selenium
             {
                 if (disposing)
                 {
-                    if (this.BrowserType != BrowserType.RemoteChrome)
+                    if (!this.IsRemoteBrowser)
                     {
                         WebDriver.Dispose();
                     }

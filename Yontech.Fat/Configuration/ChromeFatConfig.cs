@@ -26,6 +26,11 @@ namespace Yontech.Fat.Configuration
 
     public class RemoteChromeFatConfig : BaseChromeFatConfig
     {
-        public string RemoteDebuggerAddress { get; set; }
+        public RemoteChromeFatConfig(string host, int port)
+        {
+            this.RemoteDebuggerAddress = host + ":" + port;
+        }
+
+        public string RemoteDebuggerAddress { get; }
     }
 }

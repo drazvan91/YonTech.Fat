@@ -41,7 +41,14 @@ namespace Yontech.Fat.Selenium
             browser.Configuration.DefaultTimeout = config.Timeouts.DefaultTimeout;
             browser.Configuration.FinderTimeout = config.Timeouts.FinderTimeout;
 
+            browser.IsRemoteBrowser = IsRemoteBrowser(browserConfig);
+
             return browser;
+        }
+
+        private bool IsRemoteBrowser(BaseBrowserFatConfig browserFatConfig)
+        {
+            return browserFatConfig is RemoteChromeFatConfig;
         }
 
         private IWebDriver CreateWebDriver(BaseBrowserFatConfig browserConfig)
