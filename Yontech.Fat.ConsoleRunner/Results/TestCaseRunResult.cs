@@ -30,6 +30,7 @@ namespace Yontech.Fat.ConsoleRunner.Results
         public TimeSpan Duration { get; set; }
         public List<Log> Logs { get; set; }
         public string ErrorMessage { get; set; }
+        public int? BrowserIndexWhichCausedError { get; set; }
         public Exception Exception { get; set; }
 
         public TestCaseRunResult(MethodInfo testCase)

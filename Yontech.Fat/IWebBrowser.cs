@@ -8,6 +8,7 @@ namespace Yontech.Fat
     public interface IWebBrowser : IDisposable
     {
         BrowserType BrowserType { get; }
+        int BrowserId { get; }
 
         IControlFinder ControlFinder { get; }
         IJsExecutor JavaScriptExecutor { get; }

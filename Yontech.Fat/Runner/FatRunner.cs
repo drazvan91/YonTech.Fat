@@ -253,7 +253,7 @@ namespace Yontech.Fat.Runner
                 }
                 catch (Exception ex)
                 {
-                    var exception = ex.InnerException ?? ex;
+                    var exception = ex;
                     _logger.Error(exception);
                     _logsSink.Add(Log.ERROR, exception.Message);
 
@@ -334,23 +334,39 @@ namespace Yontech.Fat.Runner
         {
             var notSkippedTests = this.FilterSkippedTests(testInstances, testCase);
 
-            foreach (var testInstance in notSkippedTests)
+            this.HandleExecutionForEachInstance(notSkippedTests, testCase, executionArguments, (testInstance) =>
             {
                 testInstance.WebBrowser.SimulateFastConnection();
                 testInstance.BeforeEachTestCase();
                 testInstance.WebBrowser.WaitForIdle();
-            }
+            });
 
-            foreach (var testInstance in notSkippedTests)
+            this.HandleExecutionForEachInstance(notSkippedTests, testCase, executionArguments, (testInstance) =>
             {
                 testCase.Method.Invoke(testInstance, executionArguments);
-            }
+            });
 
-            foreach (var testInstance in notSkippedTests)
+            this.HandleExecutionForEachInstance(notSkippedTests, testCase, executionArguments, (testInstance) =>
             {
                 testInstance.WebBrowser.WaitForIdle();
                 testInstance.AfterEachTestCase();
                 testInstance.WebBrowser.WaitForIdle();
+            });
+        }
+
+        private void HandleExecutionForEachInstance(FatTest[] notSkippedTests, FatTestCase testCase, object[] executionArguments, Action<FatTest> action)
+        {
+            foreach (var testInstance in notSkippedTests)
+            {
+                try
+                {
+                    action(testInstance);
+                }
+                catch (Exception ex)
+                {
+                    var exception = ex.InnerException ?? ex; // because of reflection the real exception is in InnerException
+                    throw new FatTestCaseException(testInstance.WebBrowser.BrowserId, exception.Message, exception);
+                }
             }
         }
 

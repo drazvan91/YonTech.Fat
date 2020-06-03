@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Yontech.Fat.Discoverer;
+using Yontech.Fat.Exceptions;
 
 namespace Yontech.Fat.Interceptors
 {
@@ -69,11 +70,13 @@ namespace Yontech.Fat.Interceptors
 
         public void OnTestCaseFailed(FatTestCase testCase, TimeSpan duration, Exception ex, List<Logging.Log> list)
         {
+            var browserId = (ex as FatTestCaseException)?.BrowserId;
             var interceptParams = new FatTestCaseFailed()
             {
                 Duration = duration,
                 Logs = list,
                 Exception = ex,
+                BrowserIndexWithCausedError = browserId,
             };
 
             this.SafeForEach((interceptor) =>

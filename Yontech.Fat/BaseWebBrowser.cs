@@ -12,7 +12,8 @@ namespace Yontech.Fat
         public WebBrowserConfiguration Configuration { get; set; }
         public ILoggerFactory LoggerFactory { get; }
         public ILogger Logger { get; }
-        public BrowserType BrowserType { get; set; }
+        public int BrowserId { get; }
+        public BrowserType BrowserType { get; }
 
         public abstract IControlFinder ControlFinder { get; }
         public abstract IJsExecutor JavaScriptExecutor { get; }
@@ -35,10 +36,11 @@ namespace Yontech.Fat
 
         internal bool IsRemoteBrowser { get; set; }
 
-        protected BaseWebBrowser(ILoggerFactory loggerFactory, BrowserType type)
+        protected BaseWebBrowser(ILoggerFactory loggerFactory, int browserId, BrowserType type)
         {
             this.LoggerFactory = loggerFactory;
             this.Logger = loggerFactory.Create(this);
+            this.BrowserId = browserId;
             this.BrowserType = type;
             this.Configuration = new WebBrowserConfiguration();
         }

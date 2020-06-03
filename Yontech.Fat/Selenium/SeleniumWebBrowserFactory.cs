@@ -34,7 +34,8 @@ namespace Yontech.Fat.Selenium
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
                 this._execContext.LoggerFactory,
-                webDriver: webDriver,
+                webDriver,
+                browserConfig.BrowserId,
                 browserType: browserConfig.BrowserType,
                 busyConditions: new List<FatBusyCondition>());
 

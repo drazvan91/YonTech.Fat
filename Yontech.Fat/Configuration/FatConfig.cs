@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using Yontech.Fat.Filters;
 using Yontech.Fat.Interceptors;
 using Yontech.Fat.Logging;
@@ -10,6 +9,7 @@ namespace Yontech.Fat.Configuration
 {
     public abstract class BaseBrowserFatConfig
     {
+        internal int BrowserId { get; set; }
         internal abstract BrowserType BrowserType { get; }
     }
 
@@ -34,17 +34,17 @@ namespace Yontech.Fat.Configuration
 
         public void AddChromeRemote(int port)
         {
-            this.Browsers.Add(new RemoteChromeFatConfig("localhost", port));
+            this.AddBrowserWithId(new RemoteChromeFatConfig("localhost", port));
         }
 
         public void AddChromeRemote(string host, int port)
         {
-            this.Browsers.Add(new RemoteChromeFatConfig(host, port));
+            this.AddBrowserWithId(new RemoteChromeFatConfig(host, port));
         }
 
         public void AddChrome(ChromeFatConfig chromeConfig)
         {
-            this.Browsers.Add(chromeConfig);
+            this.AddBrowserWithId(chromeConfig);
         }
 
         public void AddFirefox()
@@ -54,7 +54,13 @@ namespace Yontech.Fat.Configuration
 
         public void AddFirefox(FirefoxFatConfig firefoxConfig)
         {
-            this.Browsers.Add(firefoxConfig);
+            this.AddBrowserWithId(firefoxConfig);
+        }
+
+        private void AddBrowserWithId(BaseBrowserFatConfig config)
+        {
+            config.BrowserId = this.Browsers.Count;
+            this.Browsers.Add(config);
         }
 
         internal List<BaseBrowserFatConfig> Browsers { get; } = new List<BaseBrowserFatConfig>();

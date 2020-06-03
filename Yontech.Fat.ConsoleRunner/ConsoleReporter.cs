@@ -89,6 +89,11 @@ namespace Yontech.Fat.ConsoleRunner
             }
 
             PrintNormal("  {0}  ", testCase.ShortName);
+            if (testCase.Result == TestCaseRunResult.ResultType.Error && testCase.BrowserIndexWhichCausedError != null)
+            {
+                PrintGray("(browser={0}) ", testCase.BrowserIndexWhichCausedError);
+            }
+
             PrintGray("in {0}ms", testCase.Duration.TotalMilliseconds);
 
             Console.WriteLine();
@@ -106,7 +111,7 @@ namespace Yontech.Fat.ConsoleRunner
                             break;
 
                         case Log.WARNING:
-                            PrintYellow("    {1} - ERROR: {0}", log.Message, log.TimeSpan);
+                            PrintYellow("    {1} - Warning: {0}", log.Message, log.TimeSpan);
                             Console.WriteLine();
                             break;
 

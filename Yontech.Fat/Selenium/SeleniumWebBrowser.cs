@@ -32,8 +32,8 @@ namespace Yontech.Fat.Selenium
         };
 #pragma warning restore SX1309
 
-        public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
-            : base(loggerFactory, browserType)
+        public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, int browserId, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
+            : base(loggerFactory, browserId, browserType)
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));

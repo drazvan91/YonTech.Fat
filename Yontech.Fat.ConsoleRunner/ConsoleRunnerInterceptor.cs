@@ -37,6 +37,7 @@ namespace Yontech.Fat.ConsoleRunner
             var testResult = AddResult(collection, testClass, testCase);
             testResult.Duration = failed.Duration;
             testResult.ErrorMessage = failed.Exception.Message;
+            testResult.BrowserIndexWhichCausedError = failed.BrowserIndexWithCausedError;
             testResult.Exception = failed.Exception;
             testResult.Result = TestCaseRunResult.ResultType.Error;
             testResult.Logs = failed.Logs;

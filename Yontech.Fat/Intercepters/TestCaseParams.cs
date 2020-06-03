@@ -23,6 +23,7 @@ namespace Yontech.Fat.Interceptors
     {
         public TimeSpan Duration { get; internal set; }
         public List<Log> Logs { get; internal set; } = new List<Log>();
+        public int? BrowserIndexWithCausedError { get; internal set; }
         public Exception Exception { get; internal set; }
     }
 }
