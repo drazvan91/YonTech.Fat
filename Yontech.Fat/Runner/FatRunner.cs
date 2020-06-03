@@ -254,8 +254,9 @@ namespace Yontech.Fat.Runner
                 catch (Exception ex)
                 {
                     var exception = ex;
+                    var browserId = (ex as FatTestCaseException)?.BrowserId;
                     _logger.Error(exception);
-                    _logsSink.Add(Log.ERROR, exception.Message);
+                    _logsSink.Add(browserId, Log.ERROR, exception.Message);
 
                     var logs = _logsSink.GetLogs().ToList();
                     _runResults.AddFailed(testCase, ex, watch.Elapsed, logs);

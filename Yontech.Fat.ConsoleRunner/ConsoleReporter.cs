@@ -103,25 +103,26 @@ namespace Yontech.Fat.ConsoleRunner
                 Console.WriteLine("Logs:");
                 foreach (var log in testCase.Logs)
                 {
+                    var browserIdInfo = log.BrowserId.HasValue ? $" [{log.BrowserId}]" : "";
                     switch (log.Category)
                     {
                         case Log.ERROR:
-                            PrintRed("    {1} - ERROR: {0}", log.Message, log.TimeSpan);
+                            PrintRed("    {1} {2} - ERROR: {0}", log.Message, log.TimeSpan, browserIdInfo);
                             Console.WriteLine();
                             break;
 
                         case Log.WARNING:
-                            PrintYellow("    {1} - Warning: {0}", log.Message, log.TimeSpan);
+                            PrintYellow("    {1} {2} - Warning: {0}", log.Message, log.TimeSpan, browserIdInfo);
                             Console.WriteLine();
                             break;
 
                         case Log.INFO:
-                            PrintNormal("    {1} - Info: {0}", log.Message, log.TimeSpan);
+                            PrintNormal("    {1} {2} - Info: {0}", log.Message, log.TimeSpan, browserIdInfo);
                             Console.WriteLine();
                             break;
 
                         case Log.DEBUG:
-                            PrintGray("    {1} - Debug: {0}", log.Message, log.TimeSpan);
+                            PrintGray("    {1} {2} - Debug: {0}", log.Message, log.TimeSpan, browserIdInfo);
                             Console.WriteLine();
                             break;
                     }

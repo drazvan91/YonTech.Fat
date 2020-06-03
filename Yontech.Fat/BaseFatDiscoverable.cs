@@ -16,7 +16,7 @@ namespace Yontech.Fat
         {
             if (SinkableLogs)
             {
-                LogsSink.Add(logLevel, format, args);
+                LogsSink.Add(this.WebBrowser.BrowserId, logLevel, format, args);
             }
         }
 

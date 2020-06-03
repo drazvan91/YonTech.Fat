@@ -11,13 +11,15 @@ namespace Yontech.Fat.Logging
 
         public string Category { get; }
         public string Message { get; }
+        public int? BrowserId { get; set; }
         public TimeSpan TimeSpan { get; }
 
-        public Log(string category, string message, TimeSpan timespan)
+        public Log(int? browserId, string category, string message, TimeSpan timespan)
         {
             this.Category = category;
             this.Message = message;
             this.TimeSpan = timespan;
+            this.BrowserId = browserId;
         }
     }
 }

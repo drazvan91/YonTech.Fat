@@ -15,12 +15,12 @@ namespace Yontech.Fat.Logging
             this._logs.Clear();
         }
 
-        public void Add(string category, string format, params object[] arguments)
+        public void Add(int? browserId, string category, string format, params object[] arguments)
         {
             var message = string.Format(format, arguments);
             var escapedMessage = EscapeInvalidHexChars(message);
 
-            this._logs.Add(new Log(category, escapedMessage, _stopWatch.Elapsed));
+            this._logs.Add(new Log(browserId, category, escapedMessage, _stopWatch.Elapsed));
         }
 
         public IEnumerable<Log> GetLogs()
