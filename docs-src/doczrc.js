@@ -4,9 +4,8 @@ export default {
   menu: [
     'Introduction',
     'Getting Started',
-    'Run configuration',
-    'Concepts',
     'Fat Config',
+    'Concepts',
     'Fat Label',
     'Skip Test',
     'Fat Interceptor',

@@ -37,6 +37,19 @@ static int Main(string[] args)
 }
 ```
 
+## Supported browsers 
+Configure the browsers that you want to be used for testing.
+
+```typescript
+config.AddChrome();
+config.AddChromeRemote(9222);
+config.AddFirefox();
+```
+
+If no browser is being added then the default one will be Chrome.
+
+You can add the same browsers multiple times (in case that you want to execute with different configurations).
+
 
 ## Automatic pick up
 
@@ -102,7 +115,8 @@ Chrome.exe --remote-debugging-port=9222 --user-data-dir="FatProfile"
 Then configure RemoteDebuggerAddress
 
 ``` typescript
-config.RemoteDebuggerAddress = "localhost:9222"
+config.AddChromeRemote(9222);
+
 ```
 
 ## Browser start options
