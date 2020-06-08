@@ -59,10 +59,15 @@ namespace Yontech.Fat.Runner
         private void RegisterAssembly(ServiceCollection serviceCollection, Assembly assembly)
         {
             var testClasses = _discoverer.FindTestClasses(assembly);
-
             foreach (var testClass in testClasses)
             {
                 serviceCollection.AddScoped(testClass, testClass);
+            }
+
+            var testWarmups = _discoverer.FindFatWarmups(assembly);
+            foreach (var warmup in testWarmups)
+            {
+                serviceCollection.AddScoped(warmup, warmup);
             }
 
             var fatPages = _discoverer.FindPages(assembly);
@@ -137,6 +142,7 @@ namespace Yontech.Fat.Runner
             typeof(FatFlow),
             typeof(FatTest),
             typeof(FatEnvData),
+            typeof(FatWarmup),
         };
 
         private bool IsInjectableProperty(PropertyInfo prop)

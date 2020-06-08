@@ -120,6 +120,20 @@ namespace Yontech.Fat.Runner
 
             try
             {
+                if (initializationError == null)
+                {
+                    var warmupTypes = this._fatDiscoverer.FindFatWarmups();
+                    var warmups = this.CreateWarmupInstances(warmupTypes);
+                    this.ExecuteWarmups(warmups);
+                }
+            }
+            catch (FatException fatException)
+            {
+                initializationError = fatException;
+            }
+
+            try
+            {
                 _runResults = new RunResults();
                 _interceptorDispatcher.OnExecutionStarts(new ExecutionStartsParams());
                 foreach (var collection in testCollections)
@@ -199,6 +213,29 @@ namespace Yontech.Fat.Runner
                 _interceptorDispatcher.BeforeTestClass(testClass.Class);
                 ExecuteTestClass(testClass, initializationError);
                 _interceptorDispatcher.AfterTestClass(testClass.Class);
+            }
+        }
+
+        private void ExecuteWarmups(IEnumerable<FatWarmup> warmups)
+        {
+            _logger.Info("Executing warmups");
+            foreach (var warmup in warmups)
+            {
+                _logger.Debug("Executing warmup '{0}'", warmup.WarmupName);
+                warmup.Warmup();
+            }
+
+            _logger.Debug("Finished executing warmups");
+        }
+
+        private IEnumerable<FatWarmup> CreateWarmupInstances(IEnumerable<Type> warmupTypes)
+        {
+            foreach (var browser in this._webBrowsers)
+            {
+                foreach (var warmupType in warmupTypes)
+                {
+                    yield return this._iocService.GetService<FatWarmup>(warmupType, browser);
+                }
             }
         }
 

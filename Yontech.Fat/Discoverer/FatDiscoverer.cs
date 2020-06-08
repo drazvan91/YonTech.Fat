@@ -160,6 +160,21 @@ namespace Yontech.Fat.Discoverer
             return allTypes.Where(type => type.IsSubclassOf(typeof(FatConfig)));
         }
 
+        public IEnumerable<Type> FindFatWarmups()
+        {
+            var configTypes = this._assemblyDiscoverer.DiscoverAssemblies()
+             .SelectMany(a => FindFatWarmups(a))
+             .OrderBy(c => c.FullName.Length);
+
+            return configTypes;
+        }
+
+        public IEnumerable<Type> FindFatWarmups(Assembly assembly)
+        {
+            var allTypes = assembly.GetTypes();
+            return allTypes.Where(type => type.IsSubclassOf(typeof(FatWarmup)));
+        }
+
         private IEnumerable<FatTestCase> DiscoverTestCases(Type testClass, ITestCaseFilter filter = null)
         {
             var allMethods = testClass.GetMethods();
