@@ -10,6 +10,8 @@ namespace CreateFatProjectWithSamples
             LogLevel = Yontech.Fat.Logging.LogLevel.Info;
 
             AddChrome();
+
+            BrowserConfig.RunInBackground = true;
         }
     }
 }

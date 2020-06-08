@@ -8,6 +8,8 @@ namespace CreateFatProject
         public Config()
         {
             AddChrome();
+
+            BrowserConfig.RunInBackground = true;
         }
     }
 }

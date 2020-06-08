@@ -10,7 +10,7 @@ namespace Yontech.Fat.Configuration
 {
     public class BrowserFatConfig
     {
-        public bool RunInBackground { get; set; }
+        public bool RunInBackground { get; set; } = true;
         public bool DisablePopupBlocking { get; set; }
         public string DriversFolder { get; set; } = "drivers";
         public Size InitialSize { get; set; }

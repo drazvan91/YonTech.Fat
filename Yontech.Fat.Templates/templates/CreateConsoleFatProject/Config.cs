@@ -11,10 +11,12 @@ namespace CreateConsoleFatProject
             LogLevel = LogLevel.Debug;
             AddChrome(new ChromeFatConfig()
             {
-                RunInBackground = true,
                 DriversFolder = "drivers-folder1",
-                Version = ChromeVersion.Latest
             });
+
+            AddFirefox();
+
+            BrowserConfig.RunInBackground = true;
         }
     }
 }
