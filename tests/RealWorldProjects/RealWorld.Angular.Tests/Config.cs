@@ -17,7 +17,7 @@ namespace RealWorld.Angular.Tests
                 DriversFolder = "firefox_driver",
             });
 
-            BrowserConfig.RunInBackground = false;
+            BrowserConfig.RunInBackground = true;
             BrowserConfig.AutomaticDriverDownload = true;
 
             LogLevel = LogLevel.Debug;
