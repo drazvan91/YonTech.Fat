@@ -229,7 +229,9 @@ namespace Yontech.Fat.Runner
             foreach (var warmup in warmups)
             {
                 _logger.Debug("Executing warmup '{0}'", warmup.WarmupName);
+                warmup.WebBrowser.Configuration.DefaultTimeout = _execContext.Config.Timeouts.WarmupTimeout;
                 warmup.Warmup();
+                warmup.WebBrowser.Configuration.DefaultTimeout = _execContext.Config.Timeouts.DefaultTimeout;
             }
 
             _logger.Debug("Finished executing warmups");
