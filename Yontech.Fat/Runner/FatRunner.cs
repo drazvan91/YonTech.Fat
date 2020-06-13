@@ -122,9 +122,16 @@ namespace Yontech.Fat.Runner
             {
                 if (initializationError == null)
                 {
-                    var warmupTypes = this._fatDiscoverer.FindFatWarmups();
-                    var warmups = this.CreateWarmupInstances(warmupTypes);
-                    this.ExecuteWarmups(warmups);
+                    var warmupTypes = this._fatDiscoverer.FindFatWarmups().ToList();
+                    if (warmupTypes.Count == 0)
+                    {
+                        _logger.Info("No warmup configured");
+                    }
+                    else
+                    {
+                        var warmups = this.CreateWarmupInstances(warmupTypes);
+                        this.ExecuteWarmups(warmups);
+                    }
                 }
             }
             catch (FatException fatException)
