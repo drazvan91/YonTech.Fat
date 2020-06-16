@@ -1,0 +1,51 @@
+---
+name: Fat Warmup
+route: /fat-warmup
+---
+
+# Fat Warmup
+
+## Defining Warmups
+
+Sometimes you might want to warmup the application before running tests. This can be achieved by creating classes which implements abstract
+class `Yontech.Fat.Warmup`. The warmup will be picked up automatically at runtime.
+
+> If more Warmup classes are defined then all of them will be executed. It will be executed one time for each Browser configured.
+
+
+```typescript
+using Yontech.Fat;
+
+public class MyWarmup : FatWarmup
+{
+    HomePage homePage { get; set; } // Fat objects (like pages, flows, env datas, etc) will be injected
+
+    protected override void Warmup() // this is the method that needs to be implemented
+    {
+        this.WebBrowser.Navigate("https://mywebsite.com");
+
+        homePage.LogoButton.Click();
+    }
+}
+
+```
+
+## Customize timeout
+
+If the warmup takes more than 2 minutes (the default warmup timeout) you can change it using `config.Timeouts.WarmupTimeout` property.
+
+```typescript
+using Yontech.Fat;
+
+public class MyConfig : FatConfig
+{
+    public MyConfig()
+    {
+        AddChrome();
+
+        AddFirefox();
+
+        Timeouts.WarmupTimeout = 10 * 60 * 1000; // meaning 10 minutes
+    }
+}
+```

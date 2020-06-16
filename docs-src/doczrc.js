@@ -7,6 +7,7 @@ export default {
     'Fat Config',
     'Concepts',
     'Fat Label',
+    'Fat Warmup',
     'Skip Test',
     'Fat Interceptor',
     'API',
