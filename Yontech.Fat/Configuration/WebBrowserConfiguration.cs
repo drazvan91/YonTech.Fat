@@ -4,14 +4,28 @@ namespace Yontech.Fat.Configuration
 {
     public class WebBrowserConfiguration
     {
-        public List<FatBusyCondition> BusyConditions { get; private set; }
-        public int DefaultTimeout { get; set; }
-        public int FinderTimeout { get; set; }
+        private int _defaultTimeout = 0;
 
-        public WebBrowserConfiguration()
+        public List<FatBusyCondition> BusyConditions { get; private set; }
+        public int DefaultTimeout
         {
-            DefaultTimeout = 20000;
-            FinderTimeout = 0;
+            get
+            {
+                return _defaultTimeout;
+            }
+            set
+            {
+                _defaultTimeout = value;
+                this.WebBrowser.DefaultTimeout = value;
+            }
+        }
+
+        public int FinderTimeout { get; set; }
+        internal BaseWebBrowser WebBrowser { get; private set; }
+
+        internal WebBrowserConfiguration(BaseWebBrowser webBrowser)
+        {
+            WebBrowser = webBrowser;
             BusyConditions = new List<FatBusyCondition>();
         }
     }

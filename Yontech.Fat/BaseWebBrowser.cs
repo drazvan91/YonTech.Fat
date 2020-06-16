@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 using Yontech.Fat.Waiters;
 using Yontech.Fat.WebControls;
 
@@ -10,8 +12,6 @@ namespace Yontech.Fat
     public abstract class BaseWebBrowser : IWebBrowser
     {
         public WebBrowserConfiguration Configuration { get; set; }
-        public ILoggerFactory LoggerFactory { get; }
-        public ILogger Logger { get; }
         public int BrowserId { get; }
         public BrowserType BrowserType { get; }
 
@@ -30,19 +30,21 @@ namespace Yontech.Fat
         public abstract string CurrentUrl { get; }
         public abstract string Title { get; }
         public abstract Size Size { get; }
+        public abstract int DefaultTimeout { get; set; }
 
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
 
         internal bool IsRemoteBrowser { get; set; }
 
-        protected BaseWebBrowser(ILoggerFactory loggerFactory, int browserId, BrowserType type)
+        protected ILogger Logger { get; }
+
+        protected BaseWebBrowser(FatExecutionContext fatContext, int browserId, BrowserType type)
         {
-            this.LoggerFactory = loggerFactory;
-            this.Logger = loggerFactory.Create(this);
+            this.Logger = fatContext.LoggerFactory.Create(this);
             this.BrowserId = browserId;
             this.BrowserType = type;
-            this.Configuration = new WebBrowserConfiguration();
+            this.Configuration = new WebBrowserConfiguration(this);
         }
 
         public void WaitForIdle()

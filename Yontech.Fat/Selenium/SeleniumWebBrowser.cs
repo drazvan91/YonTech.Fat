@@ -6,7 +6,9 @@ using System.Reflection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
+using Yontech.Fat.Configuration;
 using Yontech.Fat.Logging;
+using Yontech.Fat.Runner;
 using Yontech.Fat.Selenium.DriverFactories;
 using Yontech.Fat.Selenium.WebControls;
 using Yontech.Fat.WebControls;
@@ -32,12 +34,12 @@ namespace Yontech.Fat.Selenium
         };
 #pragma warning restore SX1309
 
-        public SeleniumWebBrowser(ILoggerFactory loggerFactory, IWebDriver webDriver, int browserId, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
-            : base(loggerFactory, browserId, browserType)
+        public SeleniumWebBrowser(FatExecutionContext fatContext, IWebDriver webDriver, int browserId, BrowserType browserType, IEnumerable<FatBusyCondition> busyConditions)
+            : base(fatContext, browserId, browserType)
         {
             this.WebDriver = webDriver;
             this._jsExecutorLazy = new Lazy<SeleniumJsExecutor>(() => new SeleniumJsExecutor(this));
-            this._seleniumControlFinderLazy = new Lazy<SeleniumControlFinder>(() => new SeleniumControlFinder(loggerFactory, this));
+            this._seleniumControlFinderLazy = new Lazy<SeleniumControlFinder>(() => new SeleniumControlFinder(fatContext.LoggerFactory, this));
             this._frameControlLazy = new Lazy<IFrameControl>(() => new IFrameControl(this));
 
             if (busyConditions != null)
@@ -63,6 +65,22 @@ namespace Yontech.Fat.Selenium
         public override string Title => WebDriver.Title;
 
         public override Size Size => WebDriver.Manage().Window.Size;
+
+        public override int DefaultTimeout
+        {
+            get
+            {
+                return (int)WebDriver.Manage().Timeouts().PageLoad.TotalMilliseconds;
+            }
+            set
+            {
+                var timeouts = WebDriver.Manage().Timeouts();
+                if (timeouts != null)
+                {
+                    timeouts.PageLoad = TimeSpan.FromMilliseconds(value);
+                }
+            }
+        }
 
         public override void Close()
         {

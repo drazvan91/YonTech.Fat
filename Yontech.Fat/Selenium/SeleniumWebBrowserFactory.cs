@@ -33,7 +33,7 @@ namespace Yontech.Fat.Selenium
             IWebDriver webDriver = CreateWebDriver(browserConfig);
 
             SeleniumWebBrowser browser = new SeleniumWebBrowser(
-                this._execContext.LoggerFactory,
+                this._execContext,
                 webDriver,
                 browserConfig.BrowserId,
                 browserType: browserConfig.BrowserType,
