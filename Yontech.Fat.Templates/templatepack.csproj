@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <PackageVersion>0.8.0</PackageVersion>
+        <PackageVersion>0.8.1</PackageVersion>
         <PackageId>Yontech.Fat.Templates</PackageId>
         <Title>Fat Framework Templates</Title>
         <Authors>Razvan Dragomir</Authors>
@@ -22,4 +22,3 @@
     </ItemGroup>
 
 </Project>
-  
