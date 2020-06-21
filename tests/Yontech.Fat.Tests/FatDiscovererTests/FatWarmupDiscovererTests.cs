@@ -44,8 +44,8 @@ namespace Yontech.Fat.Tests.FatDiscovererTests
         [Fact]
         public void Success()
         {
-            var config = new Alfa.Config1();
-            var context = new MockedExecutionContext(typeof(Alfa.Config1).Assembly);
+            var config = new Alfa.Config3();
+            var context = new MockedExecutionContext(config, typeof(Alfa.Config3).Assembly);
             var runner = new FatRunner(context);
             var results = runner.Run<AlfaTest1>();
             Assert.Equal(results.Failed, 0);

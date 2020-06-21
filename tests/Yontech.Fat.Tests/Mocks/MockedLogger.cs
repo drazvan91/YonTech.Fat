@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Yontech.Fat.Logging;
 
@@ -33,11 +34,18 @@ namespace Yontech.Fat.Tests.Mocks
 
         public void AssertContains(LogLevel level, string message)
         {
-            Assert.Contains(LogEntries, log =>
+
+            var hasLog = LogEntries.Any(log =>
             {
                 return log.LogLevel == level
                     && log.Message.Contains(message);
             });
+
+            if (!hasLog)
+            {
+                var allLogs = this.GetLogs();
+                Assert.True(hasLog, $"Test should have log '{message}' but instead it head: {allLogs}");
+            }
         }
 
         public void PrintAllLogs()
@@ -46,6 +54,12 @@ namespace Yontech.Fat.Tests.Mocks
             {
                 Console.WriteLine("{0}: {1}", log.LogLevel, log.Message);
             }
+        }
+
+        private string GetLogs()
+        {
+            var logs = LogEntries.Select(testResult => testResult.Message);
+            return string.Join(Environment.NewLine, logs);
         }
     }
 

@@ -26,7 +26,7 @@ namespace Yontech.Fat.Tests.Extensions
             var allLogs = GetLogs(runResults, key);
 
             var hasLog = runResults.TestResults[key].Logs.Any(l => l.Message.Contains(logMessage));
-            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it head: {allLogs}");
+            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it had: {allLogs}");
         }
 
         public static void AssertTestHasLog(this RunResults runResults, string testName, LogLevel logLevel, string logMessage)
@@ -37,7 +37,7 @@ namespace Yontech.Fat.Tests.Extensions
             var allLogs = GetLogs(runResults, key);
 
             var hasLog = runResults.TestResults[key].Logs.Any(l => l.Message.Contains(logMessage));
-            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it head: {allLogs}");
+            Assert.True(hasLog, $"Test should have log '{logMessage}' but instead it had: {allLogs}");
         }
 
         public static void AssertTestHasPassed(this RunResults runResults, string testName)
