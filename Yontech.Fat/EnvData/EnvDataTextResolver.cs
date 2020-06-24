@@ -26,6 +26,8 @@ namespace Yontech.Fat.EnvData
                 this.ApplyLine(instance, filename, lineNumber, line);
                 lineNumber++;
             }
+
+            _logger.Info("{0} loaded from file '{1}'", instance.GetType().FullName, filename);
         }
 
         private void ApplyLine<T>(T instance, string fileName, int lineNumber, string line)

@@ -21,7 +21,7 @@ namespace Yontech.Fat.Tests.RunnerTests
         }
 
         [Fact]
-        public void Happy_flow()
+        public void Happy_json_flow()
         {
             var result = runner.Run<Alfa.EnvDataTestCases.HappFlowTests>();
 
@@ -29,6 +29,18 @@ namespace Yontech.Fat.Tests.RunnerTests
             Assert.Equal(2, result.Passed);
 
             context.MockedLoggerFactory.AssertContains(LogLevel.Info, "Alfa.SimpleEnvData loaded from file 'files/simple-env-data.json'");
+        }
+
+
+        [Fact]
+        public void Happy_txt_flow()
+        {
+            var result = runner.Run<Alfa.EnvDataTestCases.HappFlowTxtTests>();
+
+            Assert.Equal(0, result.Failed);
+            Assert.Equal(1, result.Passed);
+
+            context.MockedLoggerFactory.AssertContains(LogLevel.Info, "Alfa.SimpleEnvTextData loaded from file 'files/simple-env-data.txt'");
         }
 
         [Fact]
