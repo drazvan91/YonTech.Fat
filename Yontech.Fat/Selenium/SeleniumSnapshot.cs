@@ -17,7 +17,7 @@ namespace Yontech.Fat.Selenium
 
         public void SaveAsFile(string path)
         {
-            // shot.SaveAsFile(path, ImageFormat.Png);
+            _shot.SaveAsFile(path);
         }
     }
 }

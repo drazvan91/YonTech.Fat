@@ -21,6 +21,7 @@ namespace RealWorld.Angular.Tests.TestCases
 
         public void Test_header_elements_are_present()
         {
+            WebBrowser.TakeSnapshot().SaveAsFile("ceva.png");
             headerSection.SignInLink.ShouldHaveText("Sign in");
             headerSection.LogoLink.ShouldHaveText("conduit");
 
