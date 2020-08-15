@@ -21,7 +21,7 @@ namespace CreateFatProjectWithSamples.Components
 
             if (!contains)
             {
-                throw new Exception("Tag lists should contain text '" + tagText + "'");
+                throw new FatAssertException("Tag lists should contain text '" + tagText + "'");
             }
         }
     }

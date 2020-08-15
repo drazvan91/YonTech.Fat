@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CsvHelper;
+using Yontech.Fat.Exceptions;
 
 namespace Yontech.Fat.DataSources
 {
@@ -68,7 +69,7 @@ namespace Yontech.Fat.DataSources
                 return bool.Parse(value);
             }
 
-            throw new Exception("Not supported");
+            throw new FatException("Not supported");
         }
 
         private IEnumerable<object[]> GetObjectLike(MethodInfo method, ParameterInfo parameterInfo)

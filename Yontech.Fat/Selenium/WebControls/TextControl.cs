@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenQA.Selenium;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
@@ -26,7 +27,7 @@ namespace Yontech.Fat.Selenium.WebControls
 
             if (this.Text != text)
             {
-                throw new Exception($"Control contains '{this.Text}' instead of '{text}'");
+                throw new FatAssertException($"Control contains '{this.Text}' instead of '{text}'");
             }
         }
 
@@ -35,7 +36,7 @@ namespace Yontech.Fat.Selenium.WebControls
             EnsureElementExists();
             if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) < 0)
             {
-                throw new Exception($"Element does not contain this text: {text}. It is equal to: {this.Text}");
+                throw new FatAssertException($"Element does not contain this text: {text}. It is equal to: {this.Text}");
             }
         }
 
@@ -44,7 +45,7 @@ namespace Yontech.Fat.Selenium.WebControls
             EnsureElementExists();
             if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) > 0)
             {
-                throw new Exception($"Element contains this text: {text} and it shoudn't");
+                throw new FatAssertException($"Element contains this text: {text} and it shoudn't");
             }
         }
     }

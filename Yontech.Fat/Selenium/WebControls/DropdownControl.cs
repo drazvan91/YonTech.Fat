@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
@@ -55,7 +56,7 @@ namespace Yontech.Fat.Selenium.WebControls
 
             if (!selectedOptionText.Equals(text))
             {
-                throw new Exception($"Control contains '{selectedOptionText}' instead of '{text}'");
+                throw new FatAssertException($"Control contains '{selectedOptionText}' instead of '{text}'");
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Yontech.Fat.Exceptions;
 
 namespace Yontech.Fat.Waiters
 {
@@ -19,8 +20,7 @@ namespace Yontech.Fat.Waiters
                 Wait(50);
             }
 
-            // todo: specific exception please
-            throw new Exception("Operation did timeout. One or more busy conditions indicate that Browser is still busy.");
+            throw new FatTimeoutException("Operation did timeout. One or more busy conditions indicate that Browser is still busy.");
         }
 
         public static void Wait(int timeToWait)

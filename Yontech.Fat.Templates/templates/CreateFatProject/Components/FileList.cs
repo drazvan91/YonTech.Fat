@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Yontech.Fat;
+using Yontech.Fat.Exceptions;
 
 namespace CreateFatProject.Components
 {
@@ -19,7 +20,7 @@ namespace CreateFatProject.Components
 
             if (!contains)
             {
-                throw new Exception("Tag lists should contain text '" + fileName + "'");
+                throw new FatAssertException("Tag lists should contain text '" + fileName + "'");
             }
         }
     }
