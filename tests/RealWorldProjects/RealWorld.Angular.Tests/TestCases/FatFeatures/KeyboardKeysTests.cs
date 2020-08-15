@@ -23,7 +23,7 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
             WebBrowser.Navigate(Urls.HOME_PAGE);
         }
 
-        public void Test_simulate_slow_connetion()
+        public void Test_keyboard_special_chars()
         {
             headerSection.SignInLink.Click();
 

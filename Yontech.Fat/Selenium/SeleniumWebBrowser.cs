@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using Yontech.Fat.Configuration;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.Logging;
 using Yontech.Fat.Runner;
 using Yontech.Fat.Selenium.DriverFactories;
@@ -21,7 +23,7 @@ namespace Yontech.Fat.Selenium
         private readonly Lazy<SeleniumControlFinder> _seleniumControlFinderLazy;
         private readonly Lazy<IFrameControl> _frameControlLazy;
         private bool _disposedValue;
-        public IWebDriver WebDriver { get; }
+        public IWebDriver WebDriver { get; internal set; }
 
 #pragma warning disable SX1309
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1306:FieldNamesMustBeginWithLowerCaseLetter", Justification = "It is a constant initiated at load time")]
@@ -89,7 +91,19 @@ namespace Yontech.Fat.Selenium
                 return;
             }
 
+            var tabs = this.WebDriver.WindowHandles;
+            for (int i = tabs.Count - 1; i >= 0; i--)
+            {
+                var tabDriver = this.WebDriver.SwitchTo().Window(tabs[i]);
+                tabDriver.Close();
+            }
+        }
+
+        public override void CloseCurrentTab()
+        {
             WebDriver.Close();
+            var tabs = this.WebDriver.WindowHandles;
+            this.WebDriver = this.WebDriver.SwitchTo().Window(tabs[0]);
         }
 
         public override void Navigate(string url)
@@ -259,6 +273,57 @@ namespace Yontech.Fat.Selenium
         public override void Minimize()
         {
             this.WebDriver.Manage().Window.Minimize();
+        }
+
+        public override IWebBrowserTab OpenNewTab(string url)
+        {
+            var oldTabs = this.WebDriver.WindowHandles;
+
+            // TODO: encode URL
+            this.JavaScriptExecutor.ExecuteScript("window.open('" + url + "','_blank');");
+
+            var newTabs = this.WebDriver.WindowHandles;
+            var newTabId = newTabs.FirstOrDefault(tab => !oldTabs.Contains(tab));
+
+            return new SeleniumWebBrowserTab(this, newTabId);
+        }
+
+        public override IWebBrowserTab CurrentTab
+        {
+            get
+            {
+                return new SeleniumWebBrowserTab(this, this.WebDriver.CurrentWindowHandle);
+            }
+        }
+
+        public override IWebBrowserTab[] Tabs
+        {
+            get
+            {
+                return this.WebDriver.WindowHandles.Select(window => new SeleniumWebBrowserTab(this, window)).ToArray();
+            }
+        }
+
+        public override IWebBrowserTab Tab(string tabId)
+        {
+            var tabs = this.WebDriver.WindowHandles;
+            if (!tabs.Contains(tabId))
+            {
+                throw new FatException("Tab with id {0} cannot be found.", tabId);
+            }
+
+            return new SeleniumWebBrowserTab(this, tabId);
+        }
+
+        public override IWebBrowserTab Tab(int tabIndex)
+        {
+            var tabs = this.WebDriver.WindowHandles;
+            if (tabs.Count <= tabIndex)
+            {
+                throw new FatException("Tab with index {0} cannot be found. Only {1} tabs are available", tabIndex, tabs.Count);
+            }
+
+            return new SeleniumWebBrowserTab(this, tabs[tabIndex]);
         }
 
         protected void Dispose(bool disposing)

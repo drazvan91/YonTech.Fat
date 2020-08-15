@@ -20,6 +20,7 @@ namespace Yontech.Fat
         public abstract IIFrameControl IFrameControl { get; }
 
         public abstract void Close();
+        public abstract void CloseCurrentTab();
 
         public abstract void Dispose();
         public abstract void Navigate(string url);
@@ -34,6 +35,8 @@ namespace Yontech.Fat
 
         public abstract ISnapshot TakeSnapshot();
         public abstract void SwitchToIframe(string iframeId);
+        public abstract IWebBrowserTab CurrentTab { get; }
+        public abstract IWebBrowserTab[] Tabs { get; }
 
         internal bool IsRemoteBrowser { get; set; }
 
@@ -120,5 +123,8 @@ namespace Yontech.Fat
         public abstract void Fullscreen();
         public abstract void Maximize();
         public abstract void Minimize();
+        public abstract IWebBrowserTab OpenNewTab(string url);
+        public abstract IWebBrowserTab Tab(string tabId);
+        public abstract IWebBrowserTab Tab(int tabIndex);
     }
 }
