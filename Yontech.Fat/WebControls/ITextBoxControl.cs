@@ -14,7 +14,7 @@ namespace Yontech.Fat.WebControls
         void TypeKeysSlowly(string keys, int delayBetweenKeys = 300);
         void ClearText();
 
-        // todo: make this deprecated
+        [Obsolete("SendKeys will be removed in the future, please use TypeKeys instead.", false)]
         void SendKeys(string keys);
         void InnerTextShouldBe(string text);
         void ShouldContainText(string text);
