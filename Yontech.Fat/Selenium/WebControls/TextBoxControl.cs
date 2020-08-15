@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using OpenQA.Selenium;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.WebControls;
 
 namespace Yontech.Fat.Selenium.WebControls
@@ -33,7 +35,9 @@ namespace Yontech.Fat.Selenium.WebControls
 
         public void TypeKeys(string keys)
         {
-            this.TypeKeysSlowly(keys, 1);
+            EnsureElementExists();
+            WebElement.SendKeys(keys);
+            base.WebBrowser.WaitForIdle();
         }
 
         public void TypeKeysSlowly(string keys, int delayBetweenKeys = 300)
@@ -63,6 +67,34 @@ namespace Yontech.Fat.Selenium.WebControls
         public void SendKeys(string keys)
         {
             this.ClearAndTypeKeys(keys);
+        }
+
+        public void InnerTextShouldBe(string text)
+        {
+            EnsureElementExists();
+
+            if (this.Text != text)
+            {
+                throw new FatAssertException($"Control contains '{this.Text}' instead of '{text}'");
+            }
+        }
+
+        public void ShouldContainText(string text)
+        {
+            EnsureElementExists();
+            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) < 0)
+            {
+                throw new FatAssertException($"Element does not contain this text: {text}. It is equal to: {this.Text}");
+            }
+        }
+
+        public void ShouldNotContainText(string text)
+        {
+            EnsureElementExists();
+            if (this.Text.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) > 0)
+            {
+                throw new FatAssertException($"Element contains this text: {text} and it shoudn't");
+            }
         }
     }
 }

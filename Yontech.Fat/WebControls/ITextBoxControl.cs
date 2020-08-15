@@ -16,5 +16,8 @@ namespace Yontech.Fat.WebControls
 
         // todo: make this deprecated
         void SendKeys(string keys);
+        void InnerTextShouldBe(string text);
+        void ShouldContainText(string text);
+        void ShouldNotContainText(string text);
     }
 }

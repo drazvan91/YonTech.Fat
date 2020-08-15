@@ -31,11 +31,10 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
             headerSection.SettingsLink.Click();
 
             settingsPage.ImageUrlTextBox.TypeKeys("before");
-            settingsPage.ImageUrlTextBox.TypeKeys(KeyboardKeys.Space);
-            settingsPage.ImageUrlTextBox.TypeKeys(KeyboardKeys.Space);
+            settingsPage.ImageUrlTextBox.TypeKeys(KeyboardKeys.Shift + "tt");
             settingsPage.ImageUrlTextBox.TypeKeys("after");
 
-            Wait(4000);
+            settingsPage.ImageUrlTextBox.InnerTextShouldBe("beforeTTafter");
         }
     }
 }
