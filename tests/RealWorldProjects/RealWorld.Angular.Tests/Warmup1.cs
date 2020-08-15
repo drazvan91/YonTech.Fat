@@ -1,6 +1,7 @@
 using Yontech.Fat.Logging;
 using Yontech.Fat.Configuration;
 using Yontech.Fat;
+using RealWorld.Angular.Tests.Data;
 
 namespace RealWorld.Angular.Tests
 {
@@ -8,7 +9,7 @@ namespace RealWorld.Angular.Tests
     {
         protected override void Warmup()
         {
-            this.WebBrowser.Navigate("https://google.com");
+            this.WebBrowser.Navigate(Urls.HOME_PAGE);
         }
     }
 }
