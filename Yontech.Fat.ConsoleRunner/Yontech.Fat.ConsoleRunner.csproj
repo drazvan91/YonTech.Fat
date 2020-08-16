@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Yontech.Fat.ConsoleRunner</PackageId>
-        <Version>0.8.1</Version>
+        <Version>0.9.0</Version>
         <Authors>Razvan Dragomir</Authors>
         <Company>TSS Yonder</Company>
         <CodeAnalysisRuleSet>../StyleCop.ruleset</CodeAnalysisRuleSet>
