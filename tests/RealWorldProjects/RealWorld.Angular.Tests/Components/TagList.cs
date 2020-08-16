@@ -12,7 +12,14 @@ namespace RealWorld.Angular.Tests.Components
 
         public ILinkControl TagWithText(string text)
         {
-            return this.Tags.FirstOrDefault(tag => tag.Text == text);
+            var tag = this.Tags.FirstOrDefault(tag => tag.Text == text);
+
+            if (tag == null)
+            {
+                Fail("Tags list with selector '{1}' does not contain '{0}'", tag, base.Container.SelectorDescription);
+            }
+
+            return tag;
         }
 
         public void ShouldContainTag(string tagText)

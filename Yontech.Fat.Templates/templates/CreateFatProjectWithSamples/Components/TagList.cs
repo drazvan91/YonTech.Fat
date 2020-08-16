@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Yontech.Fat;
+using Yontech.Fat.Exceptions;
 using Yontech.Fat.WebControls;
 
 namespace CreateFatProjectWithSamples.Components

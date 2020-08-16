@@ -8,7 +8,7 @@ namespace CreateConsoleFatProject.Components
 {
     public class FileList : FatCustomComponent
     {
-        private IEnumerable<FileListItem> items => _.CustomList<FileListItem>("tr.js-navigation-item");
+        private IEnumerable<FileListItem> items => _.CustomList<FileListItem>("div.Box-row");
 
         public FileListItem FileWithName(string name)
         {

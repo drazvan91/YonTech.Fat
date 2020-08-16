@@ -8,6 +8,6 @@ namespace CreateConsoleFatProject.Pages
     {
         public HeaderSection HeaderSection { get; set; }
 
-        public FileList FileList => _.Custom<FileList>("table.files");
+        public FileList FileList => _.Custom<FileList>(".js-details-container.Details [aria-labelledby=\"files\"]");
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CreateFatProject.Components;
 using CreateFatProject.PageSections;
 using Yontech.Fat;
-using Yontech.Fat.WebControls;
 
 namespace CreateFatProject.Pages
 {
@@ -9,6 +8,6 @@ namespace CreateFatProject.Pages
     {
         public HeaderSection HeaderSection { get; set; }
 
-        public FileList FileList => _.Custom<FileList>("table.files");
+        public FileList FileList => _.Custom<FileList>(".js-details-container.Details [aria-labelledby=\"files\"]");
     }
 }

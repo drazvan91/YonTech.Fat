@@ -25,6 +25,7 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
 
         public void Test_keyboard_special_chars()
         {
+            signInFlows.SignOutIfLoggedIn();
             headerSection.SignInLink.Click();
 
             signInFlows.Login(Users.Drazvan91);

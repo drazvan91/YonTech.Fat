@@ -21,6 +21,7 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
 
         public void Test_open_new_tab_then_left_open()
         {
+            signInFlows.SignOutIfLoggedIn();
             headerSection.SignInLink.Click();
 
             WebBrowser.OpenNewTab("https://google.com");
@@ -34,7 +35,9 @@ namespace RealWorld.Angular.Tests.TestCases.FatFeatures
 
         public void Test_open_then_close_tab()
         {
+            signInFlows.SignOutIfLoggedIn();
             headerSection.SignInLink.Click();
+
             var currentTab = WebBrowser.CurrentTab;
             var temporaryTab = WebBrowser.OpenNewTab(Urls.HOME_PAGE).Focus();
 

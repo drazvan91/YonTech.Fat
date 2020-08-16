@@ -5,7 +5,7 @@ namespace CreateConsoleFatProject.Components
 {
     public class FileListItem : FatCustomComponent
     {
-        public ILinkControl NameLink => _.Link(".content a");
-        public ILinkControl MessageLink => _.Link(".message a");
+        public ILinkControl NameLink => _.Link("[role=\"rowheader\"]");
+        public ILinkControl MessageLink => _.Link(".commit-message");
     }
 }

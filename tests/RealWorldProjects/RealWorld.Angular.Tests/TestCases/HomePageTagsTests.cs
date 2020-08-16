@@ -18,7 +18,6 @@ namespace RealWorld.Angular.Tests.TestCases
             WebBrowser.Navigate(Urls.HOME_PAGE);
         }
 
-        [InlineData("money")]
         [InlineData("butt")]
         [InlineData("test")]
         public void Test_clicking_tags_at_slow_speed(string tag)
