@@ -13,7 +13,14 @@ namespace CreateFatProjectWithSamples.Components
 
         public ILinkControl TagWithText(string text)
         {
-            return this.Tags.FirstOrDefault(tag => tag.Text == text);
+            var tagLink = this.Tags.FirstOrDefault(tag => tag.Text == text);
+
+            if (tagLink == null)
+            {
+                Fail("There is no tag with text '{0}' ni the tags list", text);
+            }
+
+            return tagLink;
         }
 
         public void ShouldContainTag(string tagText)
@@ -22,7 +29,7 @@ namespace CreateFatProjectWithSamples.Components
 
             if (!contains)
             {
-                throw new FatAssertException("Tag lists should contain text '" + tagText + "'");
+                throw new FatAssertException("Tags list should contain text '" + tagText + "'");
             }
         }
     }

@@ -19,7 +19,6 @@ namespace CreateFatProjectWithSamples.TestCases
             headerSection.LogoLink.Click();
         }
 
-        [InlineData("money")]
         [InlineData("butt")]
         [InlineData("test")]
         public void Test_clicking_tags_at_slow_speed(string tag)
