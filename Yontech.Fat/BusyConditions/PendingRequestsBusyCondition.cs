@@ -24,9 +24,10 @@ namespace Yontech.Fat.BusyConditions
 
                 let oldOpen = XMLHttpRequest.prototype.open;
                 XMLHttpRequest.prototype.open = function(args) { 
-                fatOperations.requestStarted(); 
-                this.onload = fatOperations.requestFinished; 
-                oldOpen.apply(this, arguments); 
+                    fatOperations.requestStarted(); 
+                    this.onloadend = fatOperations.requestFinished; 
+
+                    oldOpen.apply(this, arguments); 
                 };
 
                 let oldFetch = window.fetch;
