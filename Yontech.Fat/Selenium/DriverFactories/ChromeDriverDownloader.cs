@@ -12,6 +12,8 @@ namespace Yontech.Fat.Selenium.DriverFactories
         private const string CHROME_81_FOLDER = "https://chromedriver.storage.googleapis.com/81.0.4044.138/";
         private const string CHROME_83_FOLDER = "https://chromedriver.storage.googleapis.com/83.0.4103.39/";
         private const string CHROME_84_FOLDER = "https://chromedriver.storage.googleapis.com/84.0.4147.30/";
+        private const string CHROME_85_FOLDER = "https://chromedriver.storage.googleapis.com/85.0.4183.87/";
+        private const string CHROME_86_FOLDER = "https://chromedriver.storage.googleapis.com/86.0.4240.22/";
         private const string MACOS64 = "chromedriver_mac64.zip";
         private const string WIN32 = "chromedriver_win32.zip";
         private const string LINUX64 = "chromedriver_linux64.zip";
@@ -43,7 +45,9 @@ namespace Yontech.Fat.Selenium.DriverFactories
                 case ChromeVersion.v81: return CHROME_81_FOLDER;
                 case ChromeVersion.v83: return CHROME_83_FOLDER;
                 case ChromeVersion.v84: return CHROME_84_FOLDER;
-                default: return CHROME_83_FOLDER;
+                case ChromeVersion.v85: return CHROME_85_FOLDER;
+                case ChromeVersion.v86: return CHROME_86_FOLDER;
+                default: return CHROME_85_FOLDER;
             }
         }
 
