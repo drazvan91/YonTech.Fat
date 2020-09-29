@@ -6,6 +6,11 @@ namespace Alfa.TestCases
     [SkipTest]
     public class EntireClassSkipped : FatTest
     {
+        public override void BeforeAllTestCases()
+        {
+            LogError("This should not be called because the class is skipped");
+        }
+
         [SkipTest]
         public void Test_this_is_ignored()
         {

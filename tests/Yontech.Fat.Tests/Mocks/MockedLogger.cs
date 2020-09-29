@@ -44,7 +44,23 @@ namespace Yontech.Fat.Tests.Mocks
             if (!hasLog)
             {
                 var allLogs = this.GetLogs();
-                Assert.True(hasLog, $"Test should have log '{message}' but instead it head: {allLogs}");
+                Assert.True(hasLog, $"Test should have log '{message}' but instead it had: {allLogs}");
+            }
+        }
+
+        public void AssertDoesNotContain(LogLevel level, string message)
+        {
+
+            var hasLog = LogEntries.Any(log =>
+            {
+                return log.LogLevel == level
+                    && log.Message.Contains(message);
+            });
+
+            if (hasLog)
+            {
+                var allLogs = this.GetLogs();
+                Assert.False(hasLog, $"Test should not have log '{message}'");
             }
         }
 

@@ -41,5 +41,13 @@ namespace Yontech.Fat.Tests.FilterTests
             Assert.Equal(0, result.Failed);
             Assert.Equal(2, result.Skipped);
         }
+
+        [Fact]
+        public void WHEN_ignore_on_class_THEN_before_all_tests_should_be_skipped()
+        {
+            var result = runner.Run<Alfa.TestCases.EntireClassSkipped>();
+
+            this.context.MockedLoggerFactory.AssertDoesNotContain(LogLevel.Error, "This should not be called because the class is skipped");
+        }
     }
 }

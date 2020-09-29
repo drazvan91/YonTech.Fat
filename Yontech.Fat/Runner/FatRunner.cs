@@ -260,7 +260,12 @@ namespace Yontech.Fat.Runner
                     fatTests = this._webBrowsers.Select(webBrowser =>
                     {
                         var fatTest = _iocService.GetService<FatTest>(testClass.Class, webBrowser);
-                        fatTest.BeforeAllTestCases();
+
+                        if (!this.ShouldSkipTestClass(testClass))
+                        {
+                            fatTest.BeforeAllTestCases();
+                        }
+
                         return fatTest;
                     }).ToArray();
                 }
@@ -354,6 +359,22 @@ namespace Yontech.Fat.Runner
             return !anyBrowserWillExecute;
         }
 
+        private bool ShouldSkipTestClass(FatTestClass testClass)
+        {
+            var classLabels = System.Attribute.GetCustomAttributes(testClass.Class).OfType<SkipTest>();
+            if (classLabels.Any())
+            {
+                return true;
+            }
+
+            var anyBrowserWillExecute = this._execContext.Config.Browsers.Any(webBrowser =>
+            {
+                return !this.ShouldSkipTestClassForBrowser(webBrowser.BrowserType, testClass);
+            });
+
+            return !anyBrowserWillExecute;
+        }
+
         private void ExecuteTestCase(FatTest[] testInstances, FatTestCase testCase)
         {
             var methodParameters = testCase.Method.GetParameters();
@@ -435,6 +456,19 @@ namespace Yontech.Fat.Runner
             }
 
             var classLabels = System.Attribute.GetCustomAttributes(testCase.Method.ReflectedType).Where(attr => attr.GetType() == skipType);
+            if (classLabels.Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ShouldSkipTestClassForBrowser(BrowserType browser, FatTestClass testClass)
+        {
+            Type skipType = GetSkipTypeByBrowser(browser);
+
+            var classLabels = System.Attribute.GetCustomAttributes(testClass.Class).Where(attr => attr.GetType() == skipType);
             if (classLabels.Any())
             {
                 return true;
