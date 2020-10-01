@@ -1,0 +1,46 @@
+---
+name: Fat EnvData
+route: /fat-env-data
+---
+
+# Fat EnvData
+
+## Define EnvData
+
+```typescript
+using Yontech.Fat;
+
+public class MyConstants : FatEnvData
+{
+    public MyConstants()
+        : base("files/my-constants.json")
+    {
+    }
+
+    public string LoginPageUrl { get; set; }
+    public string AdminUsername { get; set; }
+    public string AdminPassword{get;set;}
+}
+
+```
+
+```json 
+/// my-constants.json
+{
+    "loginPageUrl":"http://website.com/login",
+    "adminUsername":"admin",
+    "adminPassword":"password"
+}
+```
+
+## Override on local machine
+
+Create a file with name `.override.json`. Usually the .override.json file is not commited in git so you might want to 
+add it to gitignore file.
+
+Override any property from `my-constants.json` file
+```json
+{
+    "adminPassword": "anotherPassword"
+}
+```

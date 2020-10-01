@@ -8,6 +8,7 @@ export default {
     'Concepts',
     'Fat Label',
     'Fat Warmup',
+    'Fat EnvData',
     'Skip Test',
     'Fat Interceptor',
     'API',
