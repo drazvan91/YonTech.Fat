@@ -19,7 +19,7 @@ public class MyConstants : FatEnvData
 
     public string LoginPageUrl { get; set; }
     public string AdminUsername { get; set; }
-    public string AdminPassword{get;set;}
+    public string AdminPassword { get; set; }
 }
 
 ```
@@ -43,4 +43,15 @@ Override any property from `my-constants.json` file
 {
     "adminPassword": "anotherPassword"
 }
+```
+
+## Use txt files
+
+Instead of json files you can also configure txt files.
+```
+# my-constants.txt
+LoginPageUrl=http://website.com/login
+AdminUsername=admin
+AdminPassword=password
+# use '#' to comment a line
 ```
