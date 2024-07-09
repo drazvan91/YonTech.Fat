@@ -28,7 +28,7 @@
         <PackageReference Include="Selenium.Support" Version="3.141.0" />
         <PackageReference Include="Selenium.WebDriver.IEDriver" Version="3.11.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
-        <PackageReference Include="System.Text.Json" Version="4.7.0" />
+        <PackageReference Include="System.Text.Json" Version="8.0.4" />
         <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.5.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     </ItemGroup>
